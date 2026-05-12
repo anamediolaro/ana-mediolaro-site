@@ -457,6 +457,13 @@ h1 em{color:var(--gold);font-style:italic;}
   .plh{padding:32px 18px;}
   .ti{flex:1 1 100%;}
 }
+/* MOBILE override: garantir empilhamento e evitar overflow nas seções de ciência e podcast */
+@media (max-width:768px){
+  .scis,.podc,.podrow{grid-template-columns:1fr !important;display:grid !important;}
+  .podc > *,.podrow > *,.scis > *{max-width:100% !important;width:100% !important;box-sizing:border-box;}
+  .podrow > a{aspect-ratio:auto !important;min-height:180px;}
+  .podc{overflow:hidden;}
+}
 /* Hide mobile-only toggle on desktop */
 </style>
 </head>
