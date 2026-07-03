@@ -11,6 +11,14 @@ export type Paciente = {
   arquivado: number
 }
 
+export type Terapeuta = {
+  id: string
+  nome: string
+  email: string
+  contato_emergencia: string | null
+}
+
 export type Vars = {
   paciente: Paciente
+  terapeuta: Terapeuta
 }

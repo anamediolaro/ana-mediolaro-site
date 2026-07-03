@@ -1,8 +1,9 @@
 import { Hono } from 'hono'
 import type { Env, Vars } from './tipos'
 import { exigePaciente, pacientePorToken } from './auth'
-import { premiarRegistro, nivelPorEstrelas } from './estrelas'
+import { premiarRegistro, premiarTarefa, nivelPorEstrelas } from './estrelas'
 import { calcularPadroes } from './padroes'
+import { pro } from './pro'
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>()
 
@@ -100,8 +101,15 @@ api.get('/eu', async (c) => {
   const total = pontos?.estrelas_total ?? 0
   const { atual, proximo } = nivelPorEstrelas(total)
 
+  const tarefas = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM tarefa WHERE paciente_id = ? AND status = 'pendente'`
+  )
+    .bind(paciente.id)
+    .first<{ n: number }>()
+
   return c.json({
     nome: paciente.nome,
+    tarefasPendentes: tarefas?.n ?? 0,
     consentiu: Boolean(paciente.consentimento_em),
     ultimoRegistro: ultimo ?? null,
     registrosHoje,
@@ -277,6 +285,35 @@ api.patch('/registros/:id/sessao', async (c) => {
   return c.json({ ok: true })
 })
 
+// Tarefas terapêuticas do lado do paciente: ele vê as orientações e
+// responde. A anotação da terapeuta nunca aparece aqui.
+api.get('/tarefas', async (c) => {
+  const paciente = c.get('paciente')
+  const tarefas = await c.env.DB.prepare(
+    `SELECT id, titulo, orientacoes, resposta_paciente, respondida_em, status, criado_em
+     FROM tarefa WHERE paciente_id = ? ORDER BY status DESC, criado_em DESC`
+  )
+    .bind(paciente.id)
+    .all()
+  return c.json({ tarefas: tarefas.results ?? [] })
+})
+
+api.post('/tarefas/:id/resposta', async (c) => {
+  const paciente = c.get('paciente')
+  const corpo = await c.req.json<{ texto?: string }>().catch(() => ({}) as { texto?: string })
+  const texto = (corpo.texto ?? '').trim()
+  if (!texto) return c.json({ erro: 'texto_obrigatorio' }, 400)
+  const resultado = await c.env.DB.prepare(
+    `UPDATE tarefa SET resposta_paciente = ?, respondida_em = datetime('now'), status = 'respondida'
+     WHERE id = ? AND paciente_id = ?`
+  )
+    .bind(texto, c.req.param('id'), paciente.id)
+    .run()
+  if (!resultado.meta.changes) return c.json({ erro: 'nao_encontrado' }, 404)
+  const estrelas = await premiarTarefa(c.env.DB, paciente.id, c.req.param('id'))
+  return c.json({ ok: true, estrelas })
+})
+
 api.get('/padroes', async (c) => {
   const paciente = c.get('paciente')
   const mes = /^\d{4}-\d{2}$/.test(c.req.query('mes') ?? '')
@@ -285,6 +322,9 @@ api.get('/padroes', async (c) => {
   return c.json(await calcularPadroes(c.env.DB, paciente.id, mes))
 })
 
+// A área profissional é montada antes: o middleware de paciente do
+// grupo /api usa curinga e não pode interceptar /api/pro.
+app.route('/api/pro', pro)
 app.route('/api', api)
 
 export default app

@@ -29,6 +29,37 @@ export function semanaIso(data: Date): string {
 
 type Premio = { origem: string; referencia: string; estrelas: number }
 
+async function consolidar(db: D1Database, pacienteId: string) {
+  const soma = await db
+    .prepare('SELECT COALESCE(SUM(estrelas), 0) AS total FROM evento_estrela WHERE paciente_id = ?')
+    .bind(pacienteId)
+    .first<{ total: number }>()
+  const total = soma?.total ?? 0
+  const { atual } = nivelPorEstrelas(total)
+  await db
+    .prepare(
+      `INSERT INTO pontuacao (paciente_id, estrelas_total, nivel_atual)
+       VALUES (?, ?, ?)
+       ON CONFLICT(paciente_id) DO UPDATE SET estrelas_total = ?, nivel_atual = ?`
+    )
+    .bind(pacienteId, total, atual.nome, total, atual.nome)
+    .run()
+  return { total, nivel: atual.nome }
+}
+
+// Tarefa concluída vale 5 estrelas, uma vez só por tarefa.
+export async function premiarTarefa(db: D1Database, pacienteId: string, tarefaId: string) {
+  await db
+    .prepare(
+      `INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas)
+       VALUES (?, ?, 'tarefa', ?, 5)
+       ON CONFLICT(paciente_id, origem, referencia_id) DO NOTHING`
+    )
+    .bind(crypto.randomUUID(), pacienteId, tarefaId)
+    .run()
+  return consolidar(db, pacienteId)
+}
+
 export async function premiarRegistro(
   db: D1Database,
   pacienteId: string,
@@ -63,22 +94,7 @@ export async function premiarRegistro(
   await db.batch(comandos)
 
   // O total oficial é sempre a soma do ledger, nunca um contador solto.
-  const soma = await db
-    .prepare('SELECT COALESCE(SUM(estrelas), 0) AS total FROM evento_estrela WHERE paciente_id = ?')
-    .bind(pacienteId)
-    .first<{ total: number }>()
-  const total = soma?.total ?? 0
-  const { atual } = nivelPorEstrelas(total)
-
-  await db
-    .prepare(
-      `INSERT INTO pontuacao (paciente_id, estrelas_total, nivel_atual)
-       VALUES (?, ?, ?)
-       ON CONFLICT(paciente_id) DO UPDATE SET estrelas_total = ?, nivel_atual = ?`
-    )
-    .bind(pacienteId, total, atual.nome, total, atual.nome)
-    .run()
-
+  const { total, nivel } = await consolidar(db, pacienteId)
   const nivelAntes = nivelPorEstrelas(totalAntes).atual.nome
-  return { total, nivel: atual.nome, subiuDeNivel: atual.nome !== nivelAntes }
+  return { total, nivel, subiuDeNivel: nivel !== nivelAntes }
 }

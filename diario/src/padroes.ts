@@ -25,6 +25,47 @@ function top(mapa: Map<string, number>, n: number) {
     .map(([item, vezes]) => ({ item, vezes }))
 }
 
+// Resumo de um período para a área profissional: o que a Ana precisa
+// ver em segundos antes da sessão.
+export async function resumoPeriodo(
+  db: D1Database,
+  pacienteId: string,
+  desdeDia: string
+) {
+  const linhas = await db
+    .prepare(
+      `SELECT substr(timestamp, 1, 10) AS dia, nivel, emocoes, emocoes_livres,
+              atividades, atividade_texto, corpo
+       FROM registro WHERE paciente_id = ? AND substr(timestamp, 1, 10) >= ?
+       ORDER BY timestamp`
+    )
+    .bind(pacienteId, desdeDia)
+    .all<LinhaRegistro>()
+  const registros = linhas.results ?? []
+
+  const emocoes = new Map<string, number>()
+  const contextos = new Map<string, number>()
+  const corpo = new Map<string, number>()
+  for (const r of registros) {
+    for (const e of JSON.parse(r.emocoes) as string[]) contar(emocoes, e)
+    for (const e of JSON.parse(r.emocoes_livres) as string[]) contar(emocoes, e)
+    for (const a of JSON.parse(r.atividades) as string[]) contar(contextos, a)
+    if (r.atividade_texto) contar(contextos, r.atividade_texto)
+    for (const p of JSON.parse(r.corpo) as string[]) contar(corpo, p)
+  }
+
+  return {
+    desde: desdeDia,
+    totalRegistros: registros.length,
+    humorMedio: registros.length
+      ? Math.round((registros.reduce((s, r) => s + r.nivel, 0) / registros.length) * 10) / 10
+      : null,
+    emocoes: top(emocoes, 5),
+    contextos: top(contextos, 5),
+    corpo: top(corpo, 5),
+  }
+}
+
 export async function calcularPadroes(db: D1Database, pacienteId: string, mes: string) {
   const linhas = await db
     .prepare(
