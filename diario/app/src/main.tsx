@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
+import { ProApp } from './pro/ProApp'
 import './estilos/global.css'
 
 // O manifest do PWA leva o token do paciente: o app instalado na tela
@@ -14,4 +15,5 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {})
 }
 
-createRoot(document.getElementById('raiz')!).render(<App />)
+const ehAreaPro = location.pathname === '/pro' || location.pathname.startsWith('/pro/')
+createRoot(document.getElementById('raiz')!).render(ehAreaPro ? <ProApp /> : <App />)

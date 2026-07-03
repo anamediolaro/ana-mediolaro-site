@@ -12,10 +12,12 @@ import { Apoio } from './telas/Apoio'
 import { Grounding } from './telas/Grounding'
 import { TecnicaStop } from './telas/TecnicaStop'
 import { Protocolo } from './telas/Protocolo'
+import { Tarefas } from './telas/Tarefas'
 
 export type Eu = {
   nome: string
   consentiu: boolean
+  tarefasPendentes: number
   ultimoRegistro: Record<string, unknown> | null
   registrosHoje: number
   diasDesdeUltimo: number | null
@@ -36,6 +38,7 @@ type Rota =
   | 'grounding'
   | 'stop'
   | 'protocolo'
+  | 'tarefas'
 
 export function App() {
   const [eu, setEu] = useState<Eu | null>(null)
@@ -113,6 +116,16 @@ export function App() {
         eu={eu}
         aoRegistrar={() => setRota('checkin')}
         aoPedirApoio={() => setRota('apoio')}
+        aoAbrirTarefas={() => setRota('tarefas')}
+      />
+    ),
+    tarefas: (
+      <Tarefas
+        aoVoltar={() => setRota('inicio')}
+        aoResponder={() => {
+          void recarregar()
+          avisar('Resposta enviada. 5 estrelas para você.')
+        }}
       />
     ),
     historico: <Historico />,

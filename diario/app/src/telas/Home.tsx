@@ -7,10 +7,12 @@ export function Home({
   eu,
   aoRegistrar,
   aoPedirApoio,
+  aoAbrirTarefas,
 }: {
   eu: Eu
   aoRegistrar: () => void
   aoPedirApoio: () => void
+  aoAbrirTarefas: () => void
 }) {
   const primeiroNome = eu.nome.split(' ')[0]
   const voltou = eu.diasDesdeUltimo !== null && eu.diasDesdeUltimo >= 7
@@ -32,6 +34,18 @@ export function Home({
       <button className="t-btn fantasma" onClick={aoPedirApoio}>
         Preciso de apoio agora
       </button>
+      {eu.tarefasPendentes > 0 && (
+        <button
+          className="t-card"
+          style={{ width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+          onClick={aoAbrirTarefas}
+        >
+          <span className="t-nivel">✦ {eu.tarefasPendentes === 1 ? 'Uma tarefa da sua psicóloga' : `${eu.tarefasPendentes} tarefas da sua psicóloga`}</span>
+          <span className="t-sub" style={{ display: 'block', marginTop: 4 }}>
+            Responda quando fizer sentido. Vale 5 estrelas.
+          </span>
+        </button>
+      )}
       {eu.ultimoRegistro && (
         <>
           <div className="t-label" style={{ marginTop: 26 }}>
