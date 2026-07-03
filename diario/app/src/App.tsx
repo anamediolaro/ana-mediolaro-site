@@ -15,11 +15,14 @@ import { Protocolo } from './telas/Protocolo'
 import { Tarefas } from './telas/Tarefas'
 import { Celebracao } from './telas/Celebracao'
 import { Cartao, type PedidoCartao } from './telas/Cartao'
+import { Rpd } from './telas/Rpd'
+import { Lembretes } from './telas/Lembretes'
 import { CONQUISTAS, PATH_ESTRELA } from './dados'
 
 export type Eu = {
   nome: string
   consentiu: boolean
+  consentiuIa: boolean
   tarefasPendentes: number
   conquistas: { tipo: string; desbloqueada_em: string }[]
   ultimoRegistro: Record<string, unknown> | null
@@ -45,6 +48,8 @@ type Rota =
   | 'tarefas'
   | 'celebracao'
   | 'cartao'
+  | 'rpd'
+  | 'lembretes'
 
 export function App() {
   const [eu, setEu] = useState<Eu | null>(null)
@@ -148,6 +153,31 @@ export function App() {
         aoRegistrar={() => setRota('checkin')}
         aoPedirApoio={() => setRota('apoio')}
         aoAbrirTarefas={() => setRota('tarefas')}
+        aoAbrirLembretes={() => setRota('lembretes')}
+      />
+    ),
+    lembretes: <Lembretes aoVoltar={() => setRota('inicio')} />,
+    rpd: (
+      <Rpd
+        consentiuIa={eu.consentiuIa}
+        aoConsentir={async () => {
+          const { apiApoio } = await import('./api')
+          await apiApoio.consentirIa()
+          void recarregar()
+        }}
+        aoSair={() => {
+          void recarregar()
+          setRota('apoio')
+        }}
+        aoRisco={() => setRota('protocolo')}
+        aoIndisponivel={() => {
+          avisar('O assistente não está disponível agora.')
+          setRota('apoio')
+        }}
+        aoConcluir={() => {
+          void recarregar()
+          avisar('Exercício concluído. 3 estrelas para você.')
+        }}
       />
     ),
     tarefas: (
@@ -219,10 +249,7 @@ export function App() {
       />
     ),
     apoio: (
-      <Apoio
-        aoAbrir={(tecnica) => setRota(tecnica)}
-        aoVoltar={() => setRota('inicio')}
-      />
+      <Apoio aoAbrir={(tecnica) => setRota(tecnica)} aoVoltar={() => setRota('inicio')} />
     ),
     grounding: (
       <Grounding aoSair={() => setRota('apoio')} aoRegistrar={() => setRota('checkin')} />

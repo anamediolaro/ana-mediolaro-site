@@ -1,15 +1,33 @@
+import { useEffect, useState } from 'react'
+import { apiApoio } from '../api'
 import { TopoApp } from '../componentes/TopoApp'
+import { PlayerAudio } from '../componentes/PlayerAudio'
 
-// Camada 1 do apoio: técnicas fixas, sem IA, funcionam offline.
-// Respiração guiada (áudio da Ana) e o assistente de RPD entram na
-// Etapa 4; o caminho para o protocolo de segurança existe desde já.
+type AudioInfo = { id: string; titulo: string; duracao_seg: number | null; camada1: number }
+
+// Menu de apoio: Camada 1 sem IA (funciona offline) e a entrada do
+// assistente de RPD. O caminho para o protocolo existe sempre.
 export function Apoio({
   aoAbrir,
   aoVoltar,
 }: {
-  aoAbrir: (tecnica: 'grounding' | 'stop' | 'protocolo') => void
+  aoAbrir: (tecnica: 'grounding' | 'stop' | 'protocolo' | 'rpd') => void
   aoVoltar: () => void
 }) {
+  const [respiracao, setRespiracao] = useState<AudioInfo | null>(null)
+  const [audioDisponivel, setAudioDisponivel] = useState(false)
+  const [tocando, setTocando] = useState(false)
+
+  useEffect(() => {
+    apiApoio
+      .audios()
+      .then((r: { audios: AudioInfo[]; disponivel: boolean }) => {
+        setAudioDisponivel(r.disponivel)
+        setRespiracao(r.audios.find((a) => a.camada1) ?? null)
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <div className="tela sem-nav">
       <TopoApp direita="apoio" />
@@ -17,6 +35,26 @@ export function Apoio({
         Estou aqui. Vamos <em>um passo</em> de cada vez.
       </div>
       <p className="t-sub">Escolha o que faz sentido agora. Não precisa estar em crise para usar.</p>
+      {respiracao && audioDisponivel && (
+        <>
+          <button className="apoio-item" onClick={() => setTocando(!tocando)}>
+            <span className="ico">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8" />
+                <circle cx="12" cy="12" r="3.5" />
+              </svg>
+            </span>
+            <span>
+              <b>Respiração guiada</b>
+              <small>
+                áudio da Ana
+                {respiracao.duracao_seg ? ` · ${Math.round(respiracao.duracao_seg / 60)} min` : ''}
+              </small>
+            </span>
+          </button>
+          {tocando && <PlayerAudio audioId={respiracao.id} />}
+        </>
+      )}
       <button className="apoio-item" onClick={() => aoAbrir('grounding')}>
         <span className="ico">
           <svg viewBox="0 0 24 24">
@@ -37,6 +75,18 @@ export function Apoio({
         <span>
           <b>Técnica STOP</b>
           <small>pare, respire, observe, prossiga</small>
+        </span>
+      </button>
+      <button className="apoio-item" onClick={() => aoAbrir('rpd')}>
+        <span className="ico">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 6h16M4 10h16M4 14h10" />
+            <path d="M15 17l2 2 4-4" />
+          </svg>
+        </span>
+        <span>
+          <b>Examinar um pensamento</b>
+          <small>assistente guiado, passo a passo</small>
         </span>
       </button>
       <button

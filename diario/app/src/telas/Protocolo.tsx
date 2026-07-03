@@ -1,8 +1,22 @@
+import { useEffect, useState } from 'react'
+import { apiApoio } from '../api'
 import { TopoApp } from '../componentes/TopoApp'
 
 // Protocolo de segurança: caminho direto para pessoas de verdade.
 // Tela calma, mesma paleta, sem vermelho.
 export function Protocolo({ aoVoltar }: { aoVoltar: () => void }) {
+  const [contato, setContato] = useState<string | null>(null)
+  const [escrevendo, setEscrevendo] = useState(false)
+  const [texto, setTexto] = useState('')
+  const [enviada, setEnviada] = useState(false)
+
+  useEffect(() => {
+    apiApoio
+      .protocoloInfo()
+      .then((r: { contatoEmergencia: string | null }) => setContato(r.contatoEmergencia))
+      .catch(() => {})
+  }, [])
+
   return (
     <div className="tela sem-nav">
       <TopoApp direita="" />
@@ -21,6 +35,12 @@ export function Protocolo({ aoVoltar }: { aoVoltar: () => void }) {
         <div className="prot-num">192</div>
         <small>SAMU · emergência médica</small>
       </div>
+      {contato && (
+        <div className="prot-card">
+          <div style={{ fontFamily: 'Lora, serif', fontSize: 17, fontWeight: 600 }}>{contato}</div>
+          <small>contato de emergência indicado pela sua psicóloga</small>
+        </div>
+      )}
       <a className="t-btn" href="tel:188" style={{ textDecoration: 'none' }}>
         Ligar para o CVV agora
       </a>
@@ -33,7 +53,39 @@ export function Protocolo({ aoVoltar }: { aoVoltar: () => void }) {
       >
         Conversar por chat com o CVV
       </a>
-      <div style={{ marginTop: 'auto', paddingTop: 18 }}>
+      {enviada ? (
+        <p className="t-sub" style={{ textAlign: 'center', marginTop: 14 }}>
+          Mensagem registrada para a Dra. Ana.
+        </p>
+      ) : escrevendo ? (
+        <>
+          <textarea
+            className="t-input"
+            placeholder="Escreva aqui..."
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+          />
+          <button
+            className="t-btn fantasma"
+            disabled={!texto.trim()}
+            onClick={async () => {
+              await apiApoio.mensagemProtocolo(texto.trim())
+              setEnviada(true)
+            }}
+          >
+            Enviar mensagem
+          </button>
+        </>
+      ) : (
+        <button className="t-btn fantasma" onClick={() => setEscrevendo(true)}>
+          Mensagem para a Dra. Ana
+        </button>
+      )}
+      <p className="t-sub" style={{ fontSize: 11, textAlign: 'center', marginTop: 12 }}>
+        A mensagem fica registrada. O app não é canal de emergência e a resposta pode não ser
+        imediata.
+      </p>
+      <div style={{ marginTop: 'auto', paddingTop: 14 }}>
         <button className="t-btn fantasma" onClick={aoVoltar}>
           Voltar
         </button>

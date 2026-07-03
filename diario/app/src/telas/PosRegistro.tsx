@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { TopoApp } from '../componentes/TopoApp'
 import { Rosto } from '../componentes/Rosto'
+import { PlayerAudio } from '../componentes/PlayerAudio'
 import type { ResultadoCheckIn } from './CheckIn'
 
 // Fechar o ciclo: depois de um registro com humor 1 ou 2, o app oferece
@@ -12,6 +14,7 @@ export function PosRegistro({
   aoConcluir: () => void
 }) {
   const audio = resultado?.audioSugerido ?? null
+  const [ouvindo, setOuvindo] = useState(false)
 
   return (
     <div className="tela sem-nav">
@@ -70,12 +73,23 @@ export function PosRegistro({
               </small>
             </span>
           </div>
-          <button className="t-btn ouro" onClick={aoConcluir}>
-            Ouvir agora
-          </button>
-          <button className="t-btn fantasma" onClick={aoConcluir}>
-            Agora não
-          </button>
+          {ouvindo ? (
+            <>
+              <PlayerAudio audioId={audio.id} />
+              <button className="t-btn fantasma" onClick={aoConcluir}>
+                Voltar para o início
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="t-btn ouro" onClick={() => setOuvindo(true)}>
+                Ouvir agora
+              </button>
+              <button className="t-btn fantasma" onClick={aoConcluir}>
+                Agora não
+              </button>
+            </>
+          )}
           <p className="t-sub" style={{ textAlign: 'center', fontSize: 11, marginTop: 16 }}>
             Sugestão opcional. Nenhum ponto se perde ao pular.
           </p>

@@ -18,6 +18,28 @@ self.addEventListener('activate', (evento) => {
   self.clients.claim()
 })
 
+// Lembretes e alertas: o conteúdo é neutro, sem dado clínico.
+self.addEventListener('push', (evento) => {
+  let dados = { titulo: 'Diário das Emoções', corpo: 'Um minuto para você. Como está agora?' }
+  try {
+    dados = { ...dados, ...evento.data.json() }
+  } catch {
+    // corpo padrão
+  }
+  evento.waitUntil(
+    self.registration.showNotification(dados.titulo, {
+      body: dados.corpo,
+      icon: '/icone-192.png',
+      badge: '/icone-192.png',
+    })
+  )
+})
+
+self.addEventListener('notificationclick', (evento) => {
+  evento.notification.close()
+  evento.waitUntil(self.clients.openWindow('/'))
+})
+
 self.addEventListener('fetch', (evento) => {
   const url = new URL(evento.request.url)
   if (evento.request.method !== 'GET') return

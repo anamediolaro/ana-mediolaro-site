@@ -8,11 +8,13 @@ export function Home({
   aoRegistrar,
   aoPedirApoio,
   aoAbrirTarefas,
+  aoAbrirLembretes,
 }: {
   eu: Eu
   aoRegistrar: () => void
   aoPedirApoio: () => void
   aoAbrirTarefas: () => void
+  aoAbrirLembretes: () => void
 }) {
   const primeiroNome = eu.nome.split(' ')[0]
   const voltou = eu.diasDesdeUltimo !== null && eu.diasDesdeUltimo >= 7
@@ -61,6 +63,11 @@ export function Home({
             : `${eu.registrosHoje} registros hoje.`}
         </p>
       )}
+      <div style={{ marginTop: 'auto', paddingTop: 14, textAlign: 'center' }}>
+        <button className="botao-mini" onClick={aoAbrirLembretes}>
+          Configurar lembretes
+        </button>
+      </div>
     </div>
   )
 }

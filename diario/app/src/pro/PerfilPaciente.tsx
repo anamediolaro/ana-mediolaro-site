@@ -33,11 +33,28 @@ type Tarefa = {
   criado_em: string
 }
 
+type RpdPro = {
+  id: string
+  situacao: string | null
+  emocao: string | null
+  intensidade_inicial: number | null
+  pensamento_automatico: string | null
+  evidencias_favor: string | null
+  evidencias_contra: string | null
+  pensamento_alternativo: string | null
+  intensidade_final: number | null
+  revisado_em: string | null
+  criado_em: string
+}
+
 type Perfil = {
   paciente: { id: string; nome: string; arquivado: number; ultimo_acesso_em: string | null }
   estrelas: { total: number; nivel: string }
   totalRegistros: number
   conquistas: { tipo: string; desbloqueada_em: string }[]
+  rpds: RpdPro[]
+  riscos: { id: string; timestamp: string; origem: string; notificada_terapeuta: number }[]
+  mensagens: { id: string; texto: string; criado_em: string; lida: number }[]
   paraSessao: RegistroPro[]
   resumo: {
     totalRegistros: number
@@ -289,6 +306,50 @@ export function PerfilPaciente({
         </div>
       )}
 
+      {(perfil.riscos.some((r) => !r.notificada_terapeuta) ||
+        perfil.mensagens.some((m) => !m.lida)) && (
+        <>
+          <div className="t-label">Atenção agora</div>
+          {perfil.riscos
+            .filter((r) => !r.notificada_terapeuta)
+            .map((r) => (
+              <div key={r.id} className="t-card destaque-sessao">
+                <div className="t-campo">
+                  <b>Evento de risco</b>
+                  <p>
+                    Detectado em{' '}
+                    {new Date(r.timestamp.replace(' ', 'T') + 'Z').toLocaleString('pt-BR', {
+                      timeZone: 'America/Sao_Paulo',
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}{' '}
+                    ({r.origem === 'palavra_chave' ? 'palavras no texto' : 'classificação do assistente'}).
+                    O assistente foi interrompido e o paciente viu o protocolo com CVV e SAMU.
+                  </p>
+                </div>
+                <button className="botao-mini ouro" onClick={async () => { await apiPro.riscoVisto(r.id); await carregar() }}>
+                  Visto
+                </button>
+              </div>
+            ))}
+          {perfil.mensagens
+            .filter((m) => !m.lida)
+            .map((m) => (
+              <div key={m.id} className="t-card destaque-sessao">
+                <div className="t-campo">
+                  <b>Mensagem pelo protocolo</b>
+                  <p>{m.texto}</p>
+                </div>
+                <button className="botao-mini ouro" onClick={async () => { await apiPro.mensagemLida(m.id); await carregar() }}>
+                  Lida
+                </button>
+              </div>
+            ))}
+        </>
+      )}
+
       {perfil.paraSessao.length > 0 && (
         <>
           <div className="t-label">Para a próxima sessão</div>
@@ -300,6 +361,77 @@ export function PerfilPaciente({
               aoAnotar={anotar}
               aoMarcarVisto={marcarVisto}
             />
+          ))}
+        </>
+      )}
+
+      {perfil.rpds.length > 0 && (
+        <>
+          <div className="t-label">Pensamentos examinados (RPD)</div>
+          {perfil.rpds.map((rpd) => (
+            <div key={rpd.id} className={`t-card${rpd.revisado_em ? '' : ' destaque-sessao'}`}>
+              <div className="linha1">
+                <span className="t-nivel">
+                  {rpd.revisado_em ? 'RPD' : '✦ RPD novo'}
+                </span>
+                <span className="t-hora">
+                  {rpd.criado_em.slice(0, 10).split('-').reverse().join('/')}
+                </span>
+              </div>
+              {rpd.pensamento_automatico && (
+                <div className="t-campo">
+                  <b>Pensamento examinado</b>
+                  <p>
+                    "{rpd.pensamento_automatico}"
+                    {rpd.intensidade_inicial !== null && rpd.intensidade_final !== null
+                      ? ` · intensidade caiu de ${rpd.intensidade_inicial} para ${rpd.intensidade_final}`
+                      : ''}
+                  </p>
+                </div>
+              )}
+              {rpd.situacao && (
+                <div className="t-campo">
+                  <b>Situação</b>
+                  <p>{rpd.situacao}</p>
+                </div>
+              )}
+              {rpd.emocao && (
+                <div className="t-campo">
+                  <b>Emoção</b>
+                  <p>{rpd.emocao}</p>
+                </div>
+              )}
+              {rpd.evidencias_favor && (
+                <div className="t-campo">
+                  <b>Evidências a favor</b>
+                  <p>{rpd.evidencias_favor}</p>
+                </div>
+              )}
+              {rpd.evidencias_contra && (
+                <div className="t-campo">
+                  <b>Evidências contra</b>
+                  <p>{rpd.evidencias_contra}</p>
+                </div>
+              )}
+              {rpd.pensamento_alternativo && (
+                <div className="t-campo">
+                  <b>Pensamento alternativo</b>
+                  <p>{rpd.pensamento_alternativo}</p>
+                </div>
+              )}
+              {!rpd.revisado_em && (
+                <button
+                  className="botao-mini"
+                  style={{ marginTop: 8 }}
+                  onClick={async () => {
+                    await apiPro.rpdRevisado(rpd.id)
+                    await carregar()
+                  }}
+                >
+                  Marcar como revisado
+                </button>
+              )}
+            </div>
           ))}
         </>
       )}

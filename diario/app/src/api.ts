@@ -59,6 +59,29 @@ export const apiTarefas = {
     chamar(`/tarefas/${id}/resposta`, { method: 'POST', body: JSON.stringify({ texto }) }),
 }
 
+export const apiApoio = {
+  consentirIa: () => chamar('/consentimento-ia', { method: 'POST' }),
+  iniciarRpd: () => chamar('/rpd', { method: 'POST' }),
+  mensagemRpd: (id: string, texto: string, historico: { papel: string; texto: string }[]) =>
+    chamar(`/rpd/${id}/mensagem`, { method: 'POST', body: JSON.stringify({ texto, historico }) }),
+  protocoloInfo: () => chamar('/protocolo-info'),
+  mensagemProtocolo: (texto: string) =>
+    chamar('/mensagem-protocolo', { method: 'POST', body: JSON.stringify({ texto }) }),
+  lembrete: () => chamar('/lembrete'),
+  salvarLembrete: (frequencia: number, horarios: string[]) =>
+    chamar('/lembrete', { method: 'PUT', body: JSON.stringify({ frequencia, horarios }) }),
+  inscreverPush: (dados: { endpoint: string; p256dh: string; auth: string }) =>
+    chamar('/push/inscrever', { method: 'POST', body: JSON.stringify(dados) }),
+  audios: () => chamar('/audios'),
+  baixarAudio: async (id: string): Promise<string | null> => {
+    const resposta = await fetch(`/api/audios/${id}/arquivo`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    })
+    if (!resposta.ok) return null
+    return URL.createObjectURL(await resposta.blob())
+  },
+}
+
 // Área profissional: sessão em cookie HttpOnly, nada guardado em JS.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function chamarPro(caminho: string, opcoes: RequestInit = {}): Promise<any> {
@@ -103,6 +126,11 @@ export const apiPro = {
     }),
   anotarTarefa: (id: string, anotacaoTerapeuta: string) =>
     chamarPro(`/tarefas/${id}`, { method: 'PATCH', body: JSON.stringify({ anotacaoTerapeuta }) }),
+  rpdRevisado: (id: string) => chamarPro(`/rpd/${id}/revisado`, { method: 'PATCH' }),
+  riscoVisto: (id: string) => chamarPro(`/riscos/${id}/visto`, { method: 'PATCH' }),
+  mensagemLida: (id: string) => chamarPro(`/mensagens/${id}/lida`, { method: 'PATCH' }),
+  salvarConfiguracoes: (contatoEmergencia: string) =>
+    chamarPro('/configuracoes', { method: 'PATCH', body: JSON.stringify({ contatoEmergencia }) }),
 }
 
 export function iniciarSincronizacao() {

@@ -776,6 +776,59 @@ textarea.t-input {
   line-height: 1.5;
 }
 
+/* Chat do assistente de RPD. */
+.chat-rpd {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+  overflow-y: auto;
+}
+
+.balao {
+  max-width: 85%;
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 300;
+}
+
+.balao.bot {
+  background: #fff;
+  border: 1px solid var(--linha);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.balao.user {
+  background: var(--verde);
+  color: var(--creme);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.etapa-tag {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ouro);
+  font-weight: 600;
+  align-self: flex-start;
+  margin: 6px 0 4px;
+}
+
+.aviso-ia {
+  font-size: 10.5px;
+  color: var(--sage);
+  text-align: center;
+  font-weight: 300;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--linha);
+  margin-top: 12px;
+}
+
 /* Toast discreto. */
 .toast {
   position: fixed;
