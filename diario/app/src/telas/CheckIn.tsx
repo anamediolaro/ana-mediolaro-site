@@ -17,6 +17,9 @@ export type ResultadoCheckIn = {
   nivel: number
   offline: boolean
   audioSugerido: { id: string; titulo: string; duracaoSeg: number | null } | null
+  conquistasNovas: string[]
+  subiuDeNivel: boolean
+  novoNivel: string | null
 }
 
 type Passo = 'humor' | 'sono' | 'emocoes' | 'atividades' | 'pensamento' | 'corpo' | 'acao'
@@ -100,6 +103,9 @@ export function CheckIn({
         nivel,
         offline: Boolean(resposta.offline),
         audioSugerido: resposta.audioSugerido ?? null,
+        conquistasNovas: resposta.conquistasNovas ?? [],
+        subiuDeNivel: Boolean(resposta.estrelas?.subiuDeNivel),
+        novoNivel: resposta.estrelas?.nivel ?? null,
       })
     } catch {
       aoFalhar()

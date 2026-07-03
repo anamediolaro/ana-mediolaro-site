@@ -13,11 +13,15 @@ import { Grounding } from './telas/Grounding'
 import { TecnicaStop } from './telas/TecnicaStop'
 import { Protocolo } from './telas/Protocolo'
 import { Tarefas } from './telas/Tarefas'
+import { Celebracao } from './telas/Celebracao'
+import { Cartao, type PedidoCartao } from './telas/Cartao'
+import { CONQUISTAS, PATH_ESTRELA } from './dados'
 
 export type Eu = {
   nome: string
   consentiu: boolean
   tarefasPendentes: number
+  conquistas: { tipo: string; desbloqueada_em: string }[]
   ultimoRegistro: Record<string, unknown> | null
   registrosHoje: number
   diasDesdeUltimo: number | null
@@ -39,6 +43,8 @@ type Rota =
   | 'stop'
   | 'protocolo'
   | 'tarefas'
+  | 'celebracao'
+  | 'cartao'
 
 export function App() {
   const [eu, setEu] = useState<Eu | null>(null)
@@ -46,6 +52,8 @@ export function App() {
   const [rota, setRota] = useState<Rota>('inicio')
   const [toast, setToast] = useState('')
   const [resultado, setResultado] = useState<ResultadoCheckIn | null>(null)
+  const [cartao, setCartao] = useState<PedidoCartao | null>(null)
+  const [origemCartao, setOrigemCartao] = useState<Rota>('estrelas')
 
   const recarregar = useCallback(async () => {
     try {
@@ -99,14 +107,37 @@ export function App() {
     )
   }
 
-  const aoSalvarCheckIn = (r: ResultadoCheckIn) => {
-    setResultado(r)
-    void recarregar()
-    if (r.nivel <= 2) {
+  const avisarConquistas = (tipos: string[]) => {
+    if (!tipos.length) return
+    const rotulo = CONQUISTAS.find((c) => c.tipo === tipos[0])?.rotulo ?? ''
+    avisar(
+      tipos.length === 1
+        ? `Conquista desbloqueada: ${rotulo}`
+        : `${tipos.length} conquistas desbloqueadas`
+    )
+  }
+
+  const depoisDaCelebracao = (r: ResultadoCheckIn | null) => {
+    if (r && r.nivel <= 2) {
       setRota('pos-registro')
     } else {
       setRota('inicio')
       avisar('Registro salvo')
+    }
+  }
+
+  const aoSalvarCheckIn = (r: ResultadoCheckIn) => {
+    setResultado(r)
+    void recarregar()
+    if (r.subiuDeNivel) {
+      setRota('celebracao')
+    } else if (r.nivel <= 2) {
+      setRota('pos-registro')
+      avisarConquistas(r.conquistasNovas)
+    } else {
+      setRota('inicio')
+      if (r.conquistasNovas.length) avisarConquistas(r.conquistasNovas)
+      else avisar('Registro salvo')
     }
   }
 
@@ -130,7 +161,46 @@ export function App() {
     ),
     historico: <Historico />,
     padroes: <Padroes />,
-    estrelas: <Estrelas eu={eu} />,
+    estrelas: (
+      <Estrelas
+        eu={eu}
+        aoCompartilhar={(pedido) => {
+          setCartao(pedido)
+          setOrigemCartao('estrelas')
+          setRota('cartao')
+        }}
+      />
+    ),
+    celebracao: (
+      <Celebracao
+        nivel={resultado?.novoNivel ?? eu.estrelas.nivel}
+        aoContinuar={() => depoisDaCelebracao(resultado)}
+        aoCompartilhar={() => {
+          const nivel = resultado?.novoNivel ?? eu.estrelas.nivel
+          setCartao({
+            texto: `Cheguei ao nível {${nivel}}.`,
+            paths: [PATH_ESTRELA],
+            arquivo: `diario-das-emocoes-nivel-${nivel
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[̀-ͯ]/g, '')}.jpg`,
+          })
+          setOrigemCartao('celebracao')
+          setRota('cartao')
+        }}
+      />
+    ),
+    cartao: cartao ? (
+      <Cartao
+        pedido={cartao}
+        aoVoltar={() => {
+          if (origemCartao === 'celebracao') depoisDaCelebracao(resultado)
+          else setRota('estrelas')
+        }}
+      />
+    ) : (
+      <Estrelas eu={eu} aoCompartilhar={() => {}} />
+    ),
     checkin: (
       <CheckIn
         primeiraDoDia={eu.registrosHoje === 0}

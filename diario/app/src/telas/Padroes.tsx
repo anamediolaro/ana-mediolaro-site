@@ -10,10 +10,18 @@ type DadosPadroes = {
   humorMedio: number | null
   totalRegistrosMes: number
   melhorSequencia: number
+  melhorMes: { item: string; vezes: number } | null
   emocoes: { item: string; vezes: number }[]
   contextos: { item: string; vezes: number }[]
   corpo: { item: string; vezes: number }[]
 }
+
+const NOMES_MES = [
+  'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
+]
+
+const nomeDoMes = (mes: string) => NOMES_MES[Number(mes.slice(5, 7)) - 1] ?? mes
 
 function Barras({ titulo, itens }: { titulo: string; itens: { item: string; vezes: number }[] }) {
   if (!itens.length) return null
@@ -67,6 +75,20 @@ export function Padroes() {
                 {dados.humorMedio !== null ? dados.humorMedio.toLocaleString('pt-BR') : '·'}
               </div>
               <div className="l">humor médio do mês</div>
+            </div>
+            <div className="t-stat">
+              <div className="n" style={{ fontSize: 20 }}>
+                {dados.melhorMes ? nomeDoMes(dados.melhorMes.item) : '·'}
+              </div>
+              <div className="l">
+                {dados.melhorMes
+                  ? `mês com mais registros (${dados.melhorMes.vezes})`
+                  : 'mês com mais registros'}
+              </div>
+            </div>
+            <div className="t-stat">
+              <div className="n">{dados.totalRegistrosMes}</div>
+              <div className="l">registros neste mês</div>
             </div>
           </div>
           <Barras titulo="Emoções mais presentes" itens={dados.emocoes} />

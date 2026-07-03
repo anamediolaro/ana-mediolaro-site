@@ -77,6 +77,80 @@ export function rotuloHumor(nivel: number): string {
   return HUMOR.find((h) => h.nivel === nivel)?.rotulo ?? ''
 }
 
+// Conquistas: rótulo, desenho da medalha (paths SVG em viewBox 24) e o
+// texto do cartão compartilhável. {chaves} viram itálico dourado. Zero
+// dado clínico nos cartões.
+export type InfoConquista = {
+  tipo: string
+  rotulo: string
+  paths: string[]
+  cartao: string
+  arquivo: string
+}
+
+export const CONQUISTAS: InfoConquista[] = [
+  {
+    tipo: 'primeiro_registro',
+    rotulo: 'Primeiro registro',
+    paths: ['M5 13l4 4L19 7'],
+    cartao: 'Comecei a treinar minha {saúde mental}.',
+    arquivo: 'treinando-saude-mental-primeiro-registro.jpg',
+  },
+  {
+    tipo: 'semana_3',
+    rotulo: 'Semana com 3 registros',
+    paths: ['M4 20 Q12 4 20 20', 'M12 7.6a1.4 1.4 0 1 0 0 2.8a1.4 1.4 0 1 0 0-2.8'],
+    cartao: 'Uma semana treinando minha {saúde mental}.',
+    arquivo: 'treinando-saude-mental-uma-semana.jpg',
+  },
+  {
+    tipo: 'voce_voltou',
+    rotulo: 'Você voltou',
+    paths: ['M12 20V8', 'M7 13l5-5 5 5'],
+    cartao: 'Voltei. E voltar também é {treino}.',
+    arquivo: 'treinando-saude-mental-voltei.jpg',
+  },
+  {
+    tipo: 'primeira_palavra',
+    rotulo: 'Primeira palavra sua',
+    paths: ['M4 7h16M4 12h10M4 17h7'],
+    cartao: 'Minhas emoções, nas {minhas palavras}.',
+    arquivo: 'emocoes-nas-minhas-palavras.jpg',
+  },
+  {
+    tipo: 'registros_10',
+    rotulo: '10 registros',
+    paths: ['M12 6.5a5.5 5.5 0 1 0 0 11a5.5 5.5 0 1 0 0-11'],
+    cartao: '10 registros treinando minha {saúde mental}.',
+    arquivo: 'treinando-saude-mental-10-registros.jpg',
+  },
+  {
+    tipo: 'registros_30',
+    rotulo: '30 registros',
+    paths: ['M12 3.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 1 0 0-17'],
+    cartao: '30 registros treinando minha {saúde mental}.',
+    arquivo: 'treinando-saude-mental-30-registros.jpg',
+  },
+  {
+    tipo: 'primeira_tarefa',
+    rotulo: 'Primeira tarefa',
+    paths: ['M5 5h14v14H5z'],
+    cartao: 'Primeira tarefa concluída. Um passo de {cada vez}.',
+    arquivo: 'treinando-saude-mental-primeira-tarefa.jpg',
+  },
+]
+
+export const PATH_ESTRELA = 'M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z'
+
+// Frase da Ana por nível. A de Consciência veio do layout aprovado; as
+// outras são rascunhos aguardando o texto definitivo dela.
+export const FRASES_NIVEL: Record<string, string> = {
+  'Percepção': 'Você começou a se olhar. Perceber é o primeiro movimento.',
+  'Consciência': 'Perceber já era. Agora você nomeia o que sente. É daqui que a mudança parte.',
+  'Reprogramação': 'Você já nomeia o que sente. Agora treina novas respostas para velhos gatilhos.',
+  'Expansão': 'O que você treinou por dentro começa a aparecer por fora: nas escolhas, nos limites, no descanso.',
+}
+
 export function saudacao(hora: number): string {
   if (hora < 12) return 'Bom dia'
   if (hora < 18) return 'Boa tarde'

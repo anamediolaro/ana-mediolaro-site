@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { apiPro } from '../api'
 import { TopoApp } from '../componentes/TopoApp'
 import { Rosto } from '../componentes/Rosto'
-import { rotuloHumor, diaLocal } from '../dados'
+import { rotuloHumor, diaLocal, CONQUISTAS } from '../dados'
 import { exportarPdf } from './pdf'
 
 type RegistroPro = {
@@ -37,6 +37,7 @@ type Perfil = {
   paciente: { id: string; nome: string; arquivado: number; ultimo_acesso_em: string | null }
   estrelas: { total: number; nivel: string }
   totalRegistros: number
+  conquistas: { tipo: string; desbloqueada_em: string }[]
   paraSessao: RegistroPro[]
   resumo: {
     totalRegistros: number
@@ -278,6 +279,15 @@ export function PerfilPaciente({
         Nível {perfil.estrelas.nivel} · <span className="estrela">✦</span> {perfil.estrelas.total}{' '}
         estrelas · {perfil.totalRegistros} registros
       </p>
+      {perfil.conquistas.length > 0 && (
+        <div className="t-tags" style={{ marginTop: 10 }}>
+          {perfil.conquistas.map((c) => (
+            <span key={c.tipo} className="t-tag pessoal">
+              ✦ {CONQUISTAS.find((i) => i.tipo === c.tipo)?.rotulo ?? c.tipo}
+            </span>
+          ))}
+        </div>
+      )}
 
       {perfil.paraSessao.length > 0 && (
         <>
