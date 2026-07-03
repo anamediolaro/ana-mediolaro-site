@@ -1,7 +1,7 @@
 // Gera migrations/seed-demo.sql: dados fictícios para desenvolvimento
 // local e demonstração. Nunca aplicar em produção.
 // Uso: node scripts/gerar-seed.mjs
-import { createHash, randomUUID } from 'node:crypto'
+import { createHash, pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto'
 import { writeFileSync } from 'node:fs'
 
 const TOKEN_DEMO = 'DEMO-TOMIO-2026'
@@ -11,15 +11,24 @@ const hash = (token) => createHash('sha256').update(token).digest('base64url')
 const idPaciente = 'pac-demo-tomio'
 const idNova = 'pac-demo-nova'
 
+// Login local de demonstração: ana.mediolaro@gmail.com / demo-ana-2026
+const SENHA_DEMO = 'demo-ana-2026'
+const sal = randomBytes(16)
+const derivada = pbkdf2Sync(SENHA_DEMO, sal, 100_000, 32, 'sha256')
+const senhaHash = `pbkdf2$100000$${sal.toString('base64url')}$${derivada.toString('base64url')}`
+
 const sql = []
-sql.push(`DELETE FROM evento_estrela; DELETE FROM emocao_pessoal; DELETE FROM registro;
-DELETE FROM pontuacao; DELETE FROM audio; DELETE FROM paciente; DELETE FROM terapeuta;`)
+sql.push(`DELETE FROM evento_estrela; DELETE FROM emocao_pessoal; DELETE FROM anotacao;
+DELETE FROM tarefa; DELETE FROM registro; DELETE FROM pontuacao; DELETE FROM audio;
+DELETE FROM sessao_terapeuta; DELETE FROM login_tentativa; DELETE FROM paciente;
+DELETE FROM terapeuta;`)
 
 sql.push(`INSERT INTO terapeuta (id, nome, email, senha_hash) VALUES
-  ('ter-ana', 'Ana Mediolaro', 'ana.mediolaro@gmail.com', 'definida-na-etapa-2');`)
+  ('ter-ana', 'Ana Mediolaro', 'ana.mediolaro@gmail.com', '${senhaHash}');`)
 
 sql.push(`INSERT INTO paciente (id, nome, token_hash, consentimento_em, criado_em) VALUES
   ('${idPaciente}', 'Tomio Imakuma', '${hash(TOKEN_DEMO)}', datetime('now', '-40 days'), datetime('now', '-40 days')),
+  ('pac-demo-ricardo', 'Ricardo Alves', '${hash('DEMO-RICARDO')}', datetime('now', '-30 days'), datetime('now', '-30 days')),
   ('${idNova}', 'Mariana Costa', '${hash(TOKEN_NOVA)}', NULL, datetime('now'));`)
 
 sql.push(`INSERT INTO audio (id, titulo, emocoes_associadas, chave_r2, duracao_seg) VALUES
@@ -87,7 +96,27 @@ sql.push(`INSERT INTO emocao_pessoal (id, paciente_id, palavra) VALUES
   ('${randomUUID()}', '${idPaciente}', 'Leve');`)
 sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas) VALUES\n${eventos.join(',\n')};`)
 
-const total = registros.length + 4 * 3
+// Ricardo: um registro antigo para a lista mostrar o alerta de silêncio.
+const registroRicardo = randomUUID()
+sql.push(`INSERT INTO registro (id, paciente_id, timestamp, nivel, emocoes, emocoes_livres, atividades, atividade_texto, pensamento, corpo, acao, sono, falar_na_sessao) VALUES
+  ('${registroRicardo}', 'pac-demo-ricardo', '${dia(9)}T20:15:00-03:00', 3, '["Cansado(a)"]', '[]', '["Trabalho"]', NULL, NULL, '[]', NULL, NULL, 0);`)
+sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas) VALUES
+  ('${randomUUID()}', 'pac-demo-ricardo', 'registro', '${registroRicardo}', 1);`)
+sql.push(`INSERT INTO pontuacao (paciente_id, estrelas_total, nivel_atual) VALUES ('pac-demo-ricardo', 1, 'Percepção');`)
+
+// Tarefas terapêuticas: uma respondida (com anotação da Ana) e uma pendente.
+const tarefaRespondida = randomUUID()
+sql.push(`INSERT INTO tarefa (id, paciente_id, titulo, orientacoes, resposta_paciente, respondida_em, anotacao_terapeuta, status, criado_em) VALUES
+  ('${tarefaRespondida}', '${idPaciente}', 'Refletir sobre autoperdão', 'Durante a semana, observe os momentos em que você se cobra por algo que já passou. Anote o que a cobrança diz e o que você diria a um amigo na mesma situação.', 'Percebi que me cobro principalmente à noite, revendo conversas do dia. Para um amigo eu diria que errar uma fala não apaga o resto.', datetime('now', '-3 days'), 'Trouxe a diferença entre autocobrança e responsabilidade. Retomar na próxima sessão com a cena da reunião.', 'respondida', datetime('now', '-6 days')),
+  ('${randomUUID()}', '${idPaciente}', 'Mapa de limites no trabalho', 'Liste três situações desta semana em que você quis dizer não. Não precisa ter dito: só registre o momento, o que sentiu e o que fez.', NULL, NULL, NULL, 'pendente', datetime('now', '-1 days'));`)
+sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas) VALUES
+  ('${randomUUID()}', '${idPaciente}', 'tarefa', '${tarefaRespondida}', 5);`)
+
+// Anotação da terapeuta no registro de hoje (invisível para o paciente).
+sql.push(`INSERT INTO anotacao (id, registro_id, texto) VALUES
+  ('${randomUUID()}', (SELECT id FROM registro WHERE paciente_id = '${idPaciente}' AND falar_na_sessao = 1 LIMIT 1), 'Ligar com a crença "eu preciso dar conta sozinho". Retomar o combinado de pausas.');`)
+
+const total = registros.length + 4 * 3 + 5
 const nivel = total >= 150 ? 'Expansão' : total >= 75 ? 'Reprogramação' : total >= 25 ? 'Consciência' : 'Percepção'
 sql.push(`INSERT INTO pontuacao (paciente_id, estrelas_total, nivel_atual) VALUES ('${idPaciente}', ${total}, '${nivel}');`)
 
