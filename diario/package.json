@@ -1,0 +1,28 @@
+{
+  "name": "diario-das-emocoes",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Diário das Emoções · Ana Mediolaro",
+  "type": "module",
+  "scripts": {
+    "build": "vite build app",
+    "dev": "npm run build && npm run db:local && wrangler dev",
+    "db:local": "wrangler d1 migrations apply DB --local",
+    "db:seed-demo": "node scripts/gerar-seed.mjs && wrangler d1 execute DB --local --file=scripts/seed-demo.sql",
+    "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "^4",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5",
+    "typescript": "^5",
+    "vite": "^7",
+    "wrangler": "^4"
+  }
+}

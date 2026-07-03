@@ -1,0 +1,6 @@
+node_modules/
+app/dist/
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+scripts/seed-demo.sql

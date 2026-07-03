@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diário das Emoções, layout completo v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde:#2A3530;
+    --sage:#5C6B5E;
+    --creme:#F0EBDF;
+    --papel:#FAF8F2;
+    --ouro:#C9A566;
+    --linha:rgba(42,53,48,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--creme);font-family:'Poppins',sans-serif;color:var(--verde);padding:56px 24px 80px}
+  .wrap{max-width:1240px;margin:0 auto}
+
+  .hero{margin-bottom:64px;max-width:760px}
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ouro);font-weight:600;margin-bottom:14px}
+  .hero h1{font-family:'Lora',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1.15}
+  .hero h1 em{color:var(--ouro)}
+  .hero p{font-size:15px;font-weight:300;color:var(--sage);margin-top:16px;line-height:1.6;max-width:560px}
+
+  .secao{margin-top:80px}
+  .secao-num{font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--ouro);font-weight:600}
+  .secao-titulo{font-family:'Lora',serif;font-size:26px;font-weight:600;margin:4px 0 6px}
+  .secao-sub{font-size:14px;font-weight:300;color:var(--sage);margin-bottom:34px;max-width:560px;line-height:1.6}
+
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px 28px}
+
+  .fone-bloco{display:flex;flex-direction:column;align-items:center;gap:16px}
+  .fone{
+    width:280px;height:580px;background:var(--papel);
+    border-radius:38px;border:1.5px solid rgba(42,53,48,.22);
+    box-shadow:0 24px 50px -20px rgba(42,53,48,.28);
+    overflow:hidden;position:relative;flex-shrink:0;
+  }
+  .fone::before{
+    content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);
+    width:80px;height:20px;background:var(--verde);border-radius:12px;z-index:10;opacity:.92;
+  }
+  .fone.story{height:498px;width:280px}
+  .fone.story::before{display:none}
+  .tela{padding:44px 20px 20px;height:100%;display:flex;flex-direction:column;font-size:12px;overflow:hidden}
+  .legenda{text-align:center;max-width:280px}
+  .legenda b{font-family:'Lora',serif;font-size:15px;font-weight:600;display:block}
+  .legenda span{font-size:12px;color:var(--sage);font-weight:300;line-height:1.4;display:block}
+
+  .topo-app{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:12px;border-bottom:1px solid var(--linha);margin-bottom:16px}
+  .marca{font-family:'Lora',serif;font-size:13px;font-weight:600}
+  .marca em{color:var(--ouro);font-weight:500}
+  .data-mini{font-size:9px;color:var(--sage)}
+
+  .t-h1{font-family:'Lora',serif;font-size:19px;font-weight:500;line-height:1.25}
+  .t-h1 em{color:var(--ouro)}
+  .t-sub{font-size:10.5px;color:var(--sage);font-weight:300;line-height:1.55;margin-top:6px}
+  .t-btn{background:var(--verde);color:var(--creme);border-radius:12px;padding:12px;text-align:center;font-size:11px;font-weight:500;margin-top:14px}
+  .t-btn.fantasma{background:none;border:1px solid var(--linha);color:var(--sage)}
+  .t-btn.ouro{background:var(--ouro);color:#fff}
+  .t-input{border:1px solid var(--linha);border-radius:10px;background:#fff;padding:10px 12px;font-size:10px;color:#9aa59c;margin-top:10px}
+  .t-aviso{background:var(--creme);border-radius:10px;padding:10px 12px;font-size:9px;line-height:1.5;color:var(--sage);font-weight:300;margin-top:14px}
+
+  .t-label{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ouro);font-weight:600;margin-top:14px}
+  .t-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .t-chip{border:1px solid var(--linha);background:#fff;border-radius:100px;padding:5px 10px;font-size:9px}
+  .t-chip.sel{background:var(--verde);color:var(--creme);border-color:var(--verde)}
+  .t-chip.pessoal{border-style:dashed;border-color:var(--ouro);color:var(--ouro)}
+
+  .t-progresso{display:flex;gap:4px;margin-bottom:16px}
+  .t-progresso span{flex:1;height:2.5px;border-radius:3px;background:var(--linha)}
+  .t-progresso span.ok{background:var(--ouro)}
+  .t-pergunta{font-family:'Lora',serif;font-size:16px;font-weight:500;line-height:1.3}
+  .t-dica{font-size:9.5px;color:var(--sage);font-weight:300;margin-top:5px;line-height:1.5}
+
+  .escala{display:flex;justify-content:space-between;gap:4px;margin-top:18px}
+  .humor{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+  .rosto{width:34px;height:34px;border-radius:50%;border:1.2px solid var(--linha);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--sage)}
+  .humor.sel .rosto{background:var(--verde);border-color:var(--verde);color:var(--ouro);transform:scale(1.08)}
+  .humor small{font-size:7.5px;color:var(--sage);text-align:center;line-height:1.2}
+  .humor.sel small{color:var(--verde);font-weight:600}
+  .rosto svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round}
+
+  .t-card{background:#fff;border:1px solid var(--linha);border-radius:13px;padding:12px;margin-top:11px}
+  .t-card .linha1{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+  .t-nivel{font-family:'Lora',serif;font-style:italic;font-size:11px;color:var(--ouro);font-weight:600;display:flex;align-items:center;gap:5px}
+  .t-nivel svg{width:14px;height:14px;stroke:var(--ouro);fill:none;stroke-width:1.8;stroke-linecap:round}
+  .t-hora{font-size:8.5px;color:var(--sage)}
+  .t-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+  .t-tag{background:var(--creme);border-radius:100px;padding:3px 8px;font-size:8px;font-weight:500}
+  .t-tag.pessoal{border:1px dashed var(--ouro);background:none;color:var(--ouro)}
+  .t-campo b{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);display:block;margin-top:6px;margin-bottom:2px}
+  .t-campo p{font-size:9.5px;font-weight:300;line-height:1.5}
+  .t-dia{font-family:'Lora',serif;font-size:11px;font-weight:600;margin-top:12px;display:flex;align-items:center;gap:8px}
+  .t-dia::after{content:'';flex:1;height:1px;background:var(--linha)}
+
+  .t-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+  .t-stat{background:#fff;border:1px solid var(--linha);border-radius:12px;padding:10px;text-align:center}
+  .t-stat .n{font-family:'Lora',serif;font-size:18px;font-weight:600}
+  .t-stat .l{font-size:7.5px;color:var(--sage);margin-top:1px}
+
+  .nav-app{margin-top:auto;border-top:1px solid var(--linha);display:flex;padding-top:9px}
+  .nav-app div{flex:1;text-align:center;font-size:7.5px;color:var(--sage);display:flex;flex-direction:column;align-items:center;gap:3px}
+  .nav-app div.on{color:var(--verde);font-weight:600}
+  .nav-app div.on::after{content:'';width:3px;height:3px;border-radius:50%;background:var(--ouro)}
+  .nav-app svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+  /* calendário */
+  .cal{background:#fff;border:1px solid var(--linha);border-radius:13px;padding:12px;margin-top:12px}
+  .cal b{font-family:'Lora',serif;font-size:11px;font-weight:600;display:block;margin-bottom:8px}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-grid i{font-style:normal;font-size:7px;color:var(--sage);text-align:center}
+  .cal-dia{aspect-ratio:1;border-radius:6px;background:var(--creme);display:flex;align-items:center;justify-content:center;font-size:7.5px;color:var(--sage)}
+  .h1c{background:#8a9187;color:#fff}
+  .h2c{background:#a8ab98;color:#fff}
+  .h3c{background:#c3bda4;color:var(--verde)}
+  .h4c{background:#d5bc8a;color:var(--verde)}
+  .h5c{background:var(--ouro);color:#fff}
+
+  /* estrelas e conquistas */
+  .estrela{color:var(--ouro)}
+  .nivel-box{background:var(--verde);border-radius:14px;padding:14px;color:var(--creme);margin-top:12px}
+  .nivel-box .nm{font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--ouro)}
+  .nivel-box .trilho{height:5px;background:rgba(240,235,223,.2);border-radius:5px;margin-top:8px;overflow:hidden}
+  .nivel-box .pr{height:100%;background:var(--ouro);border-radius:5px}
+  .nivel-box small{font-size:8px;opacity:.75;display:block;margin-top:5px}
+  .medalhas{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+  .medalha{background:#fff;border:1px solid var(--linha);border-radius:12px;padding:10px 6px;text-align:center}
+  .medalha.off{opacity:.35}
+  .medalha .ico{width:30px;height:30px;border-radius:50%;border:1.3px solid var(--ouro);margin:0 auto 5px;display:flex;align-items:center;justify-content:center;color:var(--ouro)}
+  .medalha .ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .medalha span{font-size:7.5px;font-weight:500;line-height:1.2;display:block}
+
+  /* chat RPD */
+  .chat{flex:1;display:flex;flex-direction:column;gap:7px;margin-top:10px;overflow:hidden}
+  .balao{max-width:85%;border-radius:12px;padding:8px 11px;font-size:9.5px;line-height:1.5;font-weight:300}
+  .balao.bot{background:#fff;border:1px solid var(--linha);align-self:flex-start;border-bottom-left-radius:4px}
+  .balao.user{background:var(--verde);color:var(--creme);align-self:flex-end;border-bottom-right-radius:4px}
+  .etapa-tag{font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--ouro);font-weight:600;align-self:flex-start;margin-top:3px}
+  .aviso-ia{font-size:7.5px;color:var(--sage);text-align:center;font-weight:300;padding:6px 0;border-top:1px solid var(--linha);margin-top:auto}
+
+  /* apoio */
+  .apoio-item{background:#fff;border:1px solid var(--linha);border-radius:13px;padding:13px 14px;margin-top:9px;display:flex;align-items:center;gap:10px}
+  .apoio-item .ico{width:32px;height:32px;border-radius:50%;background:var(--creme);display:flex;align-items:center;justify-content:center;color:var(--sage);flex-shrink:0}
+  .apoio-item .ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round}
+  .apoio-item b{font-family:'Lora',serif;font-size:11.5px;font-weight:600;display:block}
+  .apoio-item small{font-size:8.5px;color:var(--sage);font-weight:300}
+
+  .grounding-num{font-family:'Lora',serif;font-size:64px;font-weight:500;color:var(--ouro);text-align:center;margin-top:30px;line-height:1}
+  .grounding-txt{font-family:'Lora',serif;font-size:16px;text-align:center;margin-top:8px;line-height:1.35}
+  .grounding-sub{font-size:9.5px;color:var(--sage);text-align:center;font-weight:300;margin-top:8px;line-height:1.5}
+
+  /* protocolo */
+  .prot-num{font-family:'Lora',serif;font-size:34px;font-weight:600;letter-spacing:.02em}
+  .prot-card{background:#fff;border:1px solid var(--linha);border-radius:13px;padding:14px;margin-top:10px;text-align:center}
+  .prot-card small{font-size:8.5px;color:var(--sage);display:block;margin-top:2px;font-weight:300}
+
+  /* story compartilhável */
+  .story-inner{height:100%;background:var(--verde);color:var(--creme);display:flex;flex-direction:column;padding:30px 24px;position:relative}
+  .story-inner .selo{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ouro);font-weight:600}
+  .story-inner .grande{font-family:'Lora',serif;font-size:26px;font-weight:500;line-height:1.3;margin-top:auto}
+  .story-inner .grande em{color:var(--ouro)}
+  .story-inner .rodape{margin-top:auto;padding-top:20px;border-top:1px solid rgba(240,235,223,.2);font-size:8.5px;font-weight:300;opacity:.85}
+  .story-inner .medalha-story{width:56px;height:56px;border-radius:50%;border:1.5px solid var(--ouro);display:flex;align-items:center;justify-content:center;color:var(--ouro);margin-top:26px}
+  .story-inner .medalha-story svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round}
+
+  /* celebração */
+  .celebra{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 18px}
+  .celebra .circulo{width:80px;height:80px;border-radius:50%;border:1.5px solid var(--ouro);display:flex;align-items:center;justify-content:center;color:var(--ouro);margin-bottom:18px}
+  .celebra .circulo svg{width:36px;height:36px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round}
+
+  .t-paciente{background:#fff;border:1px solid var(--linha);border-radius:12px;padding:11px 13px;margin-top:9px;display:flex;justify-content:space-between;align-items:center}
+  .t-paciente .nm{font-family:'Lora',serif;font-size:12px;font-weight:600}
+  .t-paciente .mt{font-size:8px;color:var(--sage);margin-top:1px}
+  .t-anotacao{background:#FBF6EC;border:1px dashed var(--ouro);border-radius:10px;padding:8px 10px;margin-top:7px}
+  .t-anotacao b{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ouro);display:block;margin-bottom:2px}
+  .t-anotacao p{font-size:9px;font-style:italic;font-family:'Lora',serif;line-height:1.5}
+  .destaque-sessao{border-left:3px solid var(--ouro)}
+  .flag-sessao{display:inline-flex;align-items:center;gap:4px;font-size:7.5px;font-weight:600;color:var(--ouro);letter-spacing:.08em;text-transform:uppercase}
+
+  .nota-final{margin-top:90px;max-width:660px}
+  .nota-final h2{font-family:'Lora',serif;font-size:22px;font-weight:600;margin-bottom:10px}
+  .nota-final p{font-size:14px;font-weight:300;color:var(--sage);line-height:1.7}
+  .nota-final em{font-family:'Lora',serif;color:var(--verde)}
+
+  @media(max-width:660px){
+    body{padding:40px 14px 60px}
+    .grade{grid-template-columns:1fr;justify-items:center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Layout completo v2 · para aprovação antes do Claude Code</div>
+    <h1>Diário das <em>Emoções</em></h1>
+    <p>Tudo que entrou no brief até agora, tela por tela: check-in, emoções com as palavras do paciente, calendário, recompensas, cartão compartilhável, apoio imediato, assistente de RPD e o protocolo de segurança.</p>
+  </div>
+
+  <!-- ================= BLOCO 1 ================= -->
+  <div class="secao">
+    <div class="secao-num">Bloco 1</div>
+    <div class="secao-titulo">Fluxo do paciente</div>
+    <div class="secao-sub">O dia a dia: registrar, olhar o histórico, enxergar padrões. Agora com o botão de apoio na home e as palavras do próprio paciente nas emoções.</div>
+
+    <div class="grade">
+
+      <!-- home v2 -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">2 de julho</span></div>
+          <div class="t-h1">Boa tarde, <em>Tomio</em>.</div>
+          <p class="t-sub">Como você está agora? Não existe resposta certa. Existe a sua.</p>
+          <div class="t-btn">Registrar como me sinto</div>
+          <div class="t-btn fantasma">Preciso de apoio agora</div>
+          <div class="t-label" style="margin-top:16px">Último registro</div>
+          <div class="t-card">
+            <div class="linha1">
+              <span class="t-nivel"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="9.5" r="0.7" fill="currentColor"/><circle cx="15" cy="9.5" r="0.7" fill="currentColor"/><path d="M7 14 q5 4 10 0"/></svg> Muito bem</span>
+              <span class="t-hora">17:01</span>
+            </div>
+            <div class="t-tags"><span class="t-tag">Alegre</span><span class="t-tag pessoal">Leve</span></div>
+          </div>
+          <div class="nav-app">
+            <div class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+            <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Histórico</div>
+            <div><svg viewBox="0 0 24 24"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-8"/></svg>Padrões</div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg>Estrelas</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Início</b><span>botão de apoio sempre visível, acima da dobra</span></div>
+      </div>
+
+      <!-- emoções v2 com palavras próprias -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">passo 2 de 6</span></div>
+          <div class="t-progresso"><span class="ok"></span><span class="ok"></span><span></span><span></span><span></span><span></span></div>
+          <div class="t-pergunta">Que emoções estão presentes?</div>
+          <p class="t-dica">Pode marcar mais de uma. Emoções contraditórias convivem, isso é normal.</p>
+          <div class="t-label">Agradáveis</div>
+          <div class="t-chips"><span class="t-chip">Calmo</span><span class="t-chip sel">Aliviado</span><span class="t-chip">Grato</span><span class="t-chip">Confiante</span></div>
+          <div class="t-label">Desagradáveis</div>
+          <div class="t-chips"><span class="t-chip sel">Ansioso</span><span class="t-chip">Triste</span><span class="t-chip sel">Sobrecarregado</span><span class="t-chip">Culpado</span></div>
+          <div class="t-label">Suas palavras</div>
+          <div class="t-chips"><span class="t-chip pessoal">Engolido</span><span class="t-chip pessoal">No limite</span></div>
+          <div class="t-input">Não achou a palavra? Escreva a sua.</div>
+          <div style="display:flex;gap:8px;margin-top:auto">
+            <div class="t-btn fantasma" style="flex:1;margin-top:0">Voltar</div>
+            <div class="t-btn" style="flex:1;margin-top:0">Continuar</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Emoções + suas palavras</b><span>o que ele escreve vira chip pessoal dele</span></div>
+      </div>
+
+      <!-- pós-registro: áudio -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">registro salvo</span></div>
+          <div style="margin-top:26px;text-align:center">
+            <div class="rosto" style="width:46px;height:46px;margin:0 auto"><svg viewBox="0 0 24 24" style="width:26px;height:26px"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="10.5" r="0.7" fill="currentColor"/><circle cx="15" cy="10.5" r="0.7" fill="currentColor"/><path d="M8 15.5 q4 -2 8 0"/></svg></div>
+          </div>
+          <div class="t-h1" style="text-align:center;margin-top:14px">Registrado. Obrigada por <em>se olhar</em>.</div>
+          <p class="t-sub" style="text-align:center">Você marcou ansiedade. Quer 4 minutos de respiração comigo antes de voltar para o dia?</p>
+          <div class="t-card" style="display:flex;align-items:center;gap:10px">
+            <div class="apoio-item" style="border:none;padding:0;margin:0;background:none">
+              <div class="ico"><svg viewBox="0 0 24 24"><polygon points="9 6 18 12 9 18" /></svg></div>
+              <div><b>Respiração para ansiedade</b><small>Ana Mediolaro · 4 min</small></div>
+            </div>
+          </div>
+          <div class="t-btn ouro">Ouvir agora</div>
+          <div class="t-btn fantasma">Agora não</div>
+          <p class="t-sub" style="text-align:center;font-size:8.5px;margin-top:14px">Sugestão opcional. Nenhum ponto se perde ao pular.</p>
+        </div></div>
+        <div class="legenda"><b>Fechar o ciclo</b><span>humor baixo oferece um áudio seu, mapeado pela emoção</span></div>
+      </div>
+
+      <!-- histórico com flag sessão -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">2 de julho</span></div>
+          <div class="t-h1">Seu <em>histórico</em></div>
+          <div class="t-dia">Hoje</div>
+          <div class="t-card destaque-sessao">
+            <div class="linha1">
+              <span class="t-nivel"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="10.5" r="0.7" fill="currentColor"/><circle cx="15" cy="10.5" r="0.7" fill="currentColor"/><path d="M7 16 q5 -4 10 0"/></svg> Muito mal</span>
+              <span class="t-hora">08:12</span>
+            </div>
+            <div class="t-tags"><span class="t-tag">Ansioso</span><span class="t-tag pessoal">Engolido</span></div>
+            <div class="t-campo"><b>Pensamento</b><p>Se eu recusar o projeto vão achar que não dou conta.</p></div>
+            <span class="flag-sessao">✦ Quero falar disso na sessão</span>
+          </div>
+          <div class="t-dia">Ontem</div>
+          <div class="t-card">
+            <div class="linha1">
+              <span class="t-nivel"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="10" r="0.7" fill="currentColor"/><circle cx="15" cy="10" r="0.7" fill="currentColor"/><path d="M8 14.5 q4 2.5 8 0"/></svg> Bem</span>
+              <span class="t-hora">19:40</span>
+            </div>
+            <div class="t-tags"><span class="t-tag">Aliviado</span></div>
+          </div>
+          <div class="nav-app">
+            <div><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+            <div class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Histórico</div>
+            <div><svg viewBox="0 0 24 24"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-8"/></svg>Padrões</div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg>Estrelas</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Histórico + flag de sessão</b><span>registro marcado ganha borda dourada e chega destacado para você</span></div>
+      </div>
+
+      <!-- padrões com calendário -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">2 de julho</span></div>
+          <div class="t-h1">Seus <em>padrões</em></div>
+          <p class="t-sub">O que se repete tem algo a dizer.</p>
+          <div class="cal">
+            <b>Julho, colorido pelo seu humor</b>
+            <div class="cal-grid">
+              <i>S</i><i>T</i><i>Q</i><i>Q</i><i>S</i><i>S</i><i>D</i>
+              <span class="cal-dia h3c">1</span><span class="cal-dia h4c">2</span><span class="cal-dia">3</span><span class="cal-dia">4</span><span class="cal-dia">5</span><span class="cal-dia">6</span><span class="cal-dia">7</span>
+              <span class="cal-dia h2c">8</span><span class="cal-dia h2c">9</span><span class="cal-dia h3c">10</span><span class="cal-dia">11</span><span class="cal-dia h4c">12</span><span class="cal-dia h5c">13</span><span class="cal-dia">14</span>
+              <span class="cal-dia h3c">15</span><span class="cal-dia h1c">16</span><span class="cal-dia h2c">17</span><span class="cal-dia h3c">18</span><span class="cal-dia h4c">19</span><span class="cal-dia">20</span><span class="cal-dia h4c">21</span>
+            </div>
+          </div>
+          <div class="t-stats">
+            <div class="t-stat"><div class="n">7</div><div class="l">melhor sequência de dias</div></div>
+            <div class="t-stat"><div class="n">3,4</div><div class="l">humor médio do mês</div></div>
+          </div>
+          <div class="nav-app">
+            <div><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+            <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Histórico</div>
+            <div class="on"><svg viewBox="0 0 24 24"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-8"/></svg>Padrões</div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg>Estrelas</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Padrões + calendário</b><span>do sage ao dourado, sem vermelho de alerta em dia ruim</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= BLOCO 2 ================= -->
+  <div class="secao">
+    <div class="secao-num">Bloco 2</div>
+    <div class="secao-titulo">Recompensas</div>
+    <div class="secao-sub">Estrela por comportamento, nunca por humor. A única competição é do paciente com ele mesmo. E o cartão que ele pode postar divulga o app sem expor ninguém.</div>
+
+    <div class="grade">
+
+      <!-- tela estrelas -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">2 de julho</span></div>
+          <div class="t-h1">Suas <em>estrelas</em></div>
+          <div class="nivel-box">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span class="nm">Consciência</span>
+              <span style="font-size:11px"><span class="estrela">✦</span> 58</span>
+            </div>
+            <div class="trilho"><div class="pr" style="width:66%"></div></div>
+            <small>17 estrelas para o nível Reprogramação</small>
+          </div>
+          <div class="t-label">Conquistas</div>
+          <div class="medalhas">
+            <div class="medalha"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div><span>Primeiro registro</span></div>
+            <div class="medalha"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20 Q12 4 20 20"/><circle cx="12" cy="9" r="1.4"/></svg></div><span>Semana com 3 registros</span></div>
+            <div class="medalha"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 20V8"/><path d="M7 13l5-5 5 5"/></svg></div><span>Você voltou</span></div>
+            <div class="medalha"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/></svg></div><span>Primeira palavra sua</span></div>
+            <div class="medalha off"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div><span>30 registros</span></div>
+            <div class="medalha off"><div class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/></svg></div><span>Primeira tarefa</span></div>
+          </div>
+          <div class="nav-app">
+            <div><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+            <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Histórico</div>
+            <div><svg viewBox="0 0 24 24"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-8"/></svg>Padrões</div>
+            <div class="on"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg>Estrelas</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Estrelas e conquistas</b><span>medalha "Você voltou" recompensa o retorno, não pune a ausência</span></div>
+      </div>
+
+      <!-- celebração de nível -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="celebra">
+            <div class="circulo"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg></div>
+            <div class="t-h1" style="font-size:22px">Você chegou à <em>Consciência</em>.</div>
+            <p class="t-sub" style="margin-top:10px">Perceber já era. Agora você nomeia o que sente. É daqui que a mudança parte.</p>
+            <div class="t-btn" style="width:100%;margin-top:24px">Continuar</div>
+            <div class="t-btn fantasma" style="width:100%">Compartilhar conquista</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Celebração de nível</b><span>sóbria, com uma frase sua por nível</span></div>
+      </div>
+
+      <!-- cartão compartilhável -->
+      <div class="fone-bloco">
+        <div class="fone story"><div class="story-inner">
+          <span class="selo">Diário das Emoções</span>
+          <div class="medalha-story"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5-5-2.8-5 2.8 1-5.5-4-4 5.5-1z"/></svg></div>
+          <div class="grande">30 dias treinando<br>minha <em>saúde mental</em>.</div>
+          <div class="rodape">Diário das Emoções · Ana Mediolaro<br>@anamediolaro.oficial</div>
+        </div></div>
+        <div class="legenda"><b>Cartão compartilhável (story)</b><span>zero dado clínico, o paciente decide se posta</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= BLOCO 3 ================= -->
+  <div class="secao">
+    <div class="secao-num">Bloco 3</div>
+    <div class="secao-titulo">Apoio entre sessões</div>
+    <div class="secao-sub">Camada 1 sem IA: técnicas que funcionam offline. Camada 2 com IA de trilho único: o assistente de RPD. E acima de tudo, o protocolo de segurança.</div>
+
+    <div class="grade">
+
+      <!-- menu apoio -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Diário das <em>Emoções</em></span><span class="data-mini">apoio</span></div>
+          <div class="t-h1">Estou aqui. Vamos <em>um passo</em> de cada vez.</div>
+          <p class="t-sub">Escolha o que faz sentido agora. Não precisa estar em crise para usar.</p>
+          <div class="apoio-item">
+            <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+            <div><b>Respiração guiada</b><small>áudio da Ana · 4 min</small></div>
+          </div>
+          <div class="apoio-item">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></div>
+            <div><b>Grounding 5-4-3-2-1</b><small>voltar para o presente · 3 min</small></div>
+          </div>
+          <div class="apoio-item">
+            <div class="ico"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></div>
+            <div><b>Técnica STOP</b><small>pare, respire, observe, prossiga</small></div>
+          </div>
+          <div class="apoio-item">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/><path d="M17 14l2 2 4-4" transform="scale(0.8) translate(4 4)"/></svg></div>
+            <div><b>Examinar um pensamento</b><small>assistente guiado, passo a passo</small></div>
+          </div>
+          <div class="t-aviso">Se você estiver pensando em se machucar, toque aqui. Tem gente de verdade pronta para te ouvir agora.</div>
+        </div></div>
+        <div class="legenda"><b>Preciso de apoio agora</b><span>menu fixo, funciona offline, acesso direto ao protocolo</span></div>
+      </div>
+
+      <!-- grounding -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Grounding <em>5-4-3-2-1</em></span><span class="data-mini">2 de 5</span></div>
+          <div class="grounding-num">4</div>
+          <div class="grounding-txt">coisas que você<br>consegue tocar</div>
+          <p class="grounding-sub">A mesa. A roupa. O próprio braço.<br>Toque devagar, uma de cada vez.</p>
+          <div style="margin-top:auto">
+            <div class="t-btn">Toquei nas 4</div>
+            <div class="t-btn fantasma">Sair da técnica</div>
+          </div>
+        </div></div>
+        <div class="legenda"><b>Técnica guiada</b><span>uma instrução por tela, ritmo do paciente</span></div>
+      </div>
+
+      <!-- assistente RPD -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Examinar um <em>pensamento</em></span><span class="data-mini">etapa 4 de 7</span></div>
+          <div class="chat">
+            <span class="etapa-tag">Pensamento automático</span>
+            <div class="balao user">Se eu recusar o projeto vão achar que não dou conta.</div>
+            <span class="etapa-tag">Evidências a favor</span>
+            <div class="balao bot">Entendi. Agora vamos olhar esse pensamento de perto. Que fatos concretos você tem de que recusar um projeto fez alguém te ver como incapaz?</div>
+            <div class="balao user">Nenhum na real. Já recusei uma vez em 2023 e nada aconteceu.</div>
+            <div class="balao bot">Isso é um dado importante. Guarde ele. E existe alguma evidência do contrário: alguém que recusou algo e continuou respeitado?</div>
+            <div class="t-input" style="margin-top:4px">Escreva aqui...</div>
+          </div>
+          <div class="aviso-ia">Assistente do app. Não substitui a sua psicóloga.</div>
+        </div></div>
+        <div class="legenda"><b>Assistente de RPD</b><span>um trilho só: o registro de pensamento, com roteiro seu</span></div>
+      </div>
+
+      <!-- protocolo -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Você não está <em>sozinho</em></span></div>
+          <div class="t-h1" style="margin-top:10px">Agora é hora de falar com <em>uma pessoa</em>.</div>
+          <p class="t-sub">O que você está sentindo merece cuidado de verdade, em tempo real. Esses canais funcionam agora:</p>
+          <div class="prot-card">
+            <div class="prot-num">188</div>
+            <small>CVV · conversa por telefone e chat, 24 horas, gratuito</small>
+          </div>
+          <div class="prot-card">
+            <div class="prot-num">192</div>
+            <small>SAMU · emergência médica</small>
+          </div>
+          <div class="t-btn">Ligar para o CVV agora</div>
+          <div class="t-btn fantasma">Mensagem para a Dra. Ana</div>
+          <p class="t-sub" style="font-size:8px;text-align:center;margin-top:10px">A mensagem fica registrada. O app não é canal de emergência e a resposta pode não ser imediata.</p>
+        </div></div>
+        <div class="legenda"><b>Protocolo de segurança</b><span>o assistente para, a tela vira caminho para humanos</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= BLOCO 4 ================= -->
+  <div class="secao">
+    <div class="secao-num">Bloco 4</div>
+    <div class="secao-titulo">Sua área</div>
+    <div class="secao-sub">O que mudou: registros marcados para a sessão chegam no topo, estrelas e nível do paciente visíveis, e RPDs concluídos prontos para revisão.</div>
+
+    <div class="grade">
+
+      <!-- lista -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Área <em>profissional</em></span><span class="data-mini">Ana Mediolaro</span></div>
+          <div class="t-h1">Seus <em>pacientes</em></div>
+          <div class="t-paciente destaque-sessao"><div><div class="nm">Tomio Imakuma</div><div class="mt">✦ 1 registro para a sessão · RPD novo</div></div><span style="color:var(--ouro)">›</span></div>
+          <div class="t-paciente"><div><div class="nm">Mariana Costa</div><div class="mt">último registro ontem · humor 2,8</div></div><span style="color:var(--ouro)">›</span></div>
+          <div class="t-paciente"><div><div class="nm"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ouro);margin-right:5px"></span>Ricardo Alves</div><div class="mt">sem registrar há 9 dias</div></div><span style="color:var(--ouro)">›</span></div>
+          <div class="t-btn fantasma" style="margin-top:14px">+ Convidar novo paciente</div>
+        </div></div>
+        <div class="legenda"><b>Lista de pacientes</b><span>quem marcou algo para a sessão sobe com borda dourada</span></div>
+      </div>
+
+      <!-- perfil v2 -->
+      <div class="fone-bloco">
+        <div class="fone"><div class="tela">
+          <div class="topo-app"><span class="marca">Área <em>profissional</em></span><span class="data-mini">← Pacientes</span></div>
+          <div class="t-h1">Tomio <em>Imakuma</em></div>
+          <p class="t-sub">Nível Consciência · <span class="estrela">✦</span> 58 estrelas · 23 registros</p>
+          <div class="t-label">Para a próxima sessão</div>
+          <div class="t-card destaque-sessao">
+            <div class="linha1">
+              <span class="t-nivel"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="10.5" r="0.7" fill="currentColor"/><circle cx="15" cy="10.5" r="0.7" fill="currentColor"/><path d="M7 16 q5 -4 10 0"/></svg> Muito mal</span>
+              <span class="t-hora">hoje 08:12</span>
+            </div>
+            <div class="t-campo"><b>Pensamento</b><p>Se eu recusar o projeto vão achar que não dou conta.</p></div>
+            <div class="t-anotacao"><b>Minha anotação</b><p>Ligar com a crença "eu preciso dar conta sozinho". Trazer o RPD de ontem.</p></div>
+          </div>
+          <div class="t-label">RPD concluído ontem</div>
+          <div class="t-card">
+            <div class="t-campo"><b>Pensamento examinado</b><p>"Recusar = incapaz" · intensidade caiu de 85 para 40</p></div>
+          </div>
+          <div class="t-btn fantasma" style="margin-top:10px">Exportar PDF do período</div>
+        </div></div>
+        <div class="legenda"><b>Perfil do paciente v2</b><span>o que ele quer trazer, o RPD que ele fez, tudo antes da sessão</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nota-final">
+    <h2>Pronto para o Code</h2>
+    <p>Este layout mais o brief são o pacote completo. O Code constrói na ordem: <em>fluxo do paciente</em>, depois <em>sua área</em>, depois recompensas, depois o apoio com IA. Aprovou aqui, não muda lá. Mudança de rota no meio da obra é onde projeto de app atrasa e encarece.</p>
+  </div>
+
+</div>
+</body>
+</html>
