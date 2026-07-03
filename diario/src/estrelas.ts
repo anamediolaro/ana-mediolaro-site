@@ -47,6 +47,25 @@ async function consolidar(db: D1Database, pacienteId: string) {
   return { total, nivel: atual.nome }
 }
 
+// RPD concluído vale 3 estrelas: comportamento, não resultado.
+export async function premiarRpd(db: D1Database, pacienteId: string, rpdId: string) {
+  const antes = await db
+    .prepare('SELECT estrelas_total FROM pontuacao WHERE paciente_id = ?')
+    .bind(pacienteId)
+    .first<{ estrelas_total: number }>()
+  await db
+    .prepare(
+      `INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas)
+       VALUES (?, ?, 'rpd', ?, 3)
+       ON CONFLICT(paciente_id, origem, referencia_id) DO NOTHING`
+    )
+    .bind(crypto.randomUUID(), pacienteId, rpdId)
+    .run()
+  const { total, nivel } = await consolidar(db, pacienteId)
+  const nivelAntes = nivelPorEstrelas(antes?.estrelas_total ?? 0).atual.nome
+  return { total, nivel, subiuDeNivel: nivel !== nivelAntes }
+}
+
 // Tarefa concluída vale 5 estrelas, uma vez só por tarefa.
 export async function premiarTarefa(db: D1Database, pacienteId: string, tarefaId: string) {
   const antes = await db

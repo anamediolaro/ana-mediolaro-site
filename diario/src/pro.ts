@@ -139,13 +139,34 @@ pro.get('/pacientes', async (c) => {
                 AND substr(r.timestamp, 1, 10) >= date('now', '-30 days')) AS humor_medio_30d,
             (SELECT COUNT(*) FROM registro r
               WHERE r.paciente_id = p.id AND r.falar_na_sessao = 1
-                AND r.flag_resolvida_em IS NULL) AS para_sessao
+                AND r.flag_resolvida_em IS NULL) AS para_sessao,
+            (SELECT COUNT(*) FROM rpd
+              WHERE rpd.paciente_id = p.id AND rpd.concluido = 1
+                AND rpd.revisado_em IS NULL) AS rpd_novos,
+            (SELECT COUNT(*) FROM evento_risco e
+              WHERE e.paciente_id = p.id AND e.notificada_terapeuta = 0) AS riscos_novos,
+            (SELECT COUNT(*) FROM mensagem_protocolo m
+              WHERE m.paciente_id = p.id AND m.lida = 0) AS mensagens_novas
      FROM paciente p WHERE p.arquivado = ?
-     ORDER BY para_sessao DESC, ultimo_registro DESC NULLS LAST`
+     ORDER BY riscos_novos DESC, para_sessao DESC, rpd_novos DESC, ultimo_registro DESC NULLS LAST`
   )
     .bind(arquivados ? 1 : 0)
     .all()
   return c.json({ pacientes: pacientes.results ?? [] })
+})
+
+// Contato de emergência exibido no protocolo de segurança do paciente.
+pro.patch('/configuracoes', async (c) => {
+  const terapeuta = c.get('terapeuta')
+  const corpo = await c.req
+    .json<{ contatoEmergencia?: string }>()
+    .catch(() => ({}) as { contatoEmergencia?: string })
+  if (typeof corpo.contatoEmergencia !== 'string')
+    return c.json({ erro: 'dados_incompletos' }, 400)
+  await c.env.DB.prepare(`UPDATE terapeuta SET contato_emergencia = ? WHERE id = ?`)
+    .bind(corpo.contatoEmergencia.trim() || null, terapeuta.id)
+    .run()
+  return c.json({ ok: true })
 })
 
 // Convite: o link completo aparece uma vez; no banco fica só o hash.
@@ -226,6 +247,33 @@ pro.get('/pacientes/:id', async (c) => {
     .bind(id)
     .all()
 
+  // RPDs concluídos, com a queda de intensidade, para revisão antes da
+  // sessão. Eventos de risco e mensagens do protocolo, mais recentes
+  // primeiro.
+  const rpds = await c.env.DB.prepare(
+    `SELECT id, situacao, emocao, intensidade_inicial, pensamento_automatico,
+            evidencias_favor, evidencias_contra, pensamento_alternativo,
+            intensidade_final, revisado_em, criado_em
+     FROM rpd WHERE paciente_id = ? AND concluido = 1
+     ORDER BY criado_em DESC LIMIT 20`
+  )
+    .bind(id)
+    .all()
+
+  const riscos = await c.env.DB.prepare(
+    `SELECT id, timestamp, origem, notificada_terapeuta FROM evento_risco
+     WHERE paciente_id = ? ORDER BY timestamp DESC LIMIT 20`
+  )
+    .bind(id)
+    .all()
+
+  const mensagens = await c.env.DB.prepare(
+    `SELECT id, texto, criado_em, lida FROM mensagem_protocolo
+     WHERE paciente_id = ? ORDER BY criado_em DESC LIMIT 20`
+  )
+    .bind(id)
+    .all()
+
   const estrelas = pontos?.estrelas_total ?? 0
   return c.json({
     paciente,
@@ -233,8 +281,73 @@ pro.get('/pacientes/:id', async (c) => {
     totalRegistros: total?.n ?? 0,
     conquistas: conquistas.results ?? [],
     paraSessao: paraSessao.results ?? [],
+    rpds: rpds.results ?? [],
+    riscos: riscos.results ?? [],
+    mensagens: mensagens.results ?? [],
     resumo: await resumoPeriodo(c.env.DB, id, desde),
   })
+})
+
+// A Ana marca o RPD como revisado: sai do selo "RPD novo" sem apagar nada.
+pro.patch('/rpd/:id/revisado', async (c) => {
+  const resultado = await c.env.DB.prepare(
+    `UPDATE rpd SET revisado_em = datetime('now') WHERE id = ? AND concluido = 1 AND revisado_em IS NULL`
+  )
+    .bind(c.req.param('id'))
+    .run()
+  if (!resultado.meta.changes) return c.json({ erro: 'nao_encontrado' }, 404)
+  return c.json({ ok: true })
+})
+
+pro.patch('/riscos/:id/visto', async (c) => {
+  const resultado = await c.env.DB.prepare(
+    `UPDATE evento_risco SET notificada_terapeuta = 1 WHERE id = ?`
+  )
+    .bind(c.req.param('id'))
+    .run()
+  if (!resultado.meta.changes) return c.json({ erro: 'nao_encontrado' }, 404)
+  return c.json({ ok: true })
+})
+
+pro.patch('/mensagens/:id/lida', async (c) => {
+  const resultado = await c.env.DB.prepare(
+    `UPDATE mensagem_protocolo SET lida = 1 WHERE id = ?`
+  )
+    .bind(c.req.param('id'))
+    .run()
+  if (!resultado.meta.changes) return c.json({ erro: 'nao_encontrado' }, 404)
+  return c.json({ ok: true })
+})
+
+// Push da terapeuta: alertas de risco chegam no aparelho dela.
+pro.get('/push/chave', (c) =>
+  c.json({ chavePublica: c.env.VAPID_PUBLIC_KEY ?? null })
+)
+
+pro.post('/push/inscrever', async (c) => {
+  const terapeuta = c.get('terapeuta')
+  const corpo = await c.req
+    .json<{ endpoint?: string; p256dh?: string; auth?: string }>()
+    .catch(() => ({}) as { endpoint?: string; p256dh?: string; auth?: string })
+  if (!corpo.endpoint || !corpo.p256dh || !corpo.auth)
+    return c.json({ erro: 'dados_incompletos' }, 400)
+  await c.env.DB.prepare(
+    `INSERT INTO push_subscription (id, terapeuta_id, endpoint, chave_p256dh, chave_auth)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(endpoint) DO UPDATE SET terapeuta_id = ?, chave_p256dh = ?, chave_auth = ?`
+  )
+    .bind(
+      crypto.randomUUID(),
+      terapeuta.id,
+      corpo.endpoint,
+      corpo.p256dh,
+      corpo.auth,
+      terapeuta.id,
+      corpo.p256dh,
+      corpo.auth
+    )
+    .run()
+  return c.json({ ok: true })
 })
 
 // Linha do tempo completa com as anotações da terapeuta (só ela vê).

@@ -22,5 +22,15 @@
       // funciona para desenvolvimento local.
       "database_id": "00000000-0000-0000-0000-000000000000"
     }
-  ]
+  ],
+  "triggers": {
+    // Lembretes dos pacientes: o Worker acorda a cada 15 minutos e envia
+    // os push configurados para aquele horário.
+    "crons": ["*/15 * * * *"]
+  }
+  // Quando os áudios da Ana estiverem prontos (ver DEPLOY.md), criar o
+  // bucket e descomentar:
+  // ,"r2_buckets": [
+  //   { "binding": "AUDIOS", "bucket_name": "diario-audios" }
+  // ]
 }

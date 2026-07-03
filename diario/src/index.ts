@@ -1,10 +1,18 @@
 import { Hono } from 'hono'
 import type { Env, Vars } from './tipos'
 import { exigePaciente, pacientePorToken } from './auth'
-import { premiarRegistro, premiarTarefa, nivelPorEstrelas } from './estrelas'
+import { premiarRegistro, premiarTarefa, premiarRpd, nivelPorEstrelas } from './estrelas'
 import { verificarConquistasDeRegistro, verificarConquistaDeTarefa } from './conquistas'
 import { calcularPadroes } from './padroes'
 import { pro } from './pro'
+import {
+  ETAPAS,
+  conduzirEtapa,
+  detectarRiscoPorPalavras,
+  registrarEventoRisco,
+  type TurnoHistorico,
+} from './rpd'
+import { dispararLembretes, notificarTerapeutaRisco } from './push'
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>()
 
@@ -116,6 +124,7 @@ api.get('/eu', async (c) => {
 
   return c.json({
     nome: paciente.nome,
+    consentiuIa: Boolean(paciente.consentimento_ia_em),
     tarefasPendentes: tarefas?.n ?? 0,
     conquistas: conquistas.results ?? [],
     consentiu: Boolean(paciente.consentimento_em),
@@ -349,9 +358,238 @@ api.get('/padroes', async (c) => {
   return c.json(await calcularPadroes(c.env.DB, paciente.id, mes))
 })
 
+// ---------------------------------------------------------------------------
+// Assistente de RPD. Consentimento explícito antes do primeiro uso; a
+// segurança corre acima do fluxo: palavras-chave antes da IA, e a IA
+// classifica risco a cada turno. Falha segura devolve as técnicas sem IA.
+// ---------------------------------------------------------------------------
+api.post('/consentimento-ia', async (c) => {
+  const paciente = c.get('paciente')
+  await c.env.DB.prepare(
+    `UPDATE paciente SET consentimento_ia_em = COALESCE(consentimento_ia_em, datetime('now'))
+     WHERE id = ?`
+  )
+    .bind(paciente.id)
+    .run()
+  return c.json({ ok: true })
+})
+
+api.post('/rpd', async (c) => {
+  const paciente = c.get('paciente')
+  if (!paciente.consentimento_ia_em) return c.json({ erro: 'sem_consentimento' }, 403)
+  if (!c.env.ANTHROPIC_API_KEY) return c.json({ indisponivel: true }, 503)
+  const id = crypto.randomUUID()
+  await c.env.DB.prepare(`INSERT INTO rpd (id, paciente_id) VALUES (?, ?)`)
+    .bind(id, paciente.id)
+    .run()
+  return c.json({ id, etapa: 0, etiqueta: ETAPAS[0].etiqueta, pergunta: ETAPAS[0].pergunta })
+})
+
+api.post('/rpd/:id/mensagem', async (c) => {
+  const paciente = c.get('paciente')
+  const rpd = await c.env.DB.prepare(
+    `SELECT id, etapa, concluido, intensidade_inicial FROM rpd WHERE id = ? AND paciente_id = ?`
+  )
+    .bind(c.req.param('id'), paciente.id)
+    .first<{ id: string; etapa: number; concluido: number; intensidade_inicial: number | null }>()
+  if (!rpd || rpd.concluido) return c.json({ erro: 'nao_encontrado' }, 404)
+
+  const corpo = await c.req
+    .json<{ texto?: string; historico?: TurnoHistorico[] }>()
+    .catch(() => ({}) as { texto?: string; historico?: TurnoHistorico[] })
+  const texto = (corpo.texto ?? '').trim()
+  if (!texto) return c.json({ erro: 'texto_obrigatorio' }, 400)
+
+  // Frente 1: palavras-chave. Interrompe antes de qualquer chamada de IA.
+  if (detectarRiscoPorPalavras(texto)) {
+    await registrarEventoRisco(c.env.DB, paciente.id, 'palavra_chave')
+    await notificarTerapeutaRisco(c.env, c.env.DB)
+    return c.json({ risco: true })
+  }
+
+  const saida = await conduzirEtapa({
+    apiKey: c.env.ANTHROPIC_API_KEY,
+    modelo: c.env.MODELO_IA ?? 'claude-sonnet-5',
+    etapa: rpd.etapa,
+    textoPaciente: texto,
+    historico: Array.isArray(corpo.historico) ? corpo.historico : [],
+  })
+  if ('indisponivel' in saida) return c.json({ indisponivel: true }, 503)
+
+  // Frente 2: classificação da própria IA a cada turno.
+  if (saida.risco) {
+    await registrarEventoRisco(c.env.DB, paciente.id, 'classificador')
+    await notificarTerapeutaRisco(c.env, c.env.DB)
+    return c.json({ risco: true })
+  }
+
+  if (!saida.avancar) {
+    return c.json({ resposta: saida.resposta, etapa: rpd.etapa, etiqueta: ETAPAS[rpd.etapa].etiqueta })
+  }
+
+  // Avançou: guarda a resposta do paciente com as palavras dele.
+  const campo = ETAPAS[rpd.etapa].campo
+  const colunas: Record<string, string> = {
+    situacao: 'situacao',
+    emocao: 'emocao',
+    pensamento_automatico: 'pensamento_automatico',
+    evidencias_favor: 'evidencias_favor',
+    evidencias_contra: 'evidencias_contra',
+    pensamento_alternativo: 'pensamento_alternativo',
+    reavaliacao: 'reavaliacao',
+  }
+  if (campo === 'emocao') {
+    await c.env.DB.prepare(
+      `UPDATE rpd SET emocao = ?, intensidade_inicial = ?, etapa = etapa + 1 WHERE id = ?`
+    )
+      .bind(texto, saida.intensidade ?? null, rpd.id)
+      .run()
+  } else if (campo === 'reavaliacao') {
+    await c.env.DB.prepare(
+      `UPDATE rpd SET intensidade_final = ?, etapa = etapa + 1, concluido = 1 WHERE id = ?`
+    )
+      .bind(saida.intensidade ?? null, rpd.id)
+      .run()
+  } else {
+    await c.env.DB.prepare(
+      `UPDATE rpd SET ${colunas[campo]} = ?, etapa = etapa + 1 WHERE id = ?`
+    )
+      .bind(texto, rpd.id)
+      .run()
+  }
+
+  const novaEtapa = rpd.etapa + 1
+  if (novaEtapa >= ETAPAS.length) {
+    const estrelas = await premiarRpd(c.env.DB, paciente.id, rpd.id)
+    return c.json({ resposta: saida.resposta, concluido: true, estrelas })
+  }
+  return c.json({
+    resposta: saida.resposta,
+    etapa: novaEtapa,
+    etiqueta: ETAPAS[novaEtapa].etiqueta,
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Protocolo de segurança: contatos e mensagem para a terapeuta.
+// ---------------------------------------------------------------------------
+api.get('/protocolo-info', async (c) => {
+  const linha = await c.env.DB.prepare(`SELECT contato_emergencia FROM terapeuta LIMIT 1`).first<{
+    contato_emergencia: string | null
+  }>()
+  return c.json({ contatoEmergencia: linha?.contato_emergencia ?? null })
+})
+
+api.post('/mensagem-protocolo', async (c) => {
+  const paciente = c.get('paciente')
+  const corpo = await c.req.json<{ texto?: string }>().catch(() => ({}) as { texto?: string })
+  const texto = (corpo.texto ?? '').trim()
+  if (!texto) return c.json({ erro: 'texto_obrigatorio' }, 400)
+  await c.env.DB.prepare(`INSERT INTO mensagem_protocolo (id, paciente_id, texto) VALUES (?, ?, ?)`)
+    .bind(crypto.randomUUID(), paciente.id, texto.slice(0, 4000))
+    .run()
+  await notificarTerapeutaRisco(c.env, c.env.DB)
+  return c.json({ ok: true })
+})
+
+// ---------------------------------------------------------------------------
+// Lembretes e push. Máximo 2 por dia, escolha do paciente.
+// ---------------------------------------------------------------------------
+api.get('/lembrete', async (c) => {
+  const paciente = c.get('paciente')
+  const linha = await c.env.DB.prepare(
+    `SELECT frequencia, horarios FROM lembrete WHERE paciente_id = ?`
+  )
+    .bind(paciente.id)
+    .first<{ frequencia: number; horarios: string }>()
+  return c.json({
+    frequencia: linha?.frequencia ?? 0,
+    horarios: linha ? (JSON.parse(linha.horarios) as string[]) : [],
+    pushDisponivel: Boolean(c.env.VAPID_PUBLIC_KEY),
+    chavePublica: c.env.VAPID_PUBLIC_KEY ?? null,
+  })
+})
+
+api.put('/lembrete', async (c) => {
+  const paciente = c.get('paciente')
+  const corpo = await c.req
+    .json<{ frequencia?: number; horarios?: string[] }>()
+    .catch(() => ({}) as { frequencia?: number; horarios?: string[] })
+  const frequencia = Number(corpo.frequencia)
+  if (![0, 1, 2].includes(frequencia)) return c.json({ erro: 'frequencia_invalida' }, 400)
+  const horarios = (Array.isArray(corpo.horarios) ? corpo.horarios : [])
+    .filter((h) => /^\d{2}:\d{2}$/.test(h))
+    .slice(0, frequencia)
+  await c.env.DB.prepare(
+    `INSERT INTO lembrete (paciente_id, frequencia, horarios) VALUES (?, ?, ?)
+     ON CONFLICT(paciente_id) DO UPDATE SET frequencia = ?, horarios = ?`
+  )
+    .bind(paciente.id, frequencia, JSON.stringify(horarios), frequencia, JSON.stringify(horarios))
+    .run()
+  return c.json({ ok: true })
+})
+
+api.post('/push/inscrever', async (c) => {
+  const paciente = c.get('paciente')
+  const corpo = await c.req
+    .json<{ endpoint?: string; p256dh?: string; auth?: string }>()
+    .catch(() => ({}) as { endpoint?: string; p256dh?: string; auth?: string })
+  if (!corpo.endpoint || !corpo.p256dh || !corpo.auth)
+    return c.json({ erro: 'dados_incompletos' }, 400)
+  await c.env.DB.prepare(
+    `INSERT INTO push_subscription (id, paciente_id, endpoint, chave_p256dh, chave_auth)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(endpoint) DO UPDATE SET paciente_id = ?, chave_p256dh = ?, chave_auth = ?`
+  )
+    .bind(
+      crypto.randomUUID(),
+      paciente.id,
+      corpo.endpoint,
+      corpo.p256dh,
+      corpo.auth,
+      paciente.id,
+      corpo.p256dh,
+      corpo.auth
+    )
+    .run()
+  return c.json({ ok: true })
+})
+
+// ---------------------------------------------------------------------------
+// Áudios da Ana, servidos pelo próprio app (R2), atrás do login.
+// ---------------------------------------------------------------------------
+api.get('/audios', async (c) => {
+  const linhas = await c.env.DB.prepare(
+    `SELECT id, titulo, duracao_seg, camada1 FROM audio ORDER BY camada1 DESC, titulo`
+  ).all()
+  return c.json({ audios: linhas.results ?? [], disponivel: Boolean(c.env.AUDIOS) })
+})
+
+api.get('/audios/:id/arquivo', async (c) => {
+  if (!c.env.AUDIOS) return c.json({ erro: 'sem_audios' }, 404)
+  const audio = await c.env.DB.prepare(`SELECT chave_r2 FROM audio WHERE id = ?`)
+    .bind(c.req.param('id'))
+    .first<{ chave_r2: string }>()
+  if (!audio) return c.json({ erro: 'nao_encontrado' }, 404)
+  const objeto = await c.env.AUDIOS.get(audio.chave_r2)
+  if (!objeto) return c.json({ erro: 'arquivo_ausente' }, 404)
+  return new Response(objeto.body, {
+    headers: {
+      'Content-Type': 'audio/mpeg',
+      'Cache-Control': 'private, max-age=86400',
+    },
+  })
+})
+
 // A área profissional é montada antes: o middleware de paciente do
 // grupo /api usa curinga e não pode interceptar /api/pro.
 app.route('/api/pro', pro)
 app.route('/api', api)
 
-export default app
+export default {
+  fetch: app.fetch,
+  // Cron a cada 15 minutos: entrega dos lembretes configurados.
+  async scheduled(_evento: ScheduledEvent, env: Env) {
+    await dispararLembretes(env, env.DB)
+  },
+}

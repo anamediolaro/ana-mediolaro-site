@@ -1,6 +1,14 @@
 export type Env = {
   DB: D1Database
   ASSETS: Fetcher
+  // Opcional: bucket R2 com os áudios da Ana (binding AUDIOS).
+  AUDIOS?: R2Bucket
+  // Segredos definidos com "wrangler secret put" (ver DEPLOY.md).
+  ANTHROPIC_API_KEY?: string
+  MODELO_IA?: string
+  VAPID_PUBLIC_KEY?: string
+  VAPID_PRIVATE_KEY?: string
+  VAPID_SUBJECT?: string
 }
 
 export type Paciente = {
