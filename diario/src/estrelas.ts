@@ -49,6 +49,10 @@ async function consolidar(db: D1Database, pacienteId: string) {
 
 // Tarefa concluída vale 5 estrelas, uma vez só por tarefa.
 export async function premiarTarefa(db: D1Database, pacienteId: string, tarefaId: string) {
+  const antes = await db
+    .prepare('SELECT estrelas_total FROM pontuacao WHERE paciente_id = ?')
+    .bind(pacienteId)
+    .first<{ estrelas_total: number }>()
   await db
     .prepare(
       `INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas)
@@ -57,7 +61,9 @@ export async function premiarTarefa(db: D1Database, pacienteId: string, tarefaId
     )
     .bind(crypto.randomUUID(), pacienteId, tarefaId)
     .run()
-  return consolidar(db, pacienteId)
+  const { total, nivel } = await consolidar(db, pacienteId)
+  const nivelAntes = nivelPorEstrelas(antes?.estrelas_total ?? 0).atual.nome
+  return { total, nivel, subiuDeNivel: nivel !== nivelAntes }
 }
 
 export async function premiarRegistro(

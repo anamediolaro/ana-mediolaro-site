@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import type { Env, Vars } from './tipos'
 import { exigePaciente, pacientePorToken } from './auth'
 import { premiarRegistro, premiarTarefa, nivelPorEstrelas } from './estrelas'
+import { verificarConquistasDeRegistro, verificarConquistaDeTarefa } from './conquistas'
 import { calcularPadroes } from './padroes'
 import { pro } from './pro'
 
@@ -107,9 +108,16 @@ api.get('/eu', async (c) => {
     .bind(paciente.id)
     .first<{ n: number }>()
 
+  const conquistas = await c.env.DB.prepare(
+    `SELECT tipo, desbloqueada_em FROM conquista WHERE paciente_id = ? ORDER BY desbloqueada_em`
+  )
+    .bind(paciente.id)
+    .all()
+
   return c.json({
     nome: paciente.nome,
     tarefasPendentes: tarefas?.n ?? 0,
+    conquistas: conquistas.results ?? [],
     consentiu: Boolean(paciente.consentimento_em),
     ultimoRegistro: ultimo ?? null,
     registrosHoje,
@@ -197,6 +205,17 @@ api.post('/registros', async (c) => {
   if (existente && existente.paciente_id !== paciente.id)
     return c.json({ erro: 'conflito' }, 409)
 
+  // Intervalo até o registro anterior, medido antes de gravar: 7+ dias
+  // desbloqueia a conquista "Você voltou".
+  const anterior = await c.env.DB.prepare(
+    `SELECT MAX(substr(timestamp, 1, 10)) AS dia FROM registro WHERE paciente_id = ?`
+  )
+    .bind(paciente.id)
+    .first<{ dia: string | null }>()
+  const diasDesdeAnterior = anterior?.dia
+    ? Math.round((Date.parse(timestamp.slice(0, 10)) - Date.parse(anterior.dia)) / 86400000)
+    : null
+
   if (!existente) {
     await c.env.DB.prepare(
       `INSERT INTO registro (id, paciente_id, timestamp, nivel, emocoes, emocoes_livres,
@@ -251,6 +270,13 @@ api.post('/registros', async (c) => {
     diasSemana?.n ?? 1
   )
 
+  const conquistasNovas = existente
+    ? []
+    : await verificarConquistasDeRegistro(c.env.DB, paciente.id, {
+        escreveuPalavraPropria: emocoesLivres.length > 0,
+        diasDesdeAnterior,
+      })
+
   // Fechar o ciclo com ação: humor 1 ou 2 oferece (nunca impõe) um áudio
   // da Ana mapeado pelas emoções marcadas.
   let audioSugerido: Record<string, unknown> | null = null
@@ -270,7 +296,7 @@ api.post('/registros', async (c) => {
     }
   }
 
-  return c.json({ ok: true, id, estrelas, audioSugerido })
+  return c.json({ ok: true, id, estrelas, audioSugerido, conquistasNovas })
 })
 
 api.patch('/registros/:id/sessao', async (c) => {
@@ -311,7 +337,8 @@ api.post('/tarefas/:id/resposta', async (c) => {
     .run()
   if (!resultado.meta.changes) return c.json({ erro: 'nao_encontrado' }, 404)
   const estrelas = await premiarTarefa(c.env.DB, paciente.id, c.req.param('id'))
-  return c.json({ ok: true, estrelas })
+  const conquistasNovas = await verificarConquistaDeTarefa(c.env.DB, paciente.id)
+  return c.json({ ok: true, estrelas, conquistasNovas })
 })
 
 api.get('/padroes', async (c) => {
