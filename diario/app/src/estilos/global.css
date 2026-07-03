@@ -1,0 +1,824 @@
+/* Identidade do Diário das Emoções, extraída do layout aprovado v2. */
+:root {
+  --verde: #2a3530;
+  --sage: #5c6b5e;
+  --creme: #f0ebdf;
+  --papel: #faf8f2;
+  --ouro: #c9a566;
+  --linha: rgba(42, 53, 48, 0.14);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--creme);
+  font-family: 'Poppins', sans-serif;
+  color: var(--verde);
+  -webkit-font-smoothing: antialiased;
+}
+
+#raiz {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tela {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 22px calc(84px + env(safe-area-inset-bottom));
+  background: var(--papel);
+  min-height: 100dvh;
+}
+
+.tela.sem-nav {
+  padding-bottom: 28px;
+}
+
+.topo-app {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0 14px;
+  border-bottom: 1px solid var(--linha);
+  margin-bottom: 20px;
+}
+
+.marca {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.marca em {
+  color: var(--ouro);
+  font-weight: 500;
+}
+
+.data-mini {
+  font-size: 11px;
+  color: var(--sage);
+}
+
+.t-h1 {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.t-h1 em {
+  color: var(--ouro);
+}
+
+.t-sub {
+  font-size: 13.5px;
+  color: var(--sage);
+  font-weight: 300;
+  line-height: 1.55;
+  margin-top: 8px;
+}
+
+.t-btn {
+  display: block;
+  width: 100%;
+  background: var(--verde);
+  color: var(--creme);
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+.t-btn.fantasma {
+  background: none;
+  border: 1px solid var(--linha);
+  color: var(--sage);
+}
+
+.t-btn.ouro {
+  background: var(--ouro);
+  color: #fff;
+}
+
+.t-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.t-input {
+  width: 100%;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  color: var(--verde);
+  margin-top: 12px;
+}
+
+.t-input::placeholder {
+  color: #9aa59c;
+}
+
+textarea.t-input {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.t-aviso {
+  background: var(--creme);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--sage);
+  font-weight: 300;
+  margin-top: 18px;
+}
+
+.t-label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ouro);
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.t-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.t-chip {
+  border: 1px solid var(--linha);
+  background: #fff;
+  border-radius: 100px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  color: var(--verde);
+  cursor: pointer;
+}
+
+.t-chip.sel {
+  background: var(--verde);
+  color: var(--creme);
+  border-color: var(--verde);
+}
+
+.t-chip.pessoal {
+  border-style: dashed;
+  border-color: var(--ouro);
+  color: var(--ouro);
+  background: none;
+}
+
+.t-chip.pessoal.sel {
+  background: var(--verde);
+  color: var(--creme);
+  border-color: var(--verde);
+  border-style: solid;
+}
+
+.t-progresso {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 22px;
+}
+
+.t-progresso span {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--linha);
+}
+
+.t-progresso span.ok {
+  background: var(--ouro);
+}
+
+.t-pergunta {
+  font-family: 'Lora', serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.t-dica {
+  font-size: 12.5px;
+  color: var(--sage);
+  font-weight: 300;
+  margin-top: 7px;
+  line-height: 1.55;
+}
+
+/* Escala de humor: rostos SVG em traço fino, nunca emoji. */
+.escala {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 26px;
+}
+
+.humor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.rosto {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.4px solid var(--linha);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sage);
+  transition: transform 0.15s ease;
+}
+
+.humor.sel .rosto {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: var(--ouro);
+  transform: scale(1.08);
+}
+
+.humor small {
+  font-size: 10px;
+  color: var(--sage);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.humor.sel small {
+  color: var(--verde);
+  font-weight: 600;
+}
+
+.rosto svg {
+  width: 30px;
+  height: 30px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.t-card {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.t-card .linha1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.t-nivel {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ouro);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.t-nivel svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--ouro);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.t-hora {
+  font-size: 11px;
+  color: var(--sage);
+}
+
+.t-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.t-tag {
+  background: var(--creme);
+  border-radius: 100px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.t-tag.pessoal {
+  border: 1px dashed var(--ouro);
+  background: none;
+  color: var(--ouro);
+}
+
+.t-campo b {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-top: 9px;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.t-campo p {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+.t-dia {
+  font-family: 'Lora', serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.t-dia::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--linha);
+}
+
+.destaque-sessao {
+  border-left: 3px solid var(--ouro);
+}
+
+.flag-sessao {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ouro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  padding: 4px 0;
+}
+
+.flag-sessao.inativa {
+  color: var(--sage);
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.t-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.t-stat {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+}
+
+.t-stat .n {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.t-stat .l {
+  font-size: 10.5px;
+  color: var(--sage);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* Navegação inferior fixa: 4 abas, ponto dourado na ativa. */
+.nav-app {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--papel);
+  border-top: 1px solid var(--linha);
+  display: flex;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 10;
+}
+
+.nav-app button {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  color: var(--sage);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.nav-app button.on {
+  color: var(--verde);
+  font-weight: 600;
+}
+
+.nav-app button.on::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ouro);
+}
+
+.nav-app svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Calendário do mês colorido pelo humor. */
+.cal {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.cal b {
+  font-family: 'Lora', serif;
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.cal-grid i {
+  font-style: normal;
+  font-size: 9.5px;
+  color: var(--sage);
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.cal-dia {
+  aspect-ratio: 1;
+  border-radius: 9px;
+  background: var(--creme);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--sage);
+}
+
+.cal-dia.vazio {
+  background: none;
+}
+
+/* Barras de frequência (emoções, contextos, corpo). */
+.barra-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
+}
+
+.barra-linha span {
+  font-size: 12px;
+  flex: 0 0 128px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.barra-trilho {
+  flex: 1;
+  height: 7px;
+  background: var(--creme);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.barra-valor {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 7px;
+}
+
+.barra-linha small {
+  font-size: 11px;
+  color: var(--sage);
+  width: 18px;
+  text-align: right;
+}
+
+/* Estrelas e nível. */
+.estrela {
+  color: var(--ouro);
+}
+
+.nivel-box {
+  background: var(--verde);
+  border-radius: 18px;
+  padding: 18px;
+  color: var(--creme);
+  margin-top: 16px;
+}
+
+.nivel-box .nm {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--ouro);
+}
+
+.nivel-box .trilho {
+  height: 6px;
+  background: rgba(240, 235, 223, 0.2);
+  border-radius: 6px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.nivel-box .pr {
+  height: 100%;
+  background: var(--ouro);
+  border-radius: 6px;
+}
+
+.nivel-box small {
+  font-size: 11px;
+  opacity: 0.75;
+  display: block;
+  margin-top: 8px;
+  font-weight: 300;
+}
+
+.medalhas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.medalha {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.medalha.off {
+  opacity: 0.35;
+}
+
+.medalha .ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.3px solid var(--ouro);
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ouro);
+}
+
+.medalha .ico svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.medalha span {
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.25;
+  display: block;
+}
+
+/* Apoio e técnicas guiadas. */
+.apoio-item {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.apoio-item .ico {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--creme);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sage);
+  flex-shrink: 0;
+}
+
+.apoio-item .ico svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.apoio-item b {
+  font-family: 'Lora', serif;
+  font-size: 15px;
+  font-weight: 600;
+  display: block;
+  color: var(--verde);
+}
+
+.apoio-item small {
+  font-size: 11.5px;
+  color: var(--sage);
+  font-weight: 300;
+}
+
+.grounding-num {
+  font-family: 'Lora', serif;
+  font-size: 88px;
+  font-weight: 500;
+  color: var(--ouro);
+  text-align: center;
+  margin-top: 48px;
+  line-height: 1;
+}
+
+.grounding-txt {
+  font-family: 'Lora', serif;
+  font-size: 23px;
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.35;
+}
+
+.grounding-sub {
+  font-size: 13px;
+  color: var(--sage);
+  text-align: center;
+  font-weight: 300;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+/* Protocolo de segurança: tela calma, sem vermelho. */
+.prot-num {
+  font-family: 'Lora', serif;
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.prot-card {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.prot-card small {
+  font-size: 11.5px;
+  color: var(--sage);
+  display: block;
+  margin-top: 4px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* Toast discreto. */
+.toast {
+  position: fixed;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--verde);
+  color: var(--creme);
+  border-radius: 100px;
+  padding: 11px 22px;
+  font-size: 13px;
+  z-index: 50;
+  animation: subir 0.25s ease;
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.rodape-wizard {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.rodape-wizard .t-btn {
+  flex: 1;
+  margin-top: 0;
+}
+
+.centro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
