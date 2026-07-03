@@ -116,6 +116,13 @@ sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, es
 sql.push(`INSERT INTO anotacao (id, registro_id, texto) VALUES
   ('${randomUUID()}', (SELECT id FROM registro WHERE paciente_id = '${idPaciente}' AND falar_na_sessao = 1 LIMIT 1), 'Ligar com a crença "eu preciso dar conta sozinho". Retomar o combinado de pausas.');`)
 
+// RPD concluído ontem, para a área profissional mostrar "RPD novo".
+const rpdDemo = randomUUID()
+sql.push(`INSERT INTO rpd (id, paciente_id, situacao, emocao, intensidade_inicial, pensamento_automatico, evidencias_favor, evidencias_contra, pensamento_alternativo, intensidade_final, concluido, etapa, criado_em) VALUES
+  ('${rpdDemo}', '${idPaciente}', 'Me pediram para assumir mais um projeto na reunião de ontem.', 'Ansiedade', 85, 'Se eu recusar o projeto vão achar que não dou conta.', 'O diretor elogia quem abraça tudo.', 'Já recusei um projeto em 2023 e nada aconteceu. Continuei sendo promovido.', 'Recusar com critério também é mostrar que eu sei priorizar.', 40, 1, 7, datetime('now', '-1 days'));`)
+sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, estrelas) VALUES
+  ('${randomUUID()}', '${idPaciente}', 'rpd', '${rpdDemo}', 3);`)
+
 // Conquistas já desbloqueadas pelo comportamento semeado.
 sql.push(`INSERT INTO conquista (id, paciente_id, tipo, desbloqueada_em) VALUES
   ('${randomUUID()}', '${idPaciente}', 'primeiro_registro', datetime('now', '-30 days')),
@@ -124,7 +131,7 @@ sql.push(`INSERT INTO conquista (id, paciente_id, tipo, desbloqueada_em) VALUES
   ('${randomUUID()}', '${idPaciente}', 'registros_10', datetime('now', '-14 days')),
   ('${randomUUID()}', '${idPaciente}', 'primeira_tarefa', datetime('now', '-3 days'));`)
 
-const total = registros.length + 4 * 3 + 5
+const total = registros.length + 4 * 3 + 5 + 3
 const nivel = total >= 150 ? 'Expansão' : total >= 75 ? 'Reprogramação' : total >= 25 ? 'Consciência' : 'Percepção'
 sql.push(`INSERT INTO pontuacao (paciente_id, estrelas_total, nivel_atual) VALUES ('${idPaciente}', ${total}, '${nivel}');`)
 
