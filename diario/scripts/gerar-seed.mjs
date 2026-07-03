@@ -19,9 +19,9 @@ const senhaHash = `pbkdf2$100000$${sal.toString('base64url')}$${derivada.toStrin
 
 const sql = []
 sql.push(`DELETE FROM evento_estrela; DELETE FROM emocao_pessoal; DELETE FROM anotacao;
-DELETE FROM tarefa; DELETE FROM registro; DELETE FROM pontuacao; DELETE FROM audio;
-DELETE FROM sessao_terapeuta; DELETE FROM login_tentativa; DELETE FROM paciente;
-DELETE FROM terapeuta;`)
+DELETE FROM tarefa; DELETE FROM registro; DELETE FROM pontuacao; DELETE FROM conquista;
+DELETE FROM audio; DELETE FROM sessao_terapeuta; DELETE FROM login_tentativa;
+DELETE FROM paciente; DELETE FROM terapeuta;`)
 
 sql.push(`INSERT INTO terapeuta (id, nome, email, senha_hash) VALUES
   ('ter-ana', 'Ana Mediolaro', 'ana.mediolaro@gmail.com', '${senhaHash}');`)
@@ -115,6 +115,14 @@ sql.push(`INSERT INTO evento_estrela (id, paciente_id, origem, referencia_id, es
 // Anotação da terapeuta no registro de hoje (invisível para o paciente).
 sql.push(`INSERT INTO anotacao (id, registro_id, texto) VALUES
   ('${randomUUID()}', (SELECT id FROM registro WHERE paciente_id = '${idPaciente}' AND falar_na_sessao = 1 LIMIT 1), 'Ligar com a crença "eu preciso dar conta sozinho". Retomar o combinado de pausas.');`)
+
+// Conquistas já desbloqueadas pelo comportamento semeado.
+sql.push(`INSERT INTO conquista (id, paciente_id, tipo, desbloqueada_em) VALUES
+  ('${randomUUID()}', '${idPaciente}', 'primeiro_registro', datetime('now', '-30 days')),
+  ('${randomUUID()}', '${idPaciente}', 'primeira_palavra', datetime('now', '-30 days')),
+  ('${randomUUID()}', '${idPaciente}', 'semana_3', datetime('now', '-23 days')),
+  ('${randomUUID()}', '${idPaciente}', 'registros_10', datetime('now', '-14 days')),
+  ('${randomUUID()}', '${idPaciente}', 'primeira_tarefa', datetime('now', '-3 days'));`)
 
 const total = registros.length + 4 * 3 + 5
 const nivel = total >= 150 ? 'Expansão' : total >= 75 ? 'Reprogramação' : total >= 25 ? 'Consciência' : 'Percepção'
