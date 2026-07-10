@@ -1,0 +1,25 @@
+name: lama-inpaint
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  inpaint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instala dependências
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install pillow numpy
+      - name: Baixa modelo LaMa
+        run: curl -sSL -o big-lama.pt https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt
+      - name: Roda inpainting
+        run: python lama/inpaint.py
+      - name: Publica resultado no branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add lama/output.png
+          git commit -m "Resultado do inpainting LaMa"
+          git push
