@@ -1380,9 +1380,14 @@ a.sc:hover .scgo{color:var(--gold);}
 </script>
 
 <style id="heroLayout">
-/* Hero — composição centralizada com respiro nas laterais */
+/* Hero — composição centralizada, foto emoldurada como cartão fotográfico */
 .hero{grid-template-columns:1.05fr 1fr;max-width:1180px;margin:0 auto;}
 .hl{padding:56px 40px 56px 52px;}
-.hi{object-position:center bottom;}
+.hr{display:flex;align-items:center;justify-content:center;padding:40px 12px;}
+.hi{position:static;width:auto;height:auto;max-width:100%;max-height:540px;object-fit:contain;object-position:center;border-radius:6px;box-shadow:0 26px 60px rgba(28,25,23,.16);}
+@media (max-width:768px){
+.hr{padding:24px 20px;min-height:0;}
+.hi{max-height:none;width:100%;border-radius:6px;box-shadow:0 16px 40px rgba(28,25,23,.14);}
+}
 </style>
 </body></html>
