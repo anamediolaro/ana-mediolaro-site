@@ -2,27 +2,23 @@ name: lama-inpaint
 on:
   push:
     branches: [claude/lama-inpaint-tmp]
-    paths: [lama/input.jpg, lama/inpaint.py, .github/workflows/lama.yml]
+    paths: [.github/workflows/lama.yml]
 permissions:
   contents: write
 jobs:
-  inpaint:
+  fetch-model:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Instala dependências
-        run: pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install pillow numpy
-      - name: Baixa modelo LaMa
-        run: curl -sSL -o big-lama.pt https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt
-      - name: Roda inpainting
-        run: python lama/inpaint.py
-      - name: Publica resultado no branch
+      - name: Baixa e fatia o modelo LaMa
+        run: |
+          curl -sSL -o big-lama.pt https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt
+          ls -la big-lama.pt
+          split -b 90m big-lama.pt lama/model-chunk-
+      - name: Publica fatias no branch
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add lama/output-a.png lama/output-b.png
-          git commit -m "Resultado do inpainting LaMa [skip ci]"
+          git add lama/model-chunk-*
+          git commit -m "Fatias do modelo LaMa [skip ci]"
           git push
