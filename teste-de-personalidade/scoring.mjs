@@ -1,5 +1,5 @@
 /**
- * Questionário de Preferências Psicológicas e Profissionais
+ * Teste de Personalidade e Escolha Profissional
  * Mapa de pontuação e banco dos 16 resultados.
  *
  * Correção 100% determinística, nenhuma IA participa do cálculo.
@@ -540,8 +540,8 @@ export const resultDescriptions = {
 export const ABOUT_TEST = {
   title: 'Como este resultado é construído',
   paragraphs: [
-    'Este questionário se inspira nos estudos do psiquiatra Carl Gustav Jung, que observou que as pessoas têm jeitos preferidos de perceber o mundo e de tomar decisões. Mais tarde, Katharine Briggs e Isabel Myers organizaram essas ideias em quatro pares de preferências, e os pesquisadores David Keirsey e Marilyn Bates agruparam as combinações em quatro grandes temperamentos, cada um com um estilo próprio de agir, se comunicar e escolher caminhos.',
-    'Cada uma das 26 perguntas olha para um desses quatro pares. Não existe lado certo: os dois polos de cada par são igualmente valiosos, apenas diferentes. Somando suas escolhas, o teste identifica de qual lado de cada par você tende a ficar. A combinação das quatro letras forma o seu resultado.',
+    'Este teste se inspira nos estudos do psiquiatra Carl Gustav Jung, que observou que as pessoas têm jeitos preferidos de perceber o mundo e de tomar decisões. Mais tarde, Katharine Briggs e Isabel Myers organizaram essas ideias em quatro pares de preferências, e os pesquisadores David Keirsey e Marilyn Bates agruparam as combinações em quatro grandes temperamentos, cada um com um estilo próprio de agir, se comunicar e escolher caminhos.',
+    'Cada uma das 26 perguntas do teste olha para um desses quatro pares. Não existe lado certo: os dois polos de cada par são igualmente valiosos, apenas diferentes. Somando suas escolhas, ele identifica de qual lado de cada par você tende a ficar. A combinação das quatro letras forma o seu resultado.',
     'O resultado não é uma sentença: é um retrato das suas preferências neste momento, um ponto de partida para você se conhecer melhor e pensar nas suas escolhas com mais clareza.',
   ],
   dimensions: [
@@ -613,6 +613,7 @@ export const profileDetails = {
       'Regras que não fazem sentido e ordens autoritárias tendem a incomodar. Você funciona melhor com liberdade para agir do seu jeito, e costuma tratar todo mundo de igual para igual, o que faz de você uma companhia apreciada.',
       'Realista e observador, você sabe aproveitar as oportunidades do momento como poucos. Gosta de jogos e desafios, e ser reconhecido pelo que faz bem é importante para você. Ferramentas, máquinas e instrumentos costumam ser quase uma extensão do seu corpo: você aprende fazendo, montando, desmontando e testando.',
     ],
+    traits: ['Mão na massa e sangue frio', 'Resolve na hora, sem drama', 'Liberdade acima de tudo'],
     careers: 'Áreas que unem técnica, prática e um toque de adrenalina costumam atrair esse perfil: mecânica e mecatrônica, elétrica e energia solar, pilotagem e operação de drones, segurança da informação e infraestrutura de tecnologia, áreas técnicas da saúde (radiologia, instrumentação cirúrgica), esportes, resgate e bombeiros, produção audiovisual técnica. Vale para a primeira profissão e também para uma transição de carreira em qualquer idade.',
   },
   ESTP: {
@@ -622,6 +623,7 @@ export const profileDetails = {
       'Realista, pragmático e comunicativo, você costuma ser popular e ter facilidade para conquistar as pessoas. Tensões e climas pesados incomodam: você prefere resolver logo e seguir em frente, o que às vezes pode ser lido como pressa em assuntos que pediam mais profundidade.',
       'Seu talento aparece com força nas horas de decisão e de crise: enquanto muitos ainda estão analisando, você já enxergou a oportunidade e está agindo.',
     ],
+    traits: ['Enxerga a oportunidade primeiro', 'Convence qualquer um', 'Parado é que não fica'],
     careers: 'Vendas consultivas, empreendedorismo, marketing e growth, corretagem de imóveis e de investimentos, logística e operações, gestão de crises, eventos, esportes e transmissões e conteúdos ao vivo costumam combinar com esse perfil. Em qualquer fase da vida, ambientes dinâmicos, com gente, metas visíveis e retorno rápido rendem muito mais para você do que funções repetitivas atrás de uma mesa.',
   },
   ESFP: {
@@ -631,6 +633,7 @@ export const profileDetails = {
       'A solidão pesa para você: é no contato com os outros que sua energia se renova. Por outro lado, situações de exposição negativa ou críticas frias podem machucar mais do que os outros imaginam, e você tende a se afastar delas.',
       'Você tem um talento especial para lidar com pessoas em momentos difíceis: percebe o clima, antevê soluções que ninguém viu e encontra saídas criativas sem se prender ao "sempre foi assim".',
     ],
+    traits: ['Alegria que contagia', 'Vive o agora intensamente', 'Gente é a minha energia'],
     careers: 'Criação de conteúdo e redes sociais, eventos e produção cultural, turismo e hotelaria, educação infantil, saúde e bem-estar (enfermagem, fisioterapia, estética), vendas e atendimento, artes cênicas e gastronomia costumam atrair esse perfil. O essencial, em qualquer idade, é estar com pessoas e ver o impacto direto do que você faz.',
   },
   ISFP: {
@@ -640,6 +643,7 @@ export const profileDetails = {
       'Planejar demais e esperar demais desanimam você: seu combustível é o envolvimento com o que está acontecendo agora. Quando algo realmente o arrebata, você se entrega sem reservas ao trabalho, ao esporte, à arte.',
       'Com uma inteligência voltada ao concreto, você percebe as necessidades e as dores dos outros com facilidade, e comemora as vitórias alheias como se fossem suas. Gentileza, gratidão e liberdade são valores centrais. Por ser discreto, você às vezes é mal interpretado por quem não o conhece de perto.',
     ],
+    traits: ['Sensível e criativo', 'Demonstra afeto em gestos', 'No meu ritmo, do meu jeito'],
     careers: 'Design (gráfico, de interiores, de produto), fotografia e audiovisual, gastronomia e confeitaria, estética e beleza, medicina veterinária e cuidado animal, paisagismo e meio ambiente, artesanato e trabalhos manuais, fisioterapia e terapias corporais costumam atrair esse perfil: tudo o que permita criar com as mãos e com os sentidos, no seu ritmo e com propósito concreto, em qualquer momento da vida.',
   },
   ISTJ: {
@@ -649,6 +653,7 @@ export const profileDetails = {
       'Prático e realista, você quer que as coisas funcionem: procedimentos claros, critérios definidos e trabalho bem-feito. Tem paciência com processos, mas pouca paciência com quem trata as responsabilidades com descaso.',
       'Sua dedicação discreta às vezes se torna tão natural que os outros deixam de notá-la, e sua objetividade pode ser confundida com frieza. Na verdade, ela é a sua forma de proteger a qualidade do que entrega.',
     ],
+    traits: ['Palavra dada é compromisso', 'Organização e constância', 'Detalhe nenhum escapa'],
     careers: 'Contabilidade e finanças, auditoria e compliance, análise de dados, direito, engenharia, gestão pública e concursos, controle de qualidade e segurança digital costumam se encaixar com esse perfil: áreas em que precisão, responsabilidade e consistência valem ouro, seja no primeiro emprego, seja numa mudança de área.',
   },
   ESTJ: {
@@ -658,6 +663,7 @@ export const profileDetails = {
       'Realista e direto, você comunica com clareza o que espera e cobra o combinado, de si e dos outros. A pontualidade e o cumprimento das regras têm grande valor para você, e é por isso que costuma ser um pilar de sustentação nos lugares por onde passa.',
       'O ponto de atenção é o outro lado da mesma moeda: na pressa de executar, você pode ter pouca paciência com opiniões diferentes e parecer duro com quem funciona em outro ritmo. Abrir espaço para ouvir antes de decidir costuma multiplicar seus resultados.',
     ],
+    traits: ['Chegou, organizou', 'Meta dada é meta batida', 'Direto ao ponto'],
     careers: 'Gestão de projetos e de equipes, administração de empresas e de franquias, operações e logística, engenharia de produção, comércio e e-commerce, gestão escolar e hospitalar, agronegócio e carreiras públicas de gestão costumam combinar com esse perfil: qualquer lugar em que organizar recursos, pessoas e prazos seja o coração do trabalho.',
   },
   ISFJ: {
@@ -667,6 +673,7 @@ export const profileDetails = {
       'Com um senso de responsabilidade fora do comum, você prefere métodos que já provaram que funcionam a improvisos arriscados. É leal às pessoas com quem trabalha e cria laços de confiança profundos.',
       'Como não gosta de dar ordens, muitas vezes prefere fazer você mesmo, e aí mora o risco de se sobrecarregar em silêncio. Aprender a pedir ajuda e a mostrar o próprio trabalho é um cuidado que você merece ter consigo.',
     ],
+    traits: ['Cuida sem pedir aplauso', 'Lembra do que importa', 'Responsável ao extremo'],
     careers: 'Enfermagem e saúde, pedagogia, educação especial e psicopedagogia, nutrição, terapias, recursos humanos e departamento pessoal, secretariado e apoio executivo, sucesso do cliente e organização de informações costumam atrair esse perfil: atividades de cuidado contínuo, em que atenção aos detalhes e constância mudam a vida de alguém.',
   },
   ESFJ: {
@@ -676,6 +683,7 @@ export const profileDetails = {
       'Prestativo e atento a quem precisa, você leva a sério as regras, os combinados e as tarefas que assumiu, e por isso costuma ser muito querido e valorizado. Assuntos concretos e práticos são o seu forte; análises muito abstratas tendem a cansar.',
       'O carinho e o reconhecimento dos outros são importantes para você, e a indiferença machuca. Vale o cuidado: não deixe que a busca por agradar faça você adiar conversas necessárias ou carregar culpas que não são suas.',
     ],
+    traits: ['Une as pessoas ao redor', 'Acolhimento em pessoa', 'Harmonia em primeiro lugar'],
     careers: 'Praticamente tudo o que envolve pessoas combina com esse perfil: recursos humanos, saúde (enfermagem, odontologia, fonoaudiologia), pedagogia e gestão escolar, atendimento e sucesso do cliente, eventos, vendas e varejo, administração e relações públicas. O essencial é servir e conectar pessoas dentro de uma estrutura organizada, em qualquer etapa da carreira.',
   },
   INTJ: {
@@ -685,6 +693,7 @@ export const profileDetails = {
       'Títulos e cargos não impressionam você: o que importa é se a ideia faz sentido. Sua mente funciona como um jogo de xadrez: sempre alerta às consequências de cada movimento, pronta para descartar o que não tem utilidade e abraçar o que tem.',
       'Desafios não abatem você; pelo contrário, viram combustível para criar. Por outro lado, embora sinta profundamente, você raramente mostra as emoções, e isso pode fazer com que pareça indiferente. Quem conquista sua confiança descobre alguém extremamente dedicado.',
     ],
+    traits: ['Estrategista nato', 'Visão de longo prazo', 'Lógica vale mais que título'],
     careers: 'Ciência de dados e inteligência artificial, engenharia, arquitetura de software, pesquisa científica, planejamento estratégico, arquitetura e urbanismo, investimentos e gestão de projetos complexos costumam atrair esse perfil: trabalhos em que seja possível construir, melhorar e transformar sistemas, com autonomia e espaço para pensar, em qualquer fase da vida.',
   },
   ENTJ: {
@@ -694,6 +703,7 @@ export const profileDetails = {
       'Você tolera procedimentos estabelecidos até o momento em que eles se mostram ineficientes. Aí não hesita em mudar, porque o que você valoriza mesmo é a competência e o resultado. Decide com base em dados e raramente se deixa levar pela emoção do momento.',
       'Receber ordens não é o seu forte, e o trabalho tende a ocupar um espaço enorme na sua vida. Vale o cuidado para não deixar o descanso e as relações em segundo plano. Sua habilidade de visualizar metas e comunicá-las com clareza é o que faz equipes inteiras andarem.',
     ],
+    traits: ['Liderança natural', 'Transforma ideia em resultado', 'Foco total na meta'],
     careers: 'Posições de liderança e gestão de negócios, empreendedorismo e startups, consultoria estratégica, direito empresarial, gestão de produtos digitais, finanças e investimentos e carreiras públicas de comando costumam atrair esse perfil: lugares com metas grandes, poder de decisão e sistemas para construir ou expandir, do primeiro emprego à virada de carreira.',
   },
   INTP: {
@@ -703,6 +713,7 @@ export const profileDetails = {
       'Com enorme capacidade de concentração, você seleciona o que é relevante e vai fundo. O que aprende, dificilmente esquece. Para você, o mundo existe para ser compreendido, e explicações vagas simplesmente não servem.',
       'Expressar emoções em palavras pode ser difícil, e você tende à reserva, exceto com pessoas próximas. Por isso, às vezes seu valor passa despercebido ou seus méritos acabam creditados a outros. Impaciência com conversas rasas pode soar como arrogância, mas quem o conhece sabe que é sede de profundidade.',
     ],
+    traits: ['Mente analítica', 'Enxerga o que ninguém viu', 'Profundidade, sem conversa rasa'],
     careers: 'Pesquisa e ciência, análise e ciência de dados, desenvolvimento de software e inteligência artificial, matemática e estatística, filosofia, escrita técnica e docência costumam atrair esse perfil. Você trabalha melhor com autonomia, sem interrupções, em questões que desafiem seu raciocínio, seja começando a carreira, seja migrando para uma nova área.',
   },
   ENTP: {
@@ -712,6 +723,7 @@ export const profileDetails = {
       '"Impossível" é, para você, um convite. Você reluta em aceitar moldes prontos e questiona a autoridade tradicional, não por rebeldia, mas porque está sempre engendrando um jeito melhor de fazer as coisas.',
       'Para você, uma ideia vale pelo que ela pode virar na prática: o projeto é o meio, a invenção funcionando é o fim. Conversador brilhante, você é capaz de defender uma tese complexa com fascinação. Só fique atento ao risco de começar mais projetos do que consegue terminar.',
     ],
+    traits: ['Ideias que não acabam', 'Questiona tudo', 'Impossível soa como convite'],
     careers: 'Inovação e startups, marketing criativo e publicidade, gestão de produtos, consultoria, direito, criação de conteúdo e podcasts, tecnologia e docência dinâmica costumam atrair esse perfil. Muitos o descrevem como um engenheiro das relações humanas: você une pessoas e ideias para fazer o novo acontecer, e rotina é o seu maior inimigo em qualquer idade.',
   },
   INFJ: {
@@ -721,6 +733,7 @@ export const profileDetails = {
       'Dedicado ao extremo no que faz, você é atraído por atividades de estudo e profundidade, com uma tendência conhecida ao perfeccionismo: a régua alta que você usa com o mundo é a mesma que usa consigo.',
       'Sensível a conflitos e críticas, você pode se sentir paralisado em ambientes hostis, a ponto de adoecer física e emocionalmente. Proteger seus espaços e suas relações de confiança não é luxo: é necessidade.',
     ],
+    traits: ['Percebe o que não foi dito', 'Profundidade e propósito', 'Exigente comigo mesmo'],
     careers: 'Psicologia e terapias, escrita e roteiro, pesquisa de experiência do usuário (UX), orientação educacional e vocacional, medicina e psiquiatria, gestão de projetos sociais e curadoria cultural costumam atrair esse perfil: trabalhos em que sensibilidade e visão de futuro são o instrumento principal, em qualquer momento da vida.',
   },
   ENFJ: {
@@ -730,6 +743,7 @@ export const profileDetails = {
       'Com facilidade rara para expressar sentimentos em palavras, você percebe as motivações dos outros com uma exatidão impressionante: sua intuição sobre pessoas raramente erra. A contrapartida: você espera muito das pessoas, e do relacionamento perfeito, e a realidade nem sempre acompanha.',
       'Comunicador nato, mestre da palavra, você dá o seu melhor quando está desenvolvendo pessoas e mobilizando grupos em torno de uma causa que valha a pena.',
     ],
+    traits: ['Inspira e mobiliza', 'Lê as pessoas com precisão', 'Vive por boas causas'],
     careers: 'Ensino e formação de pessoas, psicologia, recursos humanos e desenvolvimento de talentos, comunicação e jornalismo, gestão de comunidades e redes sociais, liderança de equipes e de causas sociais costumam atrair esse perfil. O que esvazia sua energia, em qualquer idade, são trabalhos isolados, sem gente e sem propósito humano.',
   },
   ENFP: {
@@ -739,6 +753,7 @@ export const profileDetails = {
       'Você vive as emoções com intensidade e mergulha de corpo inteiro no processo de criar. Essa entrega cativa as pessoas com facilidade. Em contrapartida, a repetição desbota seu entusiasmo: o novo sempre chama mais do que o já conhecido, e terminar pode ser mais difícil do que começar.',
       'Orgulhoso no bom sentido, independente e otimista, você não gosta de se submeter nem de submeter ninguém, e tem um dom raro para manter as pessoas unidas ao seu redor.',
     ],
+    traits: ['Entusiasmo contagiante', 'Autêntico até o fim', 'Especialista em recomeços'],
     careers: 'Marketing e branding, criação de conteúdo e redes sociais, publicidade, jornalismo, ensino, psicologia, produção cultural e eventos, empreendedorismo criativo e turismo costumam atrair esse perfil. Fuja do excesso de rotina: seu talento floresce onde há contato humano, variedade e espaço para criar, em qualquer fase da vida.',
   },
   INFP: {
@@ -748,6 +763,7 @@ export const profileDetails = {
       'Seu mundo interno é rico em imagens e significados: você pensa por metáforas e tem o dom de criar e interpretar símbolos. Paciente com situações complexas, você se enfada com detalhes burocráticos e rotinas vazias.',
       'Você valoriza a harmonia e pode ceder para evitar conflitos, mas quando um valor essencial é ferido, revela uma firmeza que surpreende. O desafio conhecido do seu perfil é conciliar os ideais com a realidade imperfeita, sem se cobrar demais por isso.',
     ],
+    traits: ['Guiado por valores', 'Mundo interno gigante', 'Precisa acreditar para fazer'],
     careers: 'Psicologia e terapias, escrita e literatura, educação, tradução e idiomas, artes, projetos sociais e de impacto e criação de conteúdo com propósito costumam atrair esse perfil. Funções puramente competitivas ou repetitivas tendem a esvaziar sua motivação: você precisa acreditar no que faz, e isso não muda com a idade.',
   },
 };

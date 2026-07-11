@@ -14,8 +14,8 @@
  *   STATS           (KV)      opcional: estatísticas anônimas e controle de duplicados
  */
 
-import { resultDescriptions, typeFromScores } from './questionario/scoring.mjs';
-import { buildResultEmail } from './questionario/email.mjs';
+import { resultDescriptions, typeFromScores } from './teste-de-personalidade/scoring.mjs';
+import { buildResultEmail } from './teste-de-personalidade/email.mjs';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -36,6 +36,13 @@ export default {
     }
     if (url.pathname === '/admin/export.csv') {
       return handleAdminExport(request, env);
+    }
+    if (url.pathname === '/admin/emails.csv') {
+      return handleAdminEmails(request, env);
+    }
+    // endereço antigo do teste continua funcionando
+    if (url.pathname === '/questionario' || url.pathname.startsWith('/questionario/')) {
+      return Response.redirect(new URL('/teste-de-personalidade/', url.origin).toString(), 301);
     }
     return env.ASSETS.fetch(request);
   },
@@ -173,7 +180,17 @@ async function updateStats(env, data, sendOk) {
     }
     if (sendOk) s.emailsOk += 1; else s.emailsFail += 1;
     await env.STATS.put('stats:v1', JSON.stringify(s));
-    // Consentimento de marketing é separado e explícito: só então guardamos o contato
+    // Banco de contatos: nome, e-mail e resultado ficam guardados para registro
+    if (data.attempt === 1) {
+      await env.STATS.put(`lead:${data.submissionId}`, JSON.stringify({
+        email: data.email,
+        firstName: data.firstName,
+        code: data.code,
+        completedAt: data.completedAt.toISOString(),
+        marketing: data.marketingConsent,
+      }));
+    }
+    // Consentimento de marketing é separado e explícito
     if (data.marketingConsent && data.attempt === 1) {
       await env.STATS.put(`marketing:${data.email}`, data.completedAt.toISOString());
     }
@@ -252,7 +269,8 @@ async function handleAdmin(request, env) {
     </table>
     <h2>Últimos preenchimentos</h2>
     <ul>${s.lastDates.length ? s.lastDates.map((d) => `<li>${esc(formatDateBR(new Date(d)))}</li>`).join('') : '<li>Nenhum ainda.</li>'}</ul>
-    <p><a class="btn" href="/admin/export.csv">Exportar estatísticas anônimas (CSV)</a></p>`;
+    <p><a class="btn" href="/admin/export.csv">Exportar estatísticas anônimas (CSV)</a>
+       <a class="btn" href="/admin/emails.csv">Exportar e-mails cadastrados (CSV)</a></p>`;
 
   return new Response(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
@@ -273,7 +291,7 @@ ul{background:#fff;border:1px solid #E2D9CE;border-radius:4px;padding:14px 30px;
 .warn{background:#fff;border:1px solid #E2D9CE;border-left:3px solid #B8975A;padding:16px;border-radius:4px;max-width:560px;line-height:1.6;font-size:14px;}
 .note{font-size:12px;color:#7A6E65;margin-top:28px;max-width:560px;line-height:1.6;}
 </style></head><body>
-<h1><span>●</span> Painel do Questionário de Preferências</h1>
+<h1><span>●</span> Painel do Teste de Personalidade</h1>
 ${body}
 <p class="note">Este painel mostra apenas números agregados. As respostas individuais das 26 perguntas
 não são armazenadas e não podem ser consultadas aqui, por desenho de privacidade.</p>
@@ -296,6 +314,32 @@ async function handleAdminExport(request, env) {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': 'attachment; filename="estatisticas-questionario.csv"',
+    },
+  });
+}
+
+async function handleAdminEmails(request, env) {
+  if (!checkAuth(request, env)) return unauthorized();
+  if (!env.STATS) return new Response('KV STATS não configurado.', { status: 503 });
+  const rows = ['email,primeiro_nome,resultado,data,aceitou_marketing'];
+  let cursor;
+  do {
+    const page = await env.STATS.list({ prefix: 'lead:', cursor });
+    for (const k of page.keys) {
+      const raw = await env.STATS.get(k.name);
+      if (!raw) continue;
+      try {
+        const l = JSON.parse(raw);
+        const csv = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+        rows.push([csv(l.email), csv(l.firstName), csv(l.code), csv(formatDateBR(new Date(l.completedAt))), l.marketing ? 'sim' : 'nao'].join(','));
+      } catch {}
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  return new Response(rows.join('\n'), {
+    headers: {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="emails-teste-personalidade.csv"',
     },
   });
 }

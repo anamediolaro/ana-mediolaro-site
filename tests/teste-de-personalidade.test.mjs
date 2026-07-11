@@ -11,8 +11,8 @@ import assert from 'node:assert/strict';
 import {
   QUESTIONS, TOTAL_QUESTIONS, computeScores, typeFromScores, correct,
   resultDescriptions, profileDetails, temperamentDescriptions, ABOUT_TEST,
-} from '../questionario/scoring.mjs';
-import { buildResultEmail, EMAIL_SUBJECT } from '../questionario/email.mjs';
+} from '../teste-de-personalidade/scoring.mjs';
+import { buildResultEmail, EMAIL_SUBJECT } from '../teste-de-personalidade/email.mjs';
 import { validatePayload, formatDateBR } from '../worker.js';
 
 // Protocolo de exemplo aprovado
@@ -69,6 +69,7 @@ test('cada um dos 16 resultados tem perfil detalhado, apelido e caminhos profiss
     assert.ok(det, `perfil detalhado ausente para ${code}`);
     assert.ok(det.keyword && det.keyword.length >= 4, `${code} sem apelido`);
     assert.ok(det.profile.length >= 3, `${code} com perfil curto demais`);
+    assert.ok(det.traits && det.traits.length === 3, `${code} sem os 3 traços curtos`);
     assert.ok(det.careers.length > 80, `${code} sem caminhos profissionais`);
   }
   // apelidos das devolutivas manuais preservados
@@ -103,7 +104,7 @@ test('o e-mail é montado com os dados corretos', () => {
   const mail = buildResultEmail({
     firstName: 'Izabela', code, scores, completedAt: '02/07/2026 às 13h14',
   });
-  assert.equal(mail.subject, 'Seu resultado do Questionário de Preferências Psicológicas');
+  assert.equal(mail.subject, 'Seu resultado do Teste de Personalidade e Escolha Profissional');
   assert.equal(mail.subject, EMAIL_SUBJECT);
   for (const out of [mail.html, mail.text]) {
     assert.ok(out.includes('Izabela'));
@@ -150,7 +151,7 @@ test('nenhum texto voltado ao público contém travessões (regra da Ana)', asyn
   assert.ok(!DASHES.test(mail.html), 'travessão no HTML do e-mail');
   assert.ok(!DASHES.test(mail.text), 'travessão no texto do e-mail');
   const { readFile } = await import('node:fs/promises');
-  const page = await readFile(new URL('../questionario/index.html', import.meta.url), 'utf-8');
+  const page = await readFile(new URL('../teste-de-personalidade/index.html', import.meta.url), 'utf-8');
   assert.ok(!DASHES.test(page), 'travessão na página do questionário');
 });
 
@@ -159,10 +160,10 @@ test('o e-mail e o resultado convidam a marcar o Instagram da Ana', async () => 
   const mail = buildResultEmail({ firstName: 'Izabela', code, scores, completedAt: 'hoje' });
   for (const out of [mail.html, mail.text]) {
     assert.ok(out.includes('@anamediolaro.oficial'));
-    assert.ok(out.includes('Agora é a sua vez'));
+    assert.ok(out.includes('desafio você a descobrir o seu'));
   }
   const { readFile } = await import('node:fs/promises');
-  const page = await readFile(new URL('../questionario/index.html', import.meta.url), 'utf-8');
+  const page = await readFile(new URL('../teste-de-personalidade/index.html', import.meta.url), 'utf-8');
   assert.ok(page.includes('instagram.com/anamediolaro.oficial'));
   assert.ok(page.includes('Baixar imagem para os stories'));
 });
@@ -265,7 +266,7 @@ test('uma falha de envio não impede a exibição do resultado (contrato da API)
 
 test('nenhuma chave de acesso fica exposta no navegador', async () => {
   const { readFile, readdir } = await import('node:fs/promises');
-  const files = ['questionario/index.html', 'questionario/scoring.mjs', 'questionario/email.mjs'];
+  const files = ['teste-de-personalidade/index.html', 'teste-de-personalidade/scoring.mjs', 'teste-de-personalidade/email.mjs'];
   for (const f of files) {
     const content = await readFile(new URL('../' + f, import.meta.url), 'utf-8');
     assert.ok(!/re_[A-Za-z0-9]{8,}/.test(content), `${f} não pode conter chave Resend`);

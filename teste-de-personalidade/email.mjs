@@ -1,6 +1,6 @@
 /**
- * Modelo do e-mail de resultado do Questionário de Preferências
- * Psicológicas e Profissionais: HTML responsivo + versão em texto puro.
+ * Modelo do e-mail de resultado do Teste de Personalidade
+ * e Escolha Profissional: HTML responsivo + versão em texto puro.
  *
  * O e-mail nunca inclui a sequência das 26 respostas: apenas primeiro nome,
  * código de quatro letras, pontuações por dimensão e o conteúdo aprovado.
@@ -8,10 +8,10 @@
 
 import { resultDescriptions, profileDetails, temperamentDescriptions, ABOUT_TEST, DISCLAIMER } from './scoring.mjs';
 
-export const EMAIL_SUBJECT = 'Seu resultado do Questionário de Preferências Psicológicas';
+export const EMAIL_SUBJECT = 'Seu resultado do Teste de Personalidade e Escolha Profissional';
 
 export const DEFAULT_CONTACT_URL =
-  'https://wa.me/551128632313?text=Ol%C3%A1%2C%20fiz%20o%20Question%C3%A1rio%20de%20Prefer%C3%AAncias%20e%20quero%20conversar%20sobre%20orienta%C3%A7%C3%A3o%20profissional.';
+  'https://wa.me/551128632313?text=Ol%C3%A1%2C%20fiz%20o%20Teste%20de%20Personalidade%20e%20quero%20conversar%20sobre%20orienta%C3%A7%C3%A3o%20profissional.';
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -72,7 +72,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
         <tr><td style="padding:32px;">
           <p style="font-size:15px;color:#2C2520;line-height:1.7;margin:0 0 14px;">Olá, <strong>${name}</strong>!</p>
           <p style="font-size:15px;color:#2C2520;line-height:1.7;margin:0 0 22px;">
-            Obrigada por responder ao nosso Questionário de Preferências Psicológicas e Profissionais.
+            Obrigada por responder ao nosso Teste de Personalidade e Escolha Profissional.
           </p>
 
           <!-- Resultado -->
@@ -157,14 +157,14 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
                  style="background:#1C1917;border:1px solid #B8975A;border-radius:6px;margin-top:26px;">
             <tr><td style="padding:26px 24px;text-align:center;">
-              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8975A;margin-bottom:10px;">Compartilhe essa energia</div>
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8975A;margin-bottom:10px;">Compartilhe e desafie seus amigos</div>
               <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.35;color:#F5F0EA;margin-bottom:10px;">
-                Estou fortalecendo meu autoconhecimento.<br><span style="color:#B8975A;">Agora é a sua vez!</span>
+                Já descobri o meu resultado.<br><span style="color:#B8975A;">Agora eu desafio você a descobrir o seu!</span>
               </div>
               <p style="font-size:13px;line-height:1.7;color:rgba(245,240,234,.6);margin:0 0 18px;">
-                Gostou do resultado? Na página do questionário você baixa uma imagem pronta para os stories.
-                Poste, marque <strong style="color:#B8975A;">@anamediolaro.oficial</strong> e me conta qual é o seu tipo.
-                Quem sabe a sua marcação não inspira mais alguém a se conhecer melhor?
+                Na página do teste você baixa uma arte pronta para os stories, inclusive um modelo com enquete
+                para seus amigos votarem se você é assim mesmo. Poste, marque
+                <strong style="color:#B8975A;">@anamediolaro.oficial</strong> e me conta qual é o seu tipo!
               </p>
               <a href="https://www.instagram.com/anamediolaro.oficial/"
                  style="display:inline-block;border:1px solid #B8975A;color:#B8975A;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:12px 26px;border-radius:3px;">
@@ -183,8 +183,8 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
         <!-- Rodapé -->
         <tr><td style="background:#1C1917;padding:18px 32px;text-align:center;">
           <p style="font-size:11px;color:rgba(245,240,234,.45);line-height:1.6;margin:0;">
-            Questionário respondido em ${esc(completedAt)}.<br>
-            Você recebeu este e-mail porque solicitou o resultado do questionário no site anamediolaro.com.br.<br>
+            Teste respondido em ${esc(completedAt)}.<br>
+            Você recebeu este e-mail porque solicitou o resultado do teste no site anamediolaro.com.br.<br>
             Seu endereço não será usado para outras finalidades sem a sua autorização.
           </p>
         </td></tr>
@@ -198,7 +198,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
   const textList = (items) => items.map((i) => `• ${i}`).join('\n');
   const text = `Olá, ${firstName}!
 
-Obrigada por responder ao nosso Questionário de Preferências Psicológicas e Profissionais.
+Obrigada por responder ao nosso Teste de Personalidade e Escolha Profissional.
 
 Seu resultado foi:
 
@@ -264,7 +264,7 @@ ${DISCLAIMER}
 Para aprofundar essa reflexão em um processo de orientação profissional, entre em contato com a Mediolaro Clínica e Terapias:
 ${contactUrl}
 
-Compartilhe essa energia: estou fortalecendo meu autoconhecimento. Agora é a sua vez! Na página do questionário você baixa uma imagem pronta para os stories. Poste, marque @anamediolaro.oficial e me conta qual é o seu tipo:
+Já descobri o meu resultado. Agora eu desafio você a descobrir o seu! Na página do teste você baixa uma arte pronta para os stories, inclusive um modelo com enquete para seus amigos votarem se você é assim mesmo. Poste, marque @anamediolaro.oficial e me conta qual é o seu tipo:
 https://www.instagram.com/anamediolaro.oficial/
 
 Atenciosamente,
@@ -272,7 +272,7 @@ Atenciosamente,
 Ana Mediolaro
 Mediolaro Clínica e Terapias
 
-Questionário respondido em ${completedAt}.`;
+Teste respondido em ${completedAt}.`;
 
   return { subject: EMAIL_SUBJECT, html, text };
 }

@@ -1,6 +1,6 @@
-# Questionário de Preferências Psicológicas e Profissionais
+# Teste de Personalidade e Escolha Profissional
 
-Sistema totalmente automático: a pessoa responde às 26 perguntas, informa o
+Sistema totalmente automático: a pessoa responde às 26 perguntas do teste, informa o
 primeiro nome e o e-mail, marca o consentimento e clica em **"Ver meu
 resultado"**. O sistema calcula os pontos, identifica o código de quatro
 letras, mostra o resultado na tela e envia o e-mail — sem nenhuma
@@ -10,9 +10,9 @@ intervenção da psicóloga ou da administradora do site.
 
 | Arquivo | Função |
 | --- | --- |
-| `questionario/index.html` | Página do questionário (`/questionario/`) |
-| `questionario/scoring.mjs` | Perguntas, mapa de pontuação e banco dos 16 resultados |
-| `questionario/email.mjs` | Modelo do e-mail (HTML responsivo + texto) |
+| `teste-de-personalidade/index.html` | Página do teste (`/teste-de-personalidade/`) |
+| `teste-de-personalidade/scoring.mjs` | Perguntas, mapa de pontuação e banco dos 16 resultados |
+| `teste-de-personalidade/email.mjs` | Modelo do e-mail (HTML responsivo + texto) |
 | `worker.js` | Rota segura `POST /api/enviar-resultado` + painel `/admin` |
 | `tests/questionario.test.mjs` | Testes automatizados (`npm test`) |
 
@@ -72,7 +72,7 @@ armazenadas nem exibidas.
    ```
 
    Copie o `id` que o comando devolve e descomente o bloco `kv_namespaces`
-   no `wrangler.jsonc`, colando o id. Sem o KV, o questionário e o e-mail
+   no `wrangler.jsonc`, colando o id. Sem o KV, o teste e o e-mail
    continuam funcionando — apenas os contadores ficam desativados.
 
 ## Privacidade
@@ -88,21 +88,40 @@ armazenadas nem exibidas.
 - O e-mail de resultado usa apenas: primeiro nome, código, pontuações,
   conteúdo aprovado e data/horário do preenchimento.
 
+## Banco de e-mails dos respondentes
+
+Com o KV `STATS` configurado, cada conclusão guarda um registro `lead:*`
+com primeiro nome, e-mail, resultado, data e se a pessoa aceitou receber
+conteúdos (consentimento de marketing separado). Para baixar a lista:
+acesse `/admin/emails.csv` (protegido pela mesma senha do painel). A
+coluna `aceitou_marketing` indica quem pode entrar em listas de
+divulgação; respeite quem marcou "nao".
+
+## SEO
+
+A página do teste já sai pronta para o Google: título e descrição
+otimizados, palavras-chave, canonical, Open Graph e Twitter Cards
+(compartilhamento bonito no WhatsApp e redes), dados estruturados
+JSON-LD (Quiz, BreadcrumbList e FAQPage) e a URL amigável
+`/teste-de-personalidade/`. Na raiz do site ficam `sitemap.xml` e
+`robots.txt`. Depois de publicar: cadastre o site no Google Search
+Console e envie o sitemap para acelerar a indexação.
+
 ## Conteúdo dos resultados
 
-As descrições dos 16 tipos em `questionario/scoring.mjs` vêm exclusivamente
+As descrições dos 16 tipos em `teste-de-personalidade/scoring.mjs` vêm exclusivamente
 do documento aprovado *"Tipos psicológicos — versão revisada e simplificada:
 de Jung ao MBTI e aos temperamentos de Keirsey"*. Para ajustar um texto,
 edite o objeto `resultDescriptions` (campos `title`, `temperament`,
 `description`, `tendencies`, `attentionPoints`, `favorableEnvironments`) e o
-aviso `DISCLAIMER`. Os textos da página ficam em `questionario/index.html` e
-os do e-mail em `questionario/email.mjs`. Depois de editar, rode `npm test`
+aviso `DISCLAIMER`. Os textos da página ficam em `teste-de-personalidade/index.html` e
+os do e-mail em `teste-de-personalidade/email.mjs`. Depois de editar, rode `npm test`
 para conferir que nada quebrou.
 
 ## PDF
 
 O botão **"Salvar em PDF"** na tela de resultado gera o documento
-*"Resultado do Questionário de Preferências Psicológicas e Profissionais"*
+*"Resultado do Teste de Personalidade e Escolha Profissional"*
 pelo diálogo de impressão do navegador, com identidade visual da clínica,
 contendo: primeiro nome, data, código, título, temperamento, pontuações,
 descrição, tendências, pontos de atenção, ambientes favoráveis e o aviso de
@@ -127,12 +146,12 @@ exigiria geração de PDF no servidor.)
 
 ```bash
 npm test            # 15 testes: cálculo INTP, e-mail, deduplicação, chaves, etc.
-npx wrangler dev    # rodar localmente em http://localhost:8787/questionario/
+npx wrangler dev    # rodar localmente em http://localhost:8787/teste-de-personalidade/
 ```
 
 Atalhos de demonstração na página (apenas via URL, invisíveis para o público):
 
-- `/questionario/?exemplo=intp` — preenche o protocolo de exemplo aprovado
+- `/teste-de-personalidade/?exemplo=intp` — preenche o protocolo de exemplo aprovado
   (resultado INTP — Analista conceitual).
-- `/questionario/?demo=1` — simula o envio do e-mail sem chamar o servidor
+- `/teste-de-personalidade/?demo=1` — simula o envio do e-mail sem chamar o servidor
   (útil para ver o fluxo completo antes de configurar o Resend).

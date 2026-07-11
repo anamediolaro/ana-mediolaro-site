@@ -9,10 +9,10 @@
 - Linguagem acessível e acolhedora, sem tom acadêmico.
 - Falar com a pessoa em "você".
 
-## Questionário de Preferências (/questionario/)
+## Teste de Personalidade e Escolha Profissional (/teste-de-personalidade/)
 
 - Correção determinística, sem IA. Mapa de pontuação e conteúdo aprovado
-  em `questionario/scoring.mjs`. Instruções em `docs/QUESTIONARIO.md`.
+  em `teste-de-personalidade/scoring.mjs`. Instruções em `docs/TESTE-DE-PERSONALIDADE.md`.
 - Apelidos dos 16 perfis (Precisão, Comando, Interação Social etc.) vêm
   das devolutivas manuais da clínica e devem ser mantidos.
 - Profissões sugeridas devem ser atuais (2026) e valer para todas as
@@ -21,4 +21,10 @@
 - Instagram da Ana: @anamediolaro.oficial
 - O resultado é recurso educativo, nunca diagnóstico. Não usar os termos
   laudo, diagnóstico, parecer ou avaliação psicológica.
+- Nome público: "Teste de Personalidade e Escolha Profissional"
+  (nunca "questionário de preferências").
+- URL antiga /questionario/ redireciona 301 para /teste-de-personalidade/.
+- E-mails respondentes ficam no KV (chaves lead:*), exportáveis em
+  /admin/emails.csv.
+- SEO: manter canonical, OG, JSON-LD da página e sitemap.xml atualizados.
 - Rodar `npm test` após alterar conteúdo ou lógica.
