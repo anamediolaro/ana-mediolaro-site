@@ -2,13 +2,25 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ana-mediolaro-site",
   "compatibility_date": "2026-05-12",
+  "main": "worker.js",
   "observability": {
     "enabled": true
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  "vars": {
+    // Remetente dos e-mails de resultado do questionário.
+    // Troque pelo endereço verificado no Resend (docs/QUESTIONARIO.md, passo 2).
+    "MAIL_FROM": "Ana Mediolaro <onboarding@resend.dev>"
+  }
+  // Para ativar as estatísticas do painel /admin, crie o KV e descomente:
+  //   npx wrangler kv namespace create STATS
+  // ,"kv_namespaces": [
+  //   { "binding": "STATS", "id": "COLE_AQUI_O_ID_GERADO" }
+  // ]
 }
