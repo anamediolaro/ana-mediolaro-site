@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Questionário de Preferências Psicológicas e Profissionais — recurso educativo de autoconhecimento da Mediolaro Clínica e Terapias. Resultado imediato e enviado por e-mail.">
+<meta name="description" content="Questionário de Preferências Psicológicas e Profissionais: recurso educativo de autoconhecimento da Mediolaro Clínica e Terapias. Resultado imediato e enviado por e-mail.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.anamediolaro.com.br/questionario/">
 <title>Questionário de Preferências Psicológicas | Ana Mediolaro</title>
@@ -121,6 +121,16 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 .rimp{background:var(--bg2);border-left:3px solid var(--gold);border-radius:0 3px 3px 0;padding:18px 22px;margin-bottom:16px;}
 .rimph{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px;}
 .rimp p{font-size:12.5px;font-weight:300;line-height:1.75;color:var(--t2);}
+.rshare{background:linear-gradient(150deg,#241F1B 0%,#1C1917 55%,#2A2117 100%);border:1px solid rgba(184,151,90,.35);border-radius:3px;padding:36px 30px;text-align:center;margin-bottom:16px;}
+.rsharee{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.rsharet{font-family:"DM Serif Display",serif;font-size:26px;line-height:1.25;color:rgba(245,240,234,.92);margin-bottom:12px;}
+.rsharet em{color:var(--gold);font-style:italic;}
+.rshares{font-size:13px;font-weight:300;line-height:1.75;color:rgba(245,240,234,.55);max-width:480px;margin:0 auto 20px;}
+.rshares b{color:var(--gold);font-weight:500;}
+.rshareimg{margin:0 auto 20px;max-width:210px;}
+.rshareimg img{width:100%;border-radius:6px;border:1px solid rgba(184,151,90,.4);box-shadow:0 14px 40px rgba(0,0,0,.45);display:block;}
+.rsharebtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.rsharedone{display:none;margin-top:14px;font-size:12px;color:var(--gold);}
 .rcta{background:var(--dk);border-radius:3px;padding:30px;text-align:center;margin-bottom:16px;}
 .rctat{font-family:"DM Serif Display",serif;font-size:22px;color:rgba(245,240,234,.9);margin-bottom:6px;}
 .rctat em{color:var(--gold);font-style:italic;}
@@ -210,7 +220,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
       <input type="checkbox" id="marketing">
       <span><b>Opcional:</b> Desejo receber conteúdos e informações da Mediolaro Clínica e Terapias.</span>
     </label>
-    <p class="privnote">Suas 26 respostas não são armazenadas em nossos servidores e não são incluídas no e-mail — apenas o resultado calculado. Não pedimos nome completo, CPF, data de nascimento, endereço ou telefone.</p>
+    <p class="privnote">Suas 26 respostas não são armazenadas em nossos servidores e não são incluídas no e-mail, apenas o resultado calculado. Não pedimos nome completo, CPF, data de nascimento, endereço ou telefone.</p>
     <button class="gobtn" id="goBtn">Ver meu resultado</button>
     <div class="formerr" id="formErr"></div>
   </div>
@@ -271,7 +281,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
     <div class="rsec">
       <div class="rsech">Caminhos profissionais que costumam atrair esse perfil</div>
       <div class="rparas" id="rCareers"></div>
-      <p class="rcareernote">São possibilidades para explorar e conversar — não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>
+      <p class="rcareernote">São possibilidades para explorar e conversar, não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>
     </div>
     <div class="rsec">
       <div class="rsech" id="rTempTitle">Seu temperamento em detalhe</div>
@@ -285,6 +295,18 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
       <div class="rctat">Quer aprofundar essa <em>reflexão</em>?</div>
       <div class="rctas">Em um processo de orientação profissional, seu resultado vira ponto de partida para uma conversa muito mais completa.</div>
       <a class="rbtn solid" id="btnTalk2" target="_blank" rel="noopener noreferrer">Conversar com a nossa equipe</a>
+    </div>
+    <div class="rshare">
+      <div class="rsharee">Compartilhe essa energia</div>
+      <div class="rsharet">Estou fortalecendo meu <em>autoconhecimento</em>.<br>Agora é a sua vez!</div>
+      <p class="rshares">Baixe a imagem do seu resultado, poste nos stories e marque <b>@anamediolaro.oficial</b>. Vou adorar saber qual é o seu tipo, e quem sabe a sua marcação não inspira mais alguém a se conhecer melhor?</p>
+      <div class="rshareimg"><img id="shareThumb" alt="Prévia da imagem do seu resultado para os stories"></div>
+      <div class="rsharebtns">
+        <button class="rbtn solid" id="btnShareImg">Baixar imagem para os stories</button>
+        <button class="rbtn" id="btnCaption">Copiar legenda pronta</button>
+        <a class="rbtn" href="https://www.instagram.com/anamediolaro.oficial/" target="_blank" rel="noopener noreferrer">Seguir @anamediolaro.oficial</a>
+      </div>
+      <div class="rsharedone" id="captionOk">Legenda copiada! É só colar no Instagram.</div>
     </div>
   </div>
 </section>
@@ -409,13 +431,13 @@ function renderResult() {
   $('rTemp').textContent = 'Temperamento: ' + result.temperament;
   $('rDesc').textContent = result.description;
   $('rDisc').textContent = DISCLAIMER;
-  $('printMeta').textContent = `${submission.firstName} · ${fmtDateBR(new Date(submission.completedAt))} · resultado ${code} — ${result.title}`;
+  $('printMeta').textContent = `${submission.firstName} · ${fmtDateBR(new Date(submission.completedAt))} · resultado ${code} · ${result.title}`;
   const paras = (id, items) => { $(id).innerHTML = items.map((p) => { const el = document.createElement('p'); el.textContent = p; return el.outerHTML; }).join(''); };
   paras('rAbout', ABOUT_TEST.paragraphs);
   $('rDims').innerHTML = ABOUT_TEST.dimensions.map((d) => {
     const box = document.createElement('div');
     box.className = 'rdim';
-    const b = document.createElement('b'); b.textContent = `${d.pair} — ${d.name}`;
+    const b = document.createElement('b'); b.textContent = `${d.pair} · ${d.name}`;
     const q = document.createElement('div'); q.className = 'rdimq'; q.textContent = d.question;
     const t = document.createElement('p'); t.textContent = d.text;
     box.append(b, q, t);
@@ -434,6 +456,8 @@ function renderResult() {
   fill('rTend', result.tendencies);
   fill('rAtt', result.attentionPoints);
   fill('rEnv', result.favorableEnvironments);
+  refreshShareThumb();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshShareThumb);
   const pairs = [['E','I'],['S','N'],['T','F'],['J','P']];
   $('rScores').innerHTML = pairs.map(([l, r]) => {
     const a = scores[l], b = scores[r], tot = a + b;
@@ -551,6 +575,104 @@ $('btnSendNew').addEventListener('click', async () => {
   await sendEmail($('btnSendNew'), 'Enviar para este e-mail');
 });
 $('btnPdf').addEventListener('click', () => window.print());
+
+// ── Imagem instagramável (stories 1080x1920), gerada localmente no navegador ──
+const IG_HANDLE = '@anamediolaro.oficial';
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = w;
+      y += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line, x, y);
+  return y + lineHeight;
+}
+function buildShareImage() {
+  const { code, result } = submission;
+  const det = profileDetails[code];
+  const W = 1080, H = 1920;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const SERIF = '"DM Serif Display", Georgia, serif';
+  const SANS = '"DM Sans", Arial, sans-serif';
+  // fundo com leve gradiente e moldura dourada
+  const bg = g.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#241F1B'); bg.addColorStop(.55, '#1C1917'); bg.addColorStop(1, '#2A2117');
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(184,151,90,.55)'; g.lineWidth = 3;
+  g.strokeRect(52, 52, W - 104, H - 104);
+  g.strokeStyle = 'rgba(184,151,90,.2)'; g.lineWidth = 1;
+  g.strokeRect(68, 68, W - 136, H - 136);
+  g.textAlign = 'center';
+  // marca
+  g.fillStyle = '#B8975A'; g.beginPath(); g.arc(W/2 - 128, 205, 7, 0, 7); g.fill();
+  g.font = `44px ${SERIF}`; g.fillStyle = '#F5F0EA';
+  g.fillText('Ana Mediolaro', W/2 + 12, 220);
+  g.font = `600 21px ${SANS}`; g.fillStyle = '#B8975A';
+  g.fillText('Q U E S T I O N Á R I O   D E   P R E F E R Ê N C I A S', W/2, 275);
+  g.fillStyle = 'rgba(245,240,234,.45)';
+  g.font = `300 21px ${SANS}`;
+  g.fillText('Psicológicas e Profissionais', W/2, 312);
+  // resultado
+  g.font = `600 26px ${SANS}`; g.fillStyle = 'rgba(245,240,234,.5)';
+  g.fillText('M E U   R E S U L T A D O', W/2, 520);
+  g.font = `260px ${SERIF}`; g.fillStyle = '#B8975A';
+  g.fillText(code.split('').join(' '), W/2, 780);
+  g.font = `52px ${SERIF}`; g.fillStyle = '#F5F0EA';
+  g.fillText(`${result.title} · ${det.keyword}`, W/2, 880);
+  // chip de temperamento
+  g.font = `600 26px ${SANS}`;
+  const chipText = 'TEMPERAMENTO  ' + result.temperament.toUpperCase();
+  const cw = g.measureText(chipText).width + 76;
+  g.fillStyle = 'rgba(184,151,90,.14)';
+  g.strokeStyle = 'rgba(184,151,90,.5)'; g.lineWidth = 2;
+  g.beginPath(); g.roundRect((W-cw)/2, 925, cw, 66, 6); g.fill(); g.stroke();
+  g.fillStyle = '#B8975A'; g.fillText(chipText, W/2, 968);
+  // frase
+  g.font = `italic 54px ${SERIF}`; g.fillStyle = 'rgba(245,240,234,.92)';
+  let y = wrapText(g, '"Estou fortalecendo meu autoconhecimento.', W/2, 1180, 840, 72);
+  g.fillStyle = '#B8975A';
+  wrapText(g, 'Agora é a sua vez!"', W/2, y, 840, 72);
+  // rodapé
+  g.font = `600 27px ${SANS}`; g.fillStyle = 'rgba(245,240,234,.55)';
+  g.fillText('Faça o seu gratuitamente:', W/2, 1560);
+  g.font = `600 34px ${SANS}`; g.fillStyle = '#B8975A';
+  g.fillText('anamediolaro.com.br/questionario', W/2, 1615);
+  g.font = `300 27px ${SANS}`; g.fillStyle = 'rgba(245,240,234,.55)';
+  g.fillText('Poste nos stories e me marque:', W/2, 1705);
+  g.font = `600 38px ${SANS}`; g.fillStyle = '#F5F0EA';
+  g.fillText(IG_HANDLE, W/2, 1758);
+  return c;
+}
+function refreshShareThumb() {
+  try { $('shareThumb').src = buildShareImage().toDataURL('image/png'); } catch {}
+}
+$('btnShareImg').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.download = `meu-resultado-${submission.code}-anamediolaro.png`;
+  a.href = buildShareImage().toDataURL('image/png');
+  a.click();
+});
+$('btnCaption').addEventListener('click', async () => {
+  const { code, result } = submission;
+  const det = profileDetails[code];
+  const caption = `Estou fortalecendo meu autoconhecimento e meu resultado no Questionário de Preferências foi ${code}, ${result.title} (${det.keyword}). Agora é a sua vez! Faça gratuitamente no site da ${IG_HANDLE} e me conta qual é o seu. #autoconhecimento #orientacaoprofissional #saudemental`;
+  try {
+    await navigator.clipboard.writeText(caption);
+    $('captionOk').style.display = 'block';
+    setTimeout(() => { $('captionOk').style.display = 'none'; }, 4000);
+  } catch {
+    prompt('Copie a legenda:', caption);
+  }
+});
 
 // ── Modo exemplo (?exemplo=intp): preenche o protocolo de teste aprovado ──
 if (new URLSearchParams(location.search).get('exemplo') === 'intp') {

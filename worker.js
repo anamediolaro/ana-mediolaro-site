@@ -1,5 +1,5 @@
 /**
- * Worker do site — rotas dinâmicas:
+ * Worker do site, rotas dinâmicas:
  *
  *   POST /api/enviar-resultado  → envia o resultado do questionário por e-mail
  *   GET  /admin                 → painel administrativo (protegido por senha)
@@ -7,11 +7,11 @@
  *
  * Todo o restante é servido como arquivo estático (binding ASSETS).
  *
- * Segredos/variáveis (nunca ficam no navegador — ver docs/QUESTIONARIO.md):
+ * Segredos/variáveis (nunca ficam no navegador, ver docs/QUESTIONARIO.md):
  *   RESEND_API_KEY  (secret)  chave do serviço de e-mail Resend
  *   ADMIN_PASSWORD  (secret)  senha do painel /admin
  *   MAIL_FROM       (var)     remetente, ex.: "Ana Mediolaro <resultado@anamediolaro.com.br>"
- *   STATS           (KV)      opcional — estatísticas anônimas e controle de duplicados
+ *   STATS           (KV)      opcional: estatísticas anônimas e controle de duplicados
  */
 
 import { resultDescriptions, typeFromScores } from './questionario/scoring.mjs';
@@ -47,7 +47,7 @@ export default {
 export function validatePayload(body) {
   if (!body || typeof body !== 'object') return { error: 'Corpo inválido.' };
 
-  // honeypot: robôs preenchem o campo invisível — respondemos ok sem enviar nada
+  // honeypot: robôs preenchem o campo invisível, respondemos ok sem enviar nada
   if (body.website) return { honeypot: true };
 
   const firstName = String(body.firstName || '').trim().slice(0, 60);

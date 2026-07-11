@@ -1,6 +1,6 @@
 /**
  * Modelo do e-mail de resultado do Questionário de Preferências
- * Psicológicas e Profissionais — HTML responsivo + versão em texto puro.
+ * Psicológicas e Profissionais: HTML responsivo + versão em texto puro.
  *
  * O e-mail nunca inclui a sequência das 26 respostas: apenas primeiro nome,
  * código de quatro letras, pontuações por dimensão e o conteúdo aprovado.
@@ -33,7 +33,7 @@ function listHtml(items) {
 /**
  * Monta assunto, HTML e texto do e-mail de resultado.
  * @param {{firstName:string, code:string, scores:object, completedAt:string, contactUrl?:string}} data
- *   completedAt — data/horário do preenchimento já formatados (ex.: "11/07/2026 às 14h32").
+ *   completedAt: data/horário do preenchimento já formatados (ex.: "11/07/2026 às 14h32").
  */
 export function buildResultEmail({ firstName, code, scores, completedAt, contactUrl = DEFAULT_CONTACT_URL }) {
   const r = resultDescriptions[code];
@@ -53,7 +53,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
 <title>${EMAIL_SUBJECT}</title>
 </head>
 <body style="margin:0;padding:0;background:#F5F0EA;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;">Seu resultado: ${code} — ${esc(r.title)}</div>
+  <div style="display:none;max-height:0;overflow:hidden;">Seu resultado: ${code} · ${esc(r.title)}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F5F0EA;padding:24px 12px;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:6px;overflow:hidden;border:1px solid #E2D9CE;">
@@ -92,7 +92,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;">
             ${ABOUT_TEST.dimensions.map((d) => `
             <tr><td style="padding:10px 14px;background:#F5F0EA;border:1px solid #E2D9CE;border-radius:4px;">
-              <div style="font-size:13px;color:#2C2520;"><strong style="color:#8B6E3A;">${esc(d.pair)}</strong> — ${esc(d.name)} · <em style="color:#7A6E65;">${esc(d.question)}</em></div>
+              <div style="font-size:13px;color:#2C2520;"><strong style="color:#8B6E3A;">${esc(d.pair)}</strong> · ${esc(d.name)} · <em style="color:#7A6E65;">${esc(d.question)}</em></div>
               <div style="font-size:13px;line-height:1.65;color:#7A6E65;margin-top:4px;">${esc(d.text)}</div>
             </td></tr>
             <tr><td style="height:8px;line-height:8px;font-size:0;">&nbsp;</td></tr>`).join('')}
@@ -124,7 +124,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
 
           ${det ? `${sectionTitle('Caminhos profissionais que costumam atrair esse perfil')}
           <p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(det.careers)}</p>
-          <p style="font-size:12.5px;line-height:1.65;color:#7A6E65;margin:8px 0 0;font-style:italic;">São possibilidades para explorar e conversar — não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>` : ''}
+          <p style="font-size:12.5px;line-height:1.65;color:#7A6E65;margin:8px 0 0;font-style:italic;">São possibilidades para explorar e conversar, não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>` : ''}
 
           ${temp ? `${sectionTitle(`Seu temperamento em detalhe: ${esc(temp.name)}`)}
           ${temp.paragraphs.map((p) =>
@@ -149,6 +149,26 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
               <a href="${esc(contactUrl)}"
                  style="display:inline-block;background:#B8975A;color:#FFFFFF;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:14px 30px;border-radius:3px;">
                 Conversar com a nossa equipe
+              </a>
+            </td></tr>
+          </table>
+
+          <!-- Compartilhe -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                 style="background:#1C1917;border:1px solid #B8975A;border-radius:6px;margin-top:26px;">
+            <tr><td style="padding:26px 24px;text-align:center;">
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8975A;margin-bottom:10px;">Compartilhe essa energia</div>
+              <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.35;color:#F5F0EA;margin-bottom:10px;">
+                Estou fortalecendo meu autoconhecimento.<br><span style="color:#B8975A;">Agora é a sua vez!</span>
+              </div>
+              <p style="font-size:13px;line-height:1.7;color:rgba(245,240,234,.6);margin:0 0 18px;">
+                Gostou do resultado? Na página do questionário você baixa uma imagem pronta para os stories.
+                Poste, marque <strong style="color:#B8975A;">@anamediolaro.oficial</strong> e me conta qual é o seu tipo.
+                Quem sabe a sua marcação não inspira mais alguém a se conhecer melhor?
+              </p>
+              <a href="https://www.instagram.com/anamediolaro.oficial/"
+                 style="display:inline-block;border:1px solid #B8975A;color:#B8975A;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:12px 26px;border-radius:3px;">
+                Seguir @anamediolaro.oficial
               </a>
             </td></tr>
           </table>
@@ -182,7 +202,7 @@ Obrigada por responder ao nosso Questionário de Preferências Psicológicas e P
 
 Seu resultado foi:
 
-${code} — ${r.title}${det ? ` (${det.keyword})` : ''}
+${code} · ${r.title}${det ? ` (${det.keyword})` : ''}
 
 Temperamento:
 ${r.temperament}
@@ -191,7 +211,7 @@ ${ABOUT_TEST.title}:
 
 ${ABOUT_TEST.paragraphs.join('\n\n')}
 
-${ABOUT_TEST.dimensions.map((d) => `${d.pair} — ${d.name} · ${d.question}\n${d.text}`).join('\n\n')}
+${ABOUT_TEST.dimensions.map((d) => `${d.pair} · ${d.name} · ${d.question}\n${d.text}`).join('\n\n')}
 
 Como suas respostas se distribuíram:
 
@@ -211,7 +231,7 @@ O que esse resultado pode indicar:
 
 ${r.description}
 ${det ? `
-Seu perfil em detalhe — ${code} (${det.keyword}):
+Seu perfil em detalhe, ${code} (${det.keyword}):
 
 ${det.profile.join('\n\n')}
 ` : ''}
@@ -231,9 +251,9 @@ Caminhos profissionais que costumam atrair esse perfil:
 
 ${det.careers}
 
-(São possibilidades para explorar e conversar — não uma prescrição.)
+(São possibilidades para explorar e conversar, não uma prescrição.)
 ` : ''}${temp ? `
-Seu temperamento em detalhe — ${temp.name}:
+Seu temperamento em detalhe, ${temp.name}:
 
 ${temp.paragraphs.join('\n\n')}
 ` : ''}
@@ -244,12 +264,14 @@ ${DISCLAIMER}
 Para aprofundar essa reflexão em um processo de orientação profissional, entre em contato com a Mediolaro Clínica e Terapias:
 ${contactUrl}
 
+Compartilhe essa energia: estou fortalecendo meu autoconhecimento. Agora é a sua vez! Na página do questionário você baixa uma imagem pronta para os stories. Poste, marque @anamediolaro.oficial e me conta qual é o seu tipo:
+https://www.instagram.com/anamediolaro.oficial/
+
 Atenciosamente,
 
 Ana Mediolaro
 Mediolaro Clínica e Terapias
 
-—
 Questionário respondido em ${completedAt}.`;
 
   return { subject: EMAIL_SUBJECT, html, text };

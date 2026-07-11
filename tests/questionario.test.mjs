@@ -49,7 +49,7 @@ test('a descrição selecionada é a do INTP — Analista conceitual', () => {
   const { result } = correct(PROTOCOLO);
   assert.equal(result, resultDescriptions.INTP);
   assert.equal(result.title, 'Analista conceitual');
-  assert.equal(result.temperament, 'NT — Racional');
+  assert.equal(result.temperament, 'NT · Racional');
 });
 
 test('o banco de resultados contém os 16 tipos completos', () => {
@@ -110,7 +110,7 @@ test('o e-mail é montado com os dados corretos', () => {
     assert.ok(out.includes('INTP'));
     assert.ok(out.includes('Analista conceitual'));
     assert.ok(out.includes('Precisão'), 'apelido do perfil no e-mail');
-    assert.ok(out.includes('NT — Racional'));
+    assert.ok(out.includes('NT · Racional'));
     assert.ok(out.includes('02/07/2026 às 13h14'));
     assert.ok(out.includes('não é o') || out.includes('Não é um diagnóstico') || out.includes('diagnóstico'));
     // novas seções enriquecidas
@@ -119,7 +119,7 @@ test('o e-mail é montado com os dados corretos', () => {
     assert.ok(out.includes('Seu temperamento em detalhe'), 'temperamento no e-mail');
     assert.ok(out.includes('Caminhos profissionais'), 'caminhos profissionais no e-mail');
     assert.ok(out.includes(profileDetails.INTP.profile[0]), 'texto do perfil INTP presente');
-    assert.ok(out.includes(temperamentDescriptions['NT — Racional'].paragraphs[0]), 'texto do temperamento NT presente');
+    assert.ok(out.includes(temperamentDescriptions['NT · Racional'].paragraphs[0]), 'texto do temperamento NT presente');
   }
   // pontuações de cada dimensão presentes no corpo
   assert.ok(mail.text.includes('Extroversão: 1 pontos') || mail.text.includes('Extroversão: 1 ponto'));
@@ -136,6 +136,35 @@ test('as respostas completas não são incluídas no e-mail', () => {
   assert.ok(!mail.text.includes(sequencia));
   // nenhuma menção a perguntas individuais tipo "Pergunta 7: a"
   assert.ok(!/Pergunta \d+:\s*[ab]/i.test(mail.text));
+});
+
+test('nenhum texto voltado ao público contém travessões (regra da Ana)', async () => {
+  const DASHES = /[—–]/;
+  const banks = { resultDescriptions, profileDetails, temperamentDescriptions, ABOUT_TEST };
+  for (const [name, bank] of Object.entries(banks)) {
+    assert.ok(!DASHES.test(JSON.stringify(bank)), `travessão encontrado em ${name}`);
+  }
+  const { scores, code } = correct(PROTOCOLO);
+  const mail = buildResultEmail({ firstName: 'Izabela', code, scores, completedAt: 'hoje' });
+  assert.ok(!DASHES.test(mail.subject), 'travessão no assunto');
+  assert.ok(!DASHES.test(mail.html), 'travessão no HTML do e-mail');
+  assert.ok(!DASHES.test(mail.text), 'travessão no texto do e-mail');
+  const { readFile } = await import('node:fs/promises');
+  const page = await readFile(new URL('../questionario/index.html', import.meta.url), 'utf-8');
+  assert.ok(!DASHES.test(page), 'travessão na página do questionário');
+});
+
+test('o e-mail e o resultado convidam a marcar o Instagram da Ana', async () => {
+  const { scores, code } = correct(PROTOCOLO);
+  const mail = buildResultEmail({ firstName: 'Izabela', code, scores, completedAt: 'hoje' });
+  for (const out of [mail.html, mail.text]) {
+    assert.ok(out.includes('@anamediolaro.oficial'));
+    assert.ok(out.includes('Agora é a sua vez'));
+  }
+  const { readFile } = await import('node:fs/promises');
+  const page = await readFile(new URL('../questionario/index.html', import.meta.url), 'utf-8');
+  assert.ok(page.includes('instagram.com/anamediolaro.oficial'));
+  assert.ok(page.includes('Baixar imagem para os stories'));
 });
 
 test('a validação do servidor aceita o protocolo de exemplo', () => {
