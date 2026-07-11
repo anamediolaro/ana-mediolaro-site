@@ -3,11 +3,26 @@
 ## Estilo de escrita (regra permanente da Ana)
 
 - NUNCA usar travessões ou traços de pontuação (— ou –) em nenhum texto
-  voltado ao público: páginas, e-mails, PDFs, legendas. Substituir por
-  vírgula, dois-pontos, ponto final ou ponto mediano (·) em rótulos.
-  Hífen dentro de palavras compostas (bem-estar, e-mail) é permitido.
+  voltado ao público: páginas, e-mails, PDFs, legendas, tanto na versão
+  desktop quanto na mobile. Substituir por vírgula, dois-pontos, ponto
+  final ou ponto mediano (·) em rótulos. Hífen dentro de palavras
+  compostas (bem-estar, e-mail) é permitido.
+  Ao editar qualquer texto, verificar com `grep '—' index.html` antes de
+  finalizar.
 - Linguagem acessível e acolhedora, sem tom acadêmico.
 - Falar com a pessoa em "você".
+
+## Foto principal (hero)
+
+- Fundo da foto deve ser o creme do site (#F5F0EA), integrado à página,
+  sem contorno, sem sombra e sem esfumado.
+- A poltrona deve aparecer completa (versão reconstruída por IA aprovada).
+- No mobile, o hero empilha: foto em largura total acima, texto abaixo.
+
+## Publicação
+
+- Site publica via merge na branch main (Cloudflare atualiza sozinho).
+- Sempre mostrar prévia (print) para a Ana antes de publicar mudanças visuais.
 
 ## Teste de Personalidade e Escolha Profissional (/teste-de-personalidade/)
 
