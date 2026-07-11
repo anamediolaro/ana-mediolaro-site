@@ -321,8 +321,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
       <p class="rshares">Baixe a arte pronta, poste nos stories e marque <b>@anamediolaro.oficial</b>. E tem o modelo com enquete: seus amigos votam se você é assim mesmo. Vou adorar saber o seu tipo!</p>
       <div class="rshareopts">
         <div class="rshareopt"><span>Modelo</span>
-          <button class="rtog on" data-model="desafio">Desafio</button>
-          <button class="rtog" data-model="enquete">Enquete: sou assim?</button>
+          <button class="rtog on" data-model="enquete">Enquete: sou assim?</button>
+          <button class="rtog" data-model="desafio">Desafio</button>
         </div>
         <div class="rshareopt"><span>Cor</span>
           <button class="rtog on" data-style="clara">Clara</button>
@@ -609,7 +609,7 @@ $('btnPdf').addEventListener('click', () => window.print());
 const IG_HANDLE = '@anamediolaro.oficial';
 const SITE_URL = 'anamediolaro.com.br/teste-de-personalidade';
 let shareStyle = 'clara';   // clara | escura
-let shareModel = 'desafio'; // desafio | enquete
+let shareModel = 'enquete'; // desafio | enquete
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   const words = text.split(' ');
