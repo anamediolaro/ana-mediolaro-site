@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 
 import {
   QUESTIONS, TOTAL_QUESTIONS, computeScores, typeFromScores, correct,
-  resultDescriptions,
+  resultDescriptions, profileDetails, temperamentDescriptions, ABOUT_TEST,
 } from '../questionario/scoring.mjs';
 import { buildResultEmail, EMAIL_SUBJECT } from '../questionario/email.mjs';
 import { validatePayload, formatDateBR } from '../worker.js';
@@ -62,6 +62,36 @@ test('o banco de resultados contém os 16 tipos completos', () => {
   }
 });
 
+test('cada um dos 16 resultados tem perfil detalhado, apelido e caminhos profissionais', () => {
+  assert.equal(Object.keys(profileDetails).length, 16);
+  for (const code of Object.keys(resultDescriptions)) {
+    const det = profileDetails[code];
+    assert.ok(det, `perfil detalhado ausente para ${code}`);
+    assert.ok(det.keyword && det.keyword.length >= 4, `${code} sem apelido`);
+    assert.ok(det.profile.length >= 3, `${code} com perfil curto demais`);
+    assert.ok(det.careers.length > 80, `${code} sem caminhos profissionais`);
+  }
+  // apelidos das devolutivas manuais preservados
+  assert.equal(profileDetails.INTP.keyword, 'Precisão');
+  assert.equal(profileDetails.ESFJ.keyword, 'Interação Social');
+  assert.equal(profileDetails.ENTJ.keyword, 'Comando');
+  assert.equal(profileDetails.ISTP.keyword, 'Temeridade');
+});
+
+test('os 4 temperamentos têm descrição completa e cobrem os 16 tipos', () => {
+  assert.equal(Object.keys(temperamentDescriptions).length, 4);
+  for (const [code, r] of Object.entries(resultDescriptions)) {
+    const temp = temperamentDescriptions[r.temperament];
+    assert.ok(temp, `temperamento sem descrição para ${code}: ${r.temperament}`);
+    assert.ok(temp.paragraphs.length >= 3);
+  }
+});
+
+test('a explicação do teste existe e cobre os quatro pares de preferências', () => {
+  assert.ok(ABOUT_TEST.paragraphs.length >= 2);
+  assert.deepEqual(ABOUT_TEST.dimensions.map((d) => d.pair), ['E / I', 'S / N', 'T / F', 'J / P']);
+});
+
 test('perguntas sem resposta impedem a correção', () => {
   const incompleto = { ...PROTOCOLO };
   delete incompleto[13];
@@ -79,9 +109,17 @@ test('o e-mail é montado com os dados corretos', () => {
     assert.ok(out.includes('Izabela'));
     assert.ok(out.includes('INTP'));
     assert.ok(out.includes('Analista conceitual'));
+    assert.ok(out.includes('Precisão'), 'apelido do perfil no e-mail');
     assert.ok(out.includes('NT — Racional'));
     assert.ok(out.includes('02/07/2026 às 13h14'));
     assert.ok(out.includes('não é o') || out.includes('Não é um diagnóstico') || out.includes('diagnóstico'));
+    // novas seções enriquecidas
+    assert.ok(out.includes('Como este resultado é construído'), 'explicação do teste no e-mail');
+    assert.ok(out.includes('Seu perfil em detalhe'), 'perfil detalhado no e-mail');
+    assert.ok(out.includes('Seu temperamento em detalhe'), 'temperamento no e-mail');
+    assert.ok(out.includes('Caminhos profissionais'), 'caminhos profissionais no e-mail');
+    assert.ok(out.includes(profileDetails.INTP.profile[0]), 'texto do perfil INTP presente');
+    assert.ok(out.includes(temperamentDescriptions['NT — Racional'].paragraphs[0]), 'texto do temperamento NT presente');
   }
   // pontuações de cada dimensão presentes no corpo
   assert.ok(mail.text.includes('Extroversão: 1 pontos') || mail.text.includes('Extroversão: 1 ponto'));

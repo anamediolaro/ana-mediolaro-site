@@ -533,6 +533,225 @@ export const resultDescriptions = {
   },
 };
 
+// ─── Sobre o teste (explicação em linguagem simples) ────────────────────────
+// Adaptação da introdução usada nas devolutivas manuais da clínica
+// ("Personalidade e Escolha Profissional — dimensões em Keirsey e Bates").
+
+export const ABOUT_TEST = {
+  title: 'Como este resultado é construído',
+  paragraphs: [
+    'Este questionário se inspira nos estudos do psiquiatra Carl Gustav Jung, que observou que as pessoas têm jeitos preferidos de perceber o mundo e de tomar decisões. Mais tarde, Katharine Briggs e Isabel Myers organizaram essas ideias em quatro pares de preferências, e os pesquisadores David Keirsey e Marilyn Bates agruparam as combinações em quatro grandes temperamentos, cada um com um estilo próprio de agir, se comunicar e escolher caminhos.',
+    'Cada uma das 26 perguntas olha para um desses quatro pares. Não existe lado certo: os dois polos de cada par são igualmente valiosos, apenas diferentes. Somando suas escolhas, o teste identifica de qual lado de cada par você tende a ficar — e a combinação das quatro letras forma o seu resultado.',
+    'O resultado não é uma sentença: é um retrato das suas preferências neste momento, um ponto de partida para você se conhecer melhor e pensar nas suas escolhas com mais clareza.',
+  ],
+  dimensions: [
+    { pair: 'E / I', name: 'Extroversão ou Introversão', question: 'De onde vem a sua energia?', text: 'Quem tende à Extroversão se recarrega no contato com pessoas e com o movimento do mundo. Quem tende à Introversão se recarrega em momentos mais reservados, de concentração e profundidade.' },
+    { pair: 'S / N', name: 'Sensação ou Intuição', question: 'Como você capta as informações?', text: 'Quem tende à Sensação confia nos fatos, nos detalhes e na experiência concreta. Quem tende à Intuição presta mais atenção em possibilidades, significados e no que ainda pode vir a ser.' },
+    { pair: 'T / F', name: 'Pensamento ou Sentimento', question: 'Como você decide?', text: 'Quem tende ao Pensamento decide comparando argumentos com lógica e imparcialidade. Quem tende ao Sentimento decide considerando valores, circunstâncias e o impacto nas pessoas.' },
+    { pair: 'J / P', name: 'Julgamento ou Percepção', question: 'Como você organiza a vida?', text: 'Quem tende ao Julgamento gosta de definir, planejar e concluir. Quem tende à Percepção prefere manter opções abertas e decidir conforme as coisas acontecem.' },
+  ],
+};
+
+// ─── Os quatro temperamentos (versão em linguagem simples) ──────────────────
+// Adaptação dos textos completos do material "Escolha Profissional"
+// (Keirsey e Bates), reescritos sem o tom acadêmico e sem afirmações absolutas.
+
+export const temperamentDescriptions = {
+  'SP — Artesão': {
+    name: 'SP — Artesão',
+    original: 'Realista perceptivo',
+    paragraphs: [
+      'Para o temperamento Artesão, o grande valor é a liberdade de agir. Pessoas com esse temperamento costumam viver o momento presente com intensidade: fazem as coisas porque sentem o impulso e o prazer de fazer, e não apenas por obrigação ou por um plano distante. Quando uma atividade as envolve de verdade, conseguem se dedicar por horas a fio.',
+      'Regras sem propósito, rotinas engessadas e hierarquias rígidas tendem a sufocar esse temperamento. Em compensação, ele é imbatível em situações de crise e de improviso: quando tudo sai do roteiro, é o Artesão que costuma manter a calma e encontrar uma saída prática na hora.',
+      'Socialmente, costuma ser bem aceito: otimista, animado, com facilidade para fazer amizades e grande capacidade de "dar a volta por cima" depois de um tropeço. É também muito leal ao seu grupo — da equipe de trabalho à turma de amigos.',
+      'No trabalho, o Artesão está mais ligado ao processo do que ao resultado final: o envolvimento com a ação é o que dá sentido. Por isso, tende a se realizar em atividades com movimento, variedade, habilidade prática e algum desafio — e a se desgastar em funções puramente repetitivas e burocráticas.',
+    ],
+  },
+  'SJ — Guardião': {
+    name: 'SJ — Guardião',
+    original: 'Realista judicativo',
+    paragraphs: [
+      'A dedicação e a persistência são as marcas do temperamento Guardião. Pessoas com esse temperamento costumam se doar de verdade — às pessoas sob sua responsabilidade e também às tarefas do dia a dia que sustentam a vida de todos, mesmo quando ninguém percebe.',
+      'A palavra dada tem grande peso: honrar compromissos, cumprir o que prometeu e ser coerente consigo mesmo são metas constantes. Ser útil e gerar harmonia ao redor é o que dá sentido à caminhada — ainda que, às vezes, o Guardião aceite responsabilidades demais por medo de decepcionar, e sinta o peso disso mais tarde.',
+      'Esse temperamento prefere o previsível ao improvisado: gosta de dividir os objetivos em etapas, seguir procedimentos que funcionam e contribuir para que a família, a escola e o trabalho funcionem de forma ordenada e justa. Mudanças são bem-vindas quando acontecem de forma gradual e com bom motivo.',
+      'No trabalho, o Guardião é o pilar que dá estabilidade às instituições. Tende a se realizar em atividades de cuidado, organização, ensino, administração e serviço às pessoas — lugares onde continuidade, confiança e responsabilidade são valorizadas.',
+    ],
+  },
+  'NT — Racional': {
+    name: 'NT — Racional',
+    original: 'Intuitivo racional',
+    paragraphs: [
+      'O que move o temperamento Racional é o desejo de compreender como as coisas funcionam — a natureza, os sistemas, as pessoas, as ideias. Quem convive com um Racional convive com um espírito de cientista: alguém que quer entender, prever e explicar o mundo.',
+      'A competência é seu grande valor: o Racional quer fazer bem-feito e cobra muito de si mesmo. Como raramente acha que já sabe o suficiente, vive estudando, aperfeiçoando e construindo modelos e sistemas. Esse mesmo padrão elevado, porém, pode virar autocrítica dura e medo de falhar — e, sem perceber, ele pode esperar dos outros a mesma exigência que impõe a si.',
+      'Na comunicação, tende a ser direto e econômico: não gosta de repetir o óbvio e busca precisão nas palavras. Por isso, às vezes é lido como frio ou distante, quando na verdade está apenas concentrado em entender. Aceita bem mudanças e ideias novas — desde que façam sentido.',
+      'No trabalho, o Racional se realiza onde há problemas complexos para resolver: ciência, tecnologia, estratégia, planejamento, análise, ensino. O que o desgasta é a rotina sem desafio e as tarefas que não exigem raciocínio — para ele, aprender é um projeto para a vida inteira.',
+    ],
+  },
+  'NF — Idealista': {
+    name: 'NF — Idealista',
+    original: 'Intuitivo sensível',
+    paragraphs: [
+      'Para o temperamento Idealista, a vida é uma busca — por sentido, por autenticidade, por se tornar quem realmente se é. Mais do que ter ou fazer, o Idealista quer ser verdadeiro: máscaras, aparências e relações superficiais pesam muito para ele.',
+      'É o temperamento mais voltado às pessoas: enxerga o potencial dos outros e sente um chamado para ajudá-los a crescer. Costuma se engajar de corpo e alma em causas que considera importantes — e pode se decepcionar quando percebe que nem todos vivem essa busca com a mesma intensidade.',
+      'Vive as emoções com profundidade e busca dar significado a tudo o que acontece. O perfeccionismo é um risco conhecido: como se orienta por uma visão de perfeição, pode ficar insatisfeito até com trabalhos que já estão bons, e se cobrar além da conta.',
+      'A linguagem é o seu grande talento: falar, escrever, escutar, criar. No trabalho, o Idealista tende a se realizar onde pode se comunicar e contribuir com o desenvolvimento das pessoas — ensino, psicologia, escrita, arte, orientação, causas sociais — e a murchar em ambientes frios, competitivos ou puramente mecânicos.',
+    ],
+  },
+};
+
+// ─── Perfil detalhado dos 16 resultados ─────────────────────────────────────
+// Adaptação dos subtipos do material "Escolha Profissional" (Keirsey e Bates)
+// para linguagem simples. O campo keyword mantém o apelido usado nas
+// devolutivas manuais da clínica. Os caminhos profissionais são apresentados
+// como possibilidades a explorar, nunca como prescrição.
+
+export const profileDetails = {
+  ISTP: {
+    keyword: 'Temeridade',
+    profile: [
+      'Você tende a ser uma pessoa de ação: quando algo desperta seu interesse, você mergulha de cabeça, sem precisar de longos preparativos. Situações com emoção, movimento e até um pouco de risco costumam ser atraentes — é ali que você se sente vivo e no controle.',
+      'Regras que não fazem sentido e ordens autoritárias tendem a incomodar. Você funciona melhor com liberdade para agir do seu jeito, e costuma tratar todo mundo de igual para igual — o que faz de você uma companhia apreciada.',
+      'Realista e observador, você sabe aproveitar as oportunidades do momento como poucos. Gosta de jogos e desafios, e ser reconhecido pelo que faz bem é importante para você. Ferramentas, máquinas e instrumentos costumam ser quase uma extensão do seu corpo: você aprende fazendo, montando, desmontando e testando.',
+    ],
+    careers: 'Atividades que unem habilidade prática, técnica e alguma adrenalina costumam atrair esse perfil: pilotagem, cirurgia e áreas técnicas da saúde, engenharia mecânica, eletrônica, esportes, operações de precisão e trabalhos de campo. O que importa é ter espaço para agir com autonomia e ver o resultado concreto do que faz.',
+  },
+  ESTP: {
+    keyword: 'Empreendimento',
+    profile: [
+      'Você tende a ser um empreendedor nato: tem o impulso de transformar e melhorar o ambiente ao seu redor, e dificilmente deixa as coisas como estão. É muito observador — capta detalhes das pessoas e das situações que passam despercebidos para a maioria, inclusive o que não é dito em palavras.',
+      'Realista, pragmático e comunicativo, você costuma ser popular e ter facilidade para conquistar as pessoas. Tensões e climas pesados incomodam: você prefere resolver logo e seguir em frente, o que às vezes pode ser lido como pressa em assuntos que pediam mais profundidade.',
+      'Seu talento aparece com força nas horas de decisão e de crise: enquanto muitos ainda estão analisando, você já enxergou a oportunidade e está agindo.',
+    ],
+    careers: 'Perfis assim costumam se destacar em negociação, vendas, empreendedorismo, diplomacia, gestão de crises e projetos que precisam sair do papel rápido. Ambientes dinâmicos, com gente, metas visíveis e retorno rápido, tendem a render muito mais para você do que funções repetitivas atrás de uma mesa.',
+  },
+  ESFP: {
+    keyword: 'Vivacidade',
+    profile: [
+      'Você tende a ser uma presença que ilumina o ambiente: alegria, otimismo e calor humano costumam chegar junto com você. Generoso, você gosta de gente e faz as coisas pelas pessoas sem ficar calculando o que vai receber em troca.',
+      'A solidão pesa para você — é no contato com os outros que sua energia se renova. Por outro lado, situações de exposição negativa ou críticas frias podem machucar mais do que os outros imaginam, e você tende a se afastar delas.',
+      'Você tem um talento especial para lidar com pessoas em momentos difíceis: percebe o clima, antevê soluções que ninguém viu e encontra saídas criativas sem se prender ao "sempre foi assim".',
+    ],
+    careers: 'Atividades com contato humano constante costumam combinar com esse perfil: educação (especialmente com crianças), trabalhos sociais e de cuidado, comércio e vendas, comunicação, teatro e entretenimento, relações públicas, saúde e bem-estar. O essencial é estar com pessoas e ver o impacto direto do que você faz.',
+  },
+  ISFP: {
+    keyword: 'Artes',
+    profile: [
+      'O seu é o perfil do artista: sensibilidade estética, espontaneidade e uma atenção fina ao momento presente. Você tende a demonstrar o que sente mais por gestos e atitudes do que por discursos — e muitas vezes se expressa melhor por um canal indireto: uma imagem, uma música, um trabalho bem-feito, um cuidado silencioso.',
+      'Planejar demais e esperar demais desanimam você: seu combustível é o envolvimento com o que está acontecendo agora. Quando algo realmente o arrebata, você se entrega sem reservas — ao trabalho, ao esporte, à arte.',
+      'Com uma inteligência voltada ao concreto, você percebe as necessidades e as dores dos outros com facilidade, e comemora as vitórias alheias como se fossem suas. Gentileza, gratidão e liberdade são valores centrais — e, por ser discreto, você às vezes é mal interpretado por quem não o conhece de perto.',
+    ],
+    careers: 'Caminhos ligados à arte, ao design, à publicidade, à gastronomia, à natureza, ao artesanato e ao cuidado costumam atrair esse perfil — em geral, tudo o que permita criar com as mãos e com os sentidos, no seu ritmo, com autonomia e propósito concreto.',
+  },
+  ISTJ: {
+    keyword: 'Dever',
+    profile: [
+      'Palavra-chave: confiabilidade. Você tende a levar seus compromissos muito a sério e a cumprir o que prometeu com uma constância que poucos têm — mesmo quando ninguém está olhando. Estruturas que funcionam, tradições que fazem sentido e instituições sólidas têm grande valor para você.',
+      'Prático e realista, você quer que as coisas funcionem: procedimentos claros, critérios definidos e trabalho bem-feito. Tem paciência com processos, mas pouca paciência com quem trata as responsabilidades com descaso.',
+      'Sua dedicação discreta às vezes se torna tão natural que os outros deixam de notá-la — e sua objetividade pode ser confundida com frieza. Na verdade, ela é a sua forma de proteger a qualidade do que entrega.',
+    ],
+    careers: 'Perfis assim costumam se destacar em contabilidade, auditoria, direito, administração, finanças, gestão pública, ensino e funções de fiscalização e controle — áreas em que precisão, responsabilidade e consistência valem ouro.',
+  },
+  ESTJ: {
+    keyword: 'Responsabilidade',
+    profile: [
+      'Você tende a ser a pessoa que faz as coisas andarem: recebe uma responsabilidade e a transforma em plano, etapas e resultado. Atividades bem definidas, com metas e prazos claros, são o seu território natural — e implantar ordem onde havia bagunça é quase uma vocação.',
+      'Realista e direto, você comunica com clareza o que espera e cobra o combinado, de si e dos outros. A pontualidade e o cumprimento das regras têm grande valor para você — e é por isso que costuma ser um pilar de sustentação nos lugares por onde passa.',
+      'O ponto de atenção é o outro lado da mesma moeda: na pressa de executar, você pode ter pouca paciência com opiniões diferentes e parecer duro com quem funciona em outro ritmo. Abrir espaço para ouvir antes de decidir costuma multiplicar seus resultados.',
+    ],
+    careers: 'Administração, gestão de equipes e projetos, operações, comércio, logística, educação e funções de coordenação costumam combinar com esse perfil — qualquer lugar em que organizar recursos, pessoas e prazos seja o coração do trabalho.',
+  },
+  ISFJ: {
+    keyword: 'Devotamento',
+    profile: [
+      'Cuidar é o seu jeito de estar no mundo. Você tende a perceber, antes de todo mundo, o que as pessoas ao redor estão precisando — e a agir de forma prática e discreta para que nada falte. Sua realização vem de se dedicar a quem precisa de você.',
+      'Com um senso de responsabilidade fora do comum, você prefere métodos que já provaram que funcionam a improvisos arriscados. É leal às pessoas com quem trabalha e cria laços de confiança profundos.',
+      'Como não gosta de dar ordens, muitas vezes prefere fazer você mesmo — e aí mora o risco de se sobrecarregar em silêncio. Aprender a pedir ajuda e a mostrar o próprio trabalho é um cuidado que você merece ter consigo.',
+    ],
+    careers: 'Enfermagem e saúde, educação infantil e educação especial, terapias, secretariado e apoio executivo, biblioteconomia, serviço social e atendimento costumam atrair esse perfil — atividades de cuidado contínuo, onde atenção aos detalhes e constância fazem toda a diferença na vida de alguém.',
+  },
+  ESFJ: {
+    keyword: 'Interação Social',
+    profile: [
+      'Você tende a ser uma das pessoas mais sociáveis que existem: é no encontro com os outros que sua energia se renova. Onde você chega, o ambiente fica mais acolhedor — você aproxima as pessoas, concilia diferenças e cria harmonia quase sem perceber.',
+      'Prestativo e atento a quem precisa, você leva a sério as regras, os combinados e as tarefas que assumiu — e por isso costuma ser muito querido e valorizado. Assuntos concretos e práticos são o seu forte; análises muito abstratas tendem a cansar.',
+      'O carinho e o reconhecimento dos outros são importantes para você — e a indiferença machuca. Vale o cuidado: não deixe que a busca por agradar faça você adiar conversas necessárias ou carregar culpas que não são suas.',
+    ],
+    careers: 'Praticamente tudo o que envolve pessoas combina com esse perfil: atendimento e assistência, vendas, secretariado, ensino, supervisão e direção de escolas e empresas, administração, treinamento de equipes, relações públicas, saúde. O essencial é servir e interagir dentro de uma estrutura organizada.',
+  },
+  INTJ: {
+    keyword: 'Lógica',
+    profile: [
+      'Você tende a viver num mundo de ideias com aplicação prática: enxerga possibilidades, monta o modelo na cabeça e testa contra a realidade. Confiante e rápido nas decisões, você é, no fundo, um aplicador de teorias — quer ver o conceito funcionando.',
+      'Títulos e cargos não impressionam você: o que importa é se a ideia faz sentido. Sua mente funciona como um jogo de xadrez — sempre alerta às consequências de cada movimento, pronta para descartar o que não tem utilidade e abraçar o que tem.',
+      'Desafios não abatem você; pelo contrário, viram combustível para criar. Por outro lado, embora sinta profundamente, você raramente mostra as emoções — e isso pode fazer com que pareça indiferente. Quem conquista sua confiança descobre alguém extremamente dedicado.',
+    ],
+    careers: 'Pesquisa científica, engenharia e produção, estratégia, arquitetura de sistemas, gestão de projetos complexos e posições de comando técnico costumam atrair esse perfil — trabalhos onde seja possível construir, melhorar e transformar o ambiente, com autonomia e privacidade para pensar.',
+  },
+  ENTJ: {
+    keyword: 'Comando',
+    profile: [
+      'Liderar e estruturar é o seu impulso natural: onde você chega, logo enxerga o objetivo maior e começa a organizar pessoas e recursos para alcançá-lo. Você é, por natureza, um construtor de organizações.',
+      'Você tolera procedimentos estabelecidos — até o momento em que eles se mostram ineficientes. Aí não hesita em mudar, porque o que você valoriza mesmo é a competência e o resultado. Decide com base em dados e raramente se deixa levar pela emoção do momento.',
+      'Receber ordens não é o seu forte, e o trabalho tende a ocupar um espaço enorme na sua vida — vale o cuidado para não deixar o descanso e as relações em segundo plano. Sua habilidade de visualizar metas e comunicá-las com clareza é o que faz equipes inteiras andarem.',
+    ],
+    careers: 'Posições executivas e de liderança, gestão de negócios, administração, ciências exatas, computação, engenharia e carreiras públicas de comando costumam atrair esse perfil — lugares onde haja metas grandes, poder de decisão e sistemas para construir ou expandir.',
+  },
+  INTP: {
+    keyword: 'Precisão',
+    profile: [
+      'A precisão é a sua marca registrada — no pensamento e nas palavras. Você tende a buscar o entendimento profundo das coisas: como funcionam, por que funcionam, onde está a incoerência que ninguém viu. Contradições em um argumento saltam aos seus olhos.',
+      'Com enorme capacidade de concentração, você seleciona o que é relevante e vai fundo. O que aprende, dificilmente esquece. Para você, o mundo existe para ser compreendido — e explicações vagas simplesmente não servem.',
+      'Expressar emoções em palavras pode ser difícil, e você tende à reserva, exceto com pessoas próximas. Por isso, às vezes seu valor passa despercebido ou seus méritos acabam creditados a outros. Impaciência com conversas rasas pode soar como arrogância — mas quem o conhece sabe que é sede de profundidade.',
+    ],
+    careers: 'Ciências, matemática, filosofia, pesquisa, análise, tecnologia e docência (especialmente em níveis avançados) costumam atrair esse perfil. Você trabalha melhor com autonomia, sem interrupções, em questões que desafiem seu raciocínio — vendas e negociação raramente o seduzem.',
+  },
+  ENTP: {
+    keyword: 'Destreza',
+    profile: [
+      'Sua mente precisa de exercício constante: ideias, projetos, pessoas, problemas — tudo vira matéria-prima para a sua engenhosidade. Extremamente intuitivo, você enxerga relações e possibilidades onde os outros veem só o óbvio, e seu entusiasmo contagia quem está por perto.',
+      '"Impossível" é, para você, um convite. Você reluta em aceitar moldes prontos e questiona a autoridade tradicional — não por rebeldia, mas porque está sempre engendrando um jeito melhor de fazer as coisas.',
+      'Para você, uma ideia vale pelo que ela pode virar na prática: o projeto é o meio, a invenção funcionando é o fim. Conversador brilhante, você é capaz de defender uma tese complexa com fascinação — só fique atento ao risco de começar mais projetos do que consegue terminar.',
+    ],
+    careers: 'Projetos inovadores, tecnologia, computação, engenharia, docência universitária, empreendedorismo e tudo o que não tenha rotina costumam atrair esse perfil. Você é frequentemente descrito como um "engenheiro das relações humanas": une pessoas e ideias para fazer o novo acontecer.',
+  },
+  INFJ: {
+    keyword: 'Intuição',
+    profile: [
+      'A intuição é a base do seu jeito de ser: você capta emoções, intenções e sentimentos dos outros antes mesmo que eles percebam — e muitas vezes não sabe explicar como chegou lá, só sabe que chegou. Sua empatia conecta passado, presente e futuro num quadro que poucos conseguem ver.',
+      'Dedicado ao extremo no que faz, você é atraído por atividades de estudo e profundidade, com uma tendência conhecida ao perfeccionismo — a régua alta que você usa com o mundo é a mesma que usa consigo.',
+      'Sensível a conflitos e críticas, você pode se sentir paralisado em ambientes hostis — a ponto de adoecer física e emocionalmente. Proteger seus espaços e suas relações de confiança não é luxo: é necessidade.',
+    ],
+    careers: 'Psicologia, psiquiatria, escrita, música e obras criativas de fôlego, ensino, orientação e áreas ligadas à linguagem e à comunicação profunda costumam atrair esse perfil — trabalhos onde sensibilidade e visão sejam o instrumento principal.',
+  },
+  ENFJ: {
+    keyword: 'Liderança',
+    profile: [
+      'Você tende a ser um líder carismático: as pessoas naturalmente se aproximam, confiam e seguem. Sem perceber, você assume a responsabilidade pelos sentimentos de quem o procura — e se torna fonte de apoio e sustentação para muita gente.',
+      'Com facilidade rara para expressar sentimentos em palavras, você percebe as motivações dos outros com uma exatidão impressionante — sua intuição sobre pessoas raramente erra. A contrapartida: você espera muito das pessoas, e do relacionamento perfeito, e a realidade nem sempre acompanha.',
+      'Comunicador nato, mestre da palavra, você dá o seu melhor quando está desenvolvendo pessoas e mobilizando grupos em torno de uma causa que valha a pena.',
+    ],
+    careers: 'Comunicação em todas as formas — ensino, terapia, jornalismo, teatro, política, relações públicas, liderança de equipes e de projetos sociais — costuma atrair esse perfil. O que definha sua energia são trabalhos isolados, sem gente e sem propósito humano.',
+  },
+  ENFP: {
+    keyword: 'Influência',
+    profile: [
+      'Para você, tudo tem um significado. Observador agudo, você percebe as motivações das pessoas e o sentido oculto das situações — e por isso exerce uma influência natural sobre quem está por perto. Autenticidade não é opção para você: é necessidade vital.',
+      'Você vive as emoções com intensidade e mergulha de corpo inteiro no processo de criar — essa entrega cativa as pessoas com facilidade. Em contrapartida, a repetição desbota seu entusiasmo: o novo sempre chama mais do que o já conhecido, e terminar pode ser mais difícil do que começar.',
+      'Orgulhoso no bom sentido, independente e otimista, você não gosta de se submeter nem de submeter ninguém — e tem um dom raro para manter as pessoas unidas ao seu redor.',
+    ],
+    careers: 'Comunicação, jornalismo, roteiro e produção criativa, ensino, direito, artes cênicas, publicidade e vendas consultivas costumam atrair esse perfil. Fuja do excesso de rotina e de regras: seu talento floresce onde há contato humano, variedade e espaço para criar.',
+  },
+  INFP: {
+    keyword: 'Idealismo',
+    profile: [
+      'Você tende a ser profundamente idealista: capaz de se dedicar de corpo e alma a uma causa em que acredita, sem medir sacrifícios. Sua vida se orienta pelos valores que carrega — honra, dignidade, coerência — mais do que pela lógica fria dos fatos.',
+      'Seu mundo interno é rico em imagens e significados: você pensa por metáforas e tem o dom de criar e interpretar símbolos. Paciente com situações complexas, você se enfada com detalhes burocráticos e rotinas vazias.',
+      'Você valoriza a harmonia e pode ceder para evitar conflitos — mas quando um valor essencial é ferido, revela uma firmeza que surpreende. O desafio conhecido do seu perfil é conciliar os ideais com a realidade imperfeita, sem se cobrar demais por isso.',
+    ],
+    careers: 'Psicologia, ensino, escrita e literatura, causas sociais, áreas ligadas à linguagem e projetos com propósito costumam atrair esse perfil. Negócios puramente competitivos e funções repetitivas tendem a esvaziar sua motivação — você precisa acreditar no que faz.',
+  },
+};
+
 export const DISCLAIMER =
   'Este resultado apresenta tendências de preferência com base nas respostas fornecidas. ' +
   'Ele possui finalidade educativa e de autoconhecimento. Não é um diagnóstico, não é o ' +

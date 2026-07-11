@@ -6,7 +6,7 @@
  * código de quatro letras, pontuações por dimensão e o conteúdo aprovado.
  */
 
-import { resultDescriptions, DISCLAIMER } from './scoring.mjs';
+import { resultDescriptions, profileDetails, temperamentDescriptions, ABOUT_TEST, DISCLAIMER } from './scoring.mjs';
 
 export const EMAIL_SUBJECT = 'Seu resultado do Questionário de Preferências Psicológicas';
 
@@ -38,6 +38,8 @@ function listHtml(items) {
 export function buildResultEmail({ firstName, code, scores, completedAt, contactUrl = DEFAULT_CONTACT_URL }) {
   const r = resultDescriptions[code];
   if (!r) throw new Error(`Código de resultado inválido: ${code}`);
+  const det = profileDetails[code];
+  const temp = temperamentDescriptions[r.temperament];
   const name = esc(firstName);
 
   const sectionTitle = (t) =>
@@ -79,9 +81,21 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
             <tr><td style="padding:24px;text-align:center;">
               <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7A6E65;">Seu resultado foi</div>
               <div style="font-family:Georgia,'Times New Roman',serif;font-size:44px;color:#B8975A;letter-spacing:8px;margin:8px 0 2px;">${code}</div>
-              <div style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#2C2520;">${esc(r.title)}</div>
+              <div style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#2C2520;">${esc(r.title)}${det ? ` <span style="color:#8B6E3A;">· ${esc(det.keyword)}</span>` : ''}</div>
               <div style="font-size:13px;color:#7A6E65;margin-top:8px;">Temperamento: <strong style="color:#8B6E3A;">${esc(r.temperament)}</strong></div>
             </td></tr>
+          </table>
+
+          ${sectionTitle(ABOUT_TEST.title)}
+          ${ABOUT_TEST.paragraphs.map((p) =>
+            `<p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(p)}</p>`).join('')}
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;">
+            ${ABOUT_TEST.dimensions.map((d) => `
+            <tr><td style="padding:10px 14px;background:#F5F0EA;border:1px solid #E2D9CE;border-radius:4px;">
+              <div style="font-size:13px;color:#2C2520;"><strong style="color:#8B6E3A;">${esc(d.pair)}</strong> — ${esc(d.name)} · <em style="color:#7A6E65;">${esc(d.question)}</em></div>
+              <div style="font-size:13px;line-height:1.65;color:#7A6E65;margin-top:4px;">${esc(d.text)}</div>
+            </td></tr>
+            <tr><td style="height:8px;line-height:8px;font-size:0;">&nbsp;</td></tr>`).join('')}
           </table>
 
           ${sectionTitle('Como suas respostas se distribuíram')}
@@ -95,6 +109,10 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
           ${sectionTitle('O que esse resultado pode indicar')}
           <p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(r.description)}</p>
 
+          ${det ? `${sectionTitle(`Seu perfil em detalhe: ${code} (${esc(det.keyword)})`)}
+          ${det.profile.map((p) =>
+            `<p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(p)}</p>`).join('')}` : ''}
+
           ${sectionTitle('Tendências que podem aparecer')}
           ${listHtml(r.tendencies)}
 
@@ -103,6 +121,14 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
 
           ${sectionTitle('Ambientes em que você pode funcionar melhor')}
           ${listHtml(r.favorableEnvironments)}
+
+          ${det ? `${sectionTitle('Caminhos profissionais que costumam atrair esse perfil')}
+          <p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(det.careers)}</p>
+          <p style="font-size:12.5px;line-height:1.65;color:#7A6E65;margin:8px 0 0;font-style:italic;">São possibilidades para explorar e conversar — não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>` : ''}
+
+          ${temp ? `${sectionTitle(`Seu temperamento em detalhe: ${esc(temp.name)}`)}
+          ${temp.paragraphs.map((p) =>
+            `<p style="font-size:14px;line-height:1.7;color:#2C2520;margin:8px 0 0;">${esc(p)}</p>`).join('')}` : ''}
 
           <!-- Aviso -->
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
@@ -156,10 +182,16 @@ Obrigada por responder ao nosso Questionário de Preferências Psicológicas e P
 
 Seu resultado foi:
 
-${code} — ${r.title}
+${code} — ${r.title}${det ? ` (${det.keyword})` : ''}
 
 Temperamento:
 ${r.temperament}
+
+${ABOUT_TEST.title}:
+
+${ABOUT_TEST.paragraphs.join('\n\n')}
+
+${ABOUT_TEST.dimensions.map((d) => `${d.pair} — ${d.name} · ${d.question}\n${d.text}`).join('\n\n')}
 
 Como suas respostas se distribuíram:
 
@@ -178,7 +210,11 @@ Percepção: ${scores.P} pontos
 O que esse resultado pode indicar:
 
 ${r.description}
+${det ? `
+Seu perfil em detalhe — ${code} (${det.keyword}):
 
+${det.profile.join('\n\n')}
+` : ''}
 Tendências que podem aparecer:
 
 ${textList(r.tendencies)}
@@ -190,7 +226,17 @@ ${textList(r.attentionPoints)}
 Ambientes em que você pode funcionar melhor:
 
 ${textList(r.favorableEnvironments)}
+${det ? `
+Caminhos profissionais que costumam atrair esse perfil:
 
+${det.careers}
+
+(São possibilidades para explorar e conversar — não uma prescrição.)
+` : ''}${temp ? `
+Seu temperamento em detalhe — ${temp.name}:
+
+${temp.paragraphs.join('\n\n')}
+` : ''}
 Importante:
 
 ${DISCLAIMER}

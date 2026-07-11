@@ -100,6 +100,15 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 .rlist li{font-size:13.5px;font-weight:300;line-height:1.7;color:var(--t2);padding:8px 0 8px 24px;border-bottom:1px solid var(--bg2);position:relative;}
 .rlist li:last-child{border-bottom:none;}
 .rlist li::before{content:"→";position:absolute;left:0;color:var(--gold);font-size:12px;}
+.rparas p{font-size:14px;font-weight:300;line-height:1.8;color:var(--t);margin-bottom:12px;}
+.rparas p:last-child{margin-bottom:0;}
+.rdims{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.rdim{background:var(--bg);border:1px solid var(--bg3);border-radius:3px;padding:14px 16px;}
+.rdim b{font-family:"DM Serif Display",serif;font-size:16px;color:var(--gold2);font-weight:400;}
+.rdim .rdimq{font-size:12px;font-weight:500;color:var(--t);margin:2px 0 6px;}
+.rdim p{font-size:12.5px;font-weight:300;line-height:1.65;color:var(--t2);}
+.rcareernote{font-size:12px;font-weight:300;font-style:italic;color:var(--t2);margin-top:12px;padding-top:10px;border-top:1px solid var(--bg2);}
+@media (max-width:768px){.rdims{grid-template-columns:1fr;}}
 /* Barras de pontuação */
 .spair{margin-bottom:18px;}
 .spair:last-child{margin-bottom:0;}
@@ -231,12 +240,21 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
   </div>
   <div class="rbody">
     <div class="rsec">
+      <div class="rsech">Como este resultado é construído</div>
+      <div class="rparas" id="rAbout"></div>
+      <div class="rdims" id="rDims"></div>
+    </div>
+    <div class="rsec">
       <div class="rsech">Como suas respostas se distribuíram</div>
       <div id="rScores"></div>
     </div>
     <div class="rsec">
       <div class="rsech">O que esse resultado pode indicar</div>
       <p class="rdesc" id="rDesc"></p>
+    </div>
+    <div class="rsec">
+      <div class="rsech" id="rProfileTitle">Seu perfil em detalhe</div>
+      <div class="rparas" id="rProfile"></div>
     </div>
     <div class="rsec">
       <div class="rsech">Tendências que podem aparecer</div>
@@ -249,6 +267,15 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
     <div class="rsec">
       <div class="rsech">Ambientes em que você pode funcionar melhor</div>
       <ul class="rlist" id="rEnv"></ul>
+    </div>
+    <div class="rsec">
+      <div class="rsech">Caminhos profissionais que costumam atrair esse perfil</div>
+      <div class="rparas" id="rCareers"></div>
+      <p class="rcareernote">São possibilidades para explorar e conversar — não uma prescrição. Interesses, habilidades e história de vida contam tanto quanto as preferências.</p>
+    </div>
+    <div class="rsec">
+      <div class="rsech" id="rTempTitle">Seu temperamento em detalhe</div>
+      <div class="rparas" id="rTempText"></div>
     </div>
     <div class="rimp">
       <div class="rimph">Importante</div>
@@ -273,7 +300,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 <a class="wa-float" href="https://wa.me/551128632313" target="_blank" rel="noopener noreferrer" aria-label="Conversar no WhatsApp">💬</a>
 
 <script type="module">
-import { QUESTIONS, TOTAL_QUESTIONS, DIMENSION_LABELS, correct, DISCLAIMER } from './scoring.mjs';
+import { QUESTIONS, TOTAL_QUESTIONS, DIMENSION_LABELS, correct, DISCLAIMER, ABOUT_TEST, profileDetails, temperamentDescriptions } from './scoring.mjs';
 
 const $ = (id) => document.getElementById(id);
 const CONTACT_URL = 'https://wa.me/551128632313?text=' + encodeURIComponent('Olá! Fiz o Questionário de Preferências no site e quero conversar sobre orientação profissional.');
@@ -375,12 +402,34 @@ function validate() {
 
 function renderResult() {
   const { code, scores, result } = submission;
+  const det = profileDetails[code];
+  const temp = temperamentDescriptions[result.temperament];
   $('rCode').textContent = code;
-  $('rTitle').textContent = result.title;
+  $('rTitle').textContent = det ? `${result.title} · ${det.keyword}` : result.title;
   $('rTemp').textContent = 'Temperamento: ' + result.temperament;
   $('rDesc').textContent = result.description;
   $('rDisc').textContent = DISCLAIMER;
   $('printMeta').textContent = `${submission.firstName} · ${fmtDateBR(new Date(submission.completedAt))} · resultado ${code} — ${result.title}`;
+  const paras = (id, items) => { $(id).innerHTML = items.map((p) => { const el = document.createElement('p'); el.textContent = p; return el.outerHTML; }).join(''); };
+  paras('rAbout', ABOUT_TEST.paragraphs);
+  $('rDims').innerHTML = ABOUT_TEST.dimensions.map((d) => {
+    const box = document.createElement('div');
+    box.className = 'rdim';
+    const b = document.createElement('b'); b.textContent = `${d.pair} — ${d.name}`;
+    const q = document.createElement('div'); q.className = 'rdimq'; q.textContent = d.question;
+    const t = document.createElement('p'); t.textContent = d.text;
+    box.append(b, q, t);
+    return box.outerHTML;
+  }).join('');
+  if (det) {
+    $('rProfileTitle').textContent = `Seu perfil em detalhe: ${code} (${det.keyword})`;
+    paras('rProfile', det.profile);
+    paras('rCareers', [det.careers]);
+  }
+  if (temp) {
+    $('rTempTitle').textContent = `Seu temperamento em detalhe: ${temp.name}`;
+    paras('rTempText', temp.paragraphs);
+  }
   const fill = (id, items) => { $(id).innerHTML = items.map((i) => `<li>${i}</li>`).join(''); };
   fill('rTend', result.tendencies);
   fill('rAtt', result.attentionPoints);
