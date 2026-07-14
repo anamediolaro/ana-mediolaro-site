@@ -27,7 +27,7 @@ export const QUESTIONS = [
   { n: 4, dim: 'JP', text: 'Em geral, você é uma pessoa:',
     a: 'Pontual e espera que os outros também o sejam',
     b: 'Tolerante com seus próprios atrasos e com os atrasos dos outros' },
-  { n: 5, dim: 'EI', text: 'Numa viagem de ônibus (de SP a Santos), você:',
+  { n: 5, dim: 'EI', text: 'Numa viagem de avião (de SP a RJ), você:',
     a: 'Procura conversar com a pessoa desconhecida sentada ao lado',
     b: 'Não vê muito o que conversar com uma pessoa desconhecida' },
   { n: 6, dim: 'SN', text: 'Ao realizar as tarefas comuns (no seu trabalho, em casa), você:',
