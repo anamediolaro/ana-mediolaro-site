@@ -63,9 +63,6 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
           <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;color:#F5F0EA;">
             <span style="color:#B8975A;">●</span>&nbsp;Ana Mediolaro
           </div>
-          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8975A;margin-top:6px;">
-            Mediolaro Clínica e Terapias
-          </div>
         </td></tr>
 
         <!-- Corpo -->
@@ -138,7 +135,7 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
               <p style="font-size:12.5px;line-height:1.7;color:#7A6E65;margin:0;">${esc(DISCLAIMER)}</p>
               <p style="font-size:12.5px;line-height:1.7;color:#7A6E65;margin:10px 0 0;">
                 Para aprofundar essa reflexão em um processo de orientação profissional,
-                entre em contato com a Mediolaro Clínica e Terapias.
+                entre em contato comigo.
               </p>
             </td></tr>
           </table>
@@ -153,30 +150,9 @@ export function buildResultEmail({ firstName, code, scores, completedAt, contact
             </td></tr>
           </table>
 
-          <!-- Compartilhe -->
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                 style="background:#1C1917;border:1px solid #B8975A;border-radius:6px;margin-top:26px;">
-            <tr><td style="padding:26px 24px;text-align:center;">
-              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8975A;margin-bottom:10px;">Compartilhe e desafie seus amigos</div>
-              <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.35;color:#F5F0EA;margin-bottom:10px;">
-                Já descobri o meu resultado.<br><span style="color:#B8975A;">Agora eu desafio você a descobrir o seu!</span>
-              </div>
-              <p style="font-size:13px;line-height:1.7;color:rgba(245,240,234,.6);margin:0 0 18px;">
-                Na página do teste você baixa uma arte pronta para os stories, inclusive um modelo com enquete
-                para seus amigos votarem se você é assim mesmo. Poste, marque
-                <strong style="color:#B8975A;">@anamediolaro.oficial</strong> e me conta qual é o seu tipo!
-              </p>
-              <a href="https://www.instagram.com/anamediolaro.oficial/"
-                 style="display:inline-block;border:1px solid #B8975A;color:#B8975A;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:12px 26px;border-radius:3px;">
-                Seguir @anamediolaro.oficial
-              </a>
-            </td></tr>
-          </table>
-
           <p style="font-size:14px;color:#2C2520;line-height:1.7;margin:28px 0 0;">
             Atenciosamente,<br>
-            <strong>Ana Mediolaro</strong><br>
-            <span style="color:#7A6E65;">Mediolaro Clínica e Terapias</span>
+            <strong>Ana Mediolaro</strong>
           </p>
         </td></tr>
 
@@ -261,16 +237,12 @@ Importante:
 
 ${DISCLAIMER}
 
-Para aprofundar essa reflexão em um processo de orientação profissional, entre em contato com a Mediolaro Clínica e Terapias:
+Para aprofundar essa reflexão em um processo de orientação profissional, entre em contato comigo:
 ${contactUrl}
-
-Já descobri o meu resultado. Agora eu desafio você a descobrir o seu! Na página do teste você baixa uma arte pronta para os stories, inclusive um modelo com enquete para seus amigos votarem se você é assim mesmo. Poste, marque @anamediolaro.oficial e me conta qual é o seu tipo:
-https://www.instagram.com/anamediolaro.oficial/
 
 Atenciosamente,
 
 Ana Mediolaro
-Mediolaro Clínica e Terapias
 
 Teste respondido em ${completedAt}.`;
 

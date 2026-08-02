@@ -135,21 +135,6 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 .rimp{background:var(--bg2);border-left:3px solid var(--gold);border-radius:0 3px 3px 0;padding:18px 22px;margin-bottom:16px;}
 .rimph{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px;}
 .rimp p{font-size:12.5px;font-weight:300;line-height:1.75;color:var(--t2);}
-.rshare{background:linear-gradient(150deg,#241F1B 0%,#1C1917 55%,#2A2117 100%);border:1px solid rgba(184,151,90,.35);border-radius:3px;padding:36px 30px;text-align:center;margin-bottom:16px;}
-.rsharee{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
-.rsharet{font-family:"DM Serif Display",serif;font-size:26px;line-height:1.25;color:rgba(245,240,234,.92);margin-bottom:12px;}
-.rsharet em{color:var(--gold);font-style:italic;}
-.rshares{font-size:13px;font-weight:300;line-height:1.75;color:rgba(245,240,234,.55);max-width:480px;margin:0 auto 20px;}
-.rshares b{color:var(--gold);font-weight:500;}
-.rshareopts{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
-.rshareopt{display:flex;align-items:center;gap:8px;}
-.rshareopt span{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,234,.4);}
-.rtog{background:transparent;border:1px solid rgba(245,240,234,.25);color:rgba(245,240,234,.7);font-family:inherit;font-size:11px;padding:7px 14px;border-radius:2px;cursor:pointer;transition:all .2s;}
-.rtog.on{background:var(--gold);border-color:var(--gold);color:#fff;}
-.rshareimg{margin:0 auto 20px;max-width:210px;}
-.rshareimg img{width:100%;border-radius:6px;border:1px solid rgba(184,151,90,.4);box-shadow:0 14px 40px rgba(0,0,0,.45);display:block;}
-.rsharebtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.rsharedone{display:none;margin-top:14px;font-size:12px;color:var(--gold);}
 .rcta{background:var(--dk);border-radius:3px;padding:30px;text-align:center;margin-bottom:16px;}
 .rctat{font-family:"DM Serif Display",serif;font-size:22px;color:rgba(245,240,234,.9);margin-bottom:6px;}
 .rctat em{color:var(--gold);font-style:italic;}
@@ -174,7 +159,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
   html,body{background:#fff !important;}
-  .nav,.progress,.ph,.qwrap,.fwrap,.ractions,.remail,.rcta,.rshare,.footer,.wa-float,.rsent{display:none !important;}
+  .nav,.progress,.ph,.qwrap,.fwrap,.ractions,.remail,.rcta,.footer,.wa-float,.rsent{display:none !important;}
   #resultado{display:block !important;}
 
   /* Cabeçalho do documento */
@@ -259,7 +244,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
     <div class="ferr" id="err-consent" style="margin:-4px 0 10px;">É necessário marcar o consentimento para receber o resultado.</div>
     <label class="consent">
       <input type="checkbox" id="marketing">
-      <span><b>Opcional:</b> Desejo receber conteúdos e informações da Mediolaro Clínica e Terapias.</span>
+      <span><b>Opcional:</b> Desejo receber conteúdos e informações de Ana Mediolaro.</span>
     </label>
     <p class="privnote">Suas 26 respostas não são armazenadas em nossos servidores e não são incluídas no e-mail, apenas o resultado calculado. Guardamos somente seu primeiro nome, e-mail e resultado, para registro do envio. Não pedimos nome completo, CPF, data de nascimento, endereço ou telefone.</p>
     <button class="gobtn" id="goBtn">Ver meu resultado</button>
@@ -272,7 +257,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
   <div class="print-head">
     <div class="ph-brand"><span class="ndot"></span>Ana Mediolaro</div>
     <div class="ph-title">Resultado do Teste de Personalidade e Escolha Profissional</div>
-    <div class="ph-sub">Recurso educativo de autoconhecimento · Mediolaro Clínica e Terapias</div>
+    <div class="ph-sub">Recurso educativo de autoconhecimento</div>
   </div>
   <div class="print-id" id="printId"></div>
   <div class="rhero">
@@ -341,35 +326,13 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
       <div class="rctas">Em um processo de orientação profissional, seu resultado vira ponto de partida para uma conversa muito mais completa.</div>
       <a class="rbtn solid" id="btnTalk2" target="_blank" rel="noopener noreferrer">Conversar com a nossa equipe</a>
     </div>
-    <div class="rshare">
-      <div class="rsharee">Compartilhe e desafie seus amigos</div>
-      <div class="rsharet">Já descobri o meu resultado.<br>Agora eu <em>desafio você</em> a descobrir o seu!</div>
-      <p class="rshares">Baixe a arte pronta, poste nos stories e marque <b>@anamediolaro.oficial</b>. E tem o modelo com enquete: seus amigos votam se você é assim mesmo. Vou adorar saber o seu tipo!</p>
-      <div class="rshareopts">
-        <div class="rshareopt"><span>Modelo</span>
-          <button class="rtog on" data-model="enquete">Enquete: sou assim?</button>
-          <button class="rtog" data-model="desafio">Desafio</button>
-        </div>
-        <div class="rshareopt"><span>Cor</span>
-          <button class="rtog on" data-style="clara">Clara</button>
-          <button class="rtog" data-style="escura">Escura</button>
-        </div>
-      </div>
-      <div class="rshareimg"><img id="shareThumb" alt="Prévia da imagem do seu resultado para os stories"></div>
-      <div class="rsharebtns">
-        <button class="rbtn solid" id="btnShareImg">Baixar imagem para os stories</button>
-        <button class="rbtn" id="btnCaption">Copiar legenda pronta</button>
-        <a class="rbtn" href="https://www.instagram.com/anamediolaro.oficial/" target="_blank" rel="noopener noreferrer">Seguir @anamediolaro.oficial</a>
-      </div>
-      <div class="rsharedone" id="captionOk">Legenda copiada! É só colar no Instagram.</div>
-    </div>
   </div>
 </section>
 
 <footer class="footer">
   <div>
     <div class="ftlog"><span class="ndot"></span>Ana Mediolaro</div>
-    <p class="fttag">Mediolaro Clínica e Terapias · Jundiaí SP e São Bernardo do Campo · Online para todo o Brasil</p>
+    <p class="fttag">Ana Mediolaro · Jundiaí SP e São Bernardo do Campo · Online para todo o Brasil</p>
   </div>
   <p class="fttag">Recurso educativo de autoconhecimento.<br>Não substitui avaliação psicológica profissional.</p>
 </footer>
@@ -528,8 +491,6 @@ function renderResult() {
   fill('rTend', result.tendencies);
   fill('rAtt', result.attentionPoints);
   fill('rEnv', result.favorableEnvironments);
-  refreshShareThumb();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshShareThumb);
   const pairs = [['E','I'],['S','N'],['T','F'],['J','P']];
   $('rScores').innerHTML = pairs.map(([l, r]) => {
     const a = scores[l], b = scores[r], tot = a + b;
@@ -657,164 +618,6 @@ $('btnSendNew').addEventListener('click', async () => {
   await sendEmail($('btnSendNew'), 'Enviar para este e-mail');
 });
 $('btnPdf').addEventListener('click', () => window.print());
-
-// ── Imagem para os stories (1080x1920), gerada localmente no navegador ──
-const IG_HANDLE = '@anamediolaro.oficial';
-const SITE_URL = 'anamediolaro.com.br/teste-de-personalidade';
-let shareStyle = 'clara';   // clara | escura
-let shareModel = 'enquete'; // desafio | enquete
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(' ');
-  let line = '';
-  for (const w of words) {
-    const test = line ? line + ' ' + w : w;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      ctx.fillText(line, x, y);
-      line = w;
-      y += lineHeight;
-    } else {
-      line = test;
-    }
-  }
-  ctx.fillText(line, x, y);
-  return y + lineHeight;
-}
-
-const SHARE_PALETTES = {
-  clara: {
-    bg: ['#FBF8F3', '#F5F0EA', '#EFE6D8'], frame: 'rgba(184,151,90,.65)', frame2: 'rgba(184,151,90,.25)',
-    ink: '#2C2520', soft: '#7A6E65', gold: '#B8975A', goldDark: '#8B6E3A',
-    chipBg: 'rgba(184,151,90,.1)', dash: 'rgba(139,110,58,.55)',
-  },
-  escura: {
-    bg: ['#241F1B', '#1C1917', '#2A2117'], frame: 'rgba(184,151,90,.55)', frame2: 'rgba(184,151,90,.2)',
-    ink: '#F5F0EA', soft: 'rgba(245,240,234,.55)', gold: '#B8975A', goldDark: '#B8975A',
-    chipBg: 'rgba(184,151,90,.14)', dash: 'rgba(184,151,90,.6)',
-  },
-};
-
-function buildShareImage() {
-  const { code, result } = submission;
-  const det = profileDetails[code];
-  const P = SHARE_PALETTES[shareStyle];
-  const W = 1080, H = 1920;
-  const c = document.createElement('canvas');
-  c.width = W; c.height = H;
-  const g = c.getContext('2d');
-  const SERIF = '"DM Serif Display", Georgia, serif';
-  const SANS = '"DM Sans", Arial, sans-serif';
-  const bg = g.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, P.bg[0]); bg.addColorStop(.55, P.bg[1]); bg.addColorStop(1, P.bg[2]);
-  g.fillStyle = bg; g.fillRect(0, 0, W, H);
-  g.strokeStyle = P.frame; g.lineWidth = 3;
-  g.strokeRect(52, 52, W - 104, H - 104);
-  g.strokeStyle = P.frame2; g.lineWidth = 1;
-  g.strokeRect(68, 68, W - 136, H - 136);
-  g.textAlign = 'center';
-  // marca
-  g.fillStyle = P.gold; g.beginPath(); g.arc(W/2 - 140, 191, 7, 0, 7); g.fill();
-  g.font = `44px ${SERIF}`; g.fillStyle = P.ink;
-  g.fillText('Ana Mediolaro', W/2 + 8, 206);
-  g.font = `600 20px ${SANS}`; g.fillStyle = P.goldDark;
-  g.fillText('T E S T E   D E   P E R S O N A L I D A D E', W/2, 258);
-  g.fillStyle = P.soft; g.font = `300 21px ${SANS}`;
-  g.fillText('e Escolha Profissional', W/2, 292);
-
-  // resultado
-  g.font = `600 25px ${SANS}`; g.fillStyle = P.soft;
-  g.fillText('M E U   R E S U L T A D O', W/2, 440);
-  g.font = `225px ${SERIF}`; g.fillStyle = P.gold;
-  g.fillText(code.split('').join(' '), W/2, 660);
-  g.font = `50px ${SERIF}`; g.fillStyle = P.ink;
-  g.fillText(`${result.title} · ${det.keyword}`, W/2, 748);
-  g.font = `600 25px ${SANS}`;
-  const chipText = 'TEMPERAMENTO  ' + result.temperament.toUpperCase();
-  const cw = g.measureText(chipText).width + 72;
-  g.fillStyle = P.chipBg;
-  g.strokeStyle = P.frame; g.lineWidth = 2;
-  g.beginPath(); g.roundRect((W-cw)/2, 790, cw, 62, 6); g.fill(); g.stroke();
-  g.fillStyle = P.goldDark; g.fillText(chipText, W/2, 830);
-
-  if (shareModel === 'enquete') {
-    // três traços do perfil
-    let ty = 960;
-    for (const t of det.traits) {
-      g.font = `600 30px ${SANS}`; g.fillStyle = P.gold;
-      const label = '✦  ' + t;
-      g.font = `34px ${SERIF}`; g.fillStyle = P.ink;
-      g.fillText(label, W/2, ty);
-      ty += 62;
-    }
-    // pergunta
-    g.font = `italic 56px ${SERIF}`; g.fillStyle = P.goldDark;
-    wrapText(g, 'Vocês acham que eu sou assim mesmo?', W/2, 1240, 780, 72);
-    // espaço para a enquete
-    g.setLineDash([14, 12]);
-    g.strokeStyle = P.dash; g.lineWidth = 3;
-    g.beginPath(); g.roundRect(240, 1370, 600, 170, 14); g.stroke();
-    g.setLineDash([]);
-    g.font = `600 24px ${SANS}`; g.fillStyle = P.soft;
-    g.fillText('adicione aqui a enquete do Instagram', W/2, 1442);
-    g.font = `600 30px ${SANS}`; g.fillStyle = P.ink;
-    g.fillText('SOU ASSIM?   👍   👎', W/2, 1496);
-  } else {
-    g.font = `italic 56px ${SERIF}`; g.fillStyle = P.ink;
-    let y = wrapText(g, '"Já descobri o meu resultado.', W/2, 1060, 840, 76);
-    g.fillStyle = P.goldDark;
-    y = wrapText(g, 'Agora eu desafio você', W/2, y + 6, 840, 76);
-    wrapText(g, 'a descobrir o seu!"', W/2, y, 840, 76);
-    g.font = `300 30px ${SANS}`; g.fillStyle = P.soft;
-    wrapText(g, 'São 26 perguntas rápidas e o resultado sai na hora, com o perfil completo no seu e-mail.', W/2, 1370, 760, 46);
-  }
-
-  // rodapé
-  g.font = `600 26px ${SANS}`; g.fillStyle = P.soft;
-  g.fillText('Faça o seu gratuitamente:', W/2, 1615);
-  g.font = `600 33px ${SANS}`; g.fillStyle = P.goldDark;
-  g.fillText(SITE_URL, W/2, 1668);
-  g.font = `300 26px ${SANS}`; g.fillStyle = P.soft;
-  g.fillText('Poste nos stories e me marque:', W/2, 1738);
-  g.font = `600 36px ${SANS}`; g.fillStyle = P.ink;
-  g.fillText(IG_HANDLE, W/2, 1790);
-  return c;
-}
-
-function refreshShareThumb() {
-  try { $('shareThumb').src = buildShareImage().toDataURL('image/png'); } catch {}
-}
-document.querySelectorAll('.rtog').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    if (btn.dataset.model) {
-      shareModel = btn.dataset.model;
-      document.querySelectorAll('.rtog[data-model]').forEach((b) => b.classList.toggle('on', b === btn));
-    } else {
-      shareStyle = btn.dataset.style;
-      document.querySelectorAll('.rtog[data-style]').forEach((b) => b.classList.toggle('on', b === btn));
-    }
-    refreshShareThumb();
-  });
-});
-$('btnShareImg').addEventListener('click', () => {
-  const a = document.createElement('a');
-  a.download = `meu-resultado-${submission.code}-anamediolaro.png`;
-  a.href = buildShareImage().toDataURL('image/png');
-  a.click();
-});
-$('btnCaption').addEventListener('click', async () => {
-  const { code, result } = submission;
-  const det = profileDetails[code];
-  const caption = shareModel === 'enquete'
-    ? `Meu resultado no Teste de Personalidade e Escolha Profissional foi ${code}, ${result.title} (${det.keyword}). E agora quero saber de vocês: eu sou assim mesmo? Vota na enquete! Faça o seu gratuitamente no site da ${IG_HANDLE} e me conta o seu tipo. #autoconhecimento #testedepersonalidade #escolhaprofissional`
-    : `Já descobri o meu resultado no Teste de Personalidade e Escolha Profissional: sou ${code}, ${result.title} (${det.keyword}). Agora eu desafio você a descobrir o seu! É gratuito, no site da ${IG_HANDLE}. Depois me marca e conta qual é o seu tipo. #autoconhecimento #testedepersonalidade #escolhaprofissional`;
-  try {
-    await navigator.clipboard.writeText(caption);
-    $('captionOk').style.display = 'block';
-    setTimeout(() => { $('captionOk').style.display = 'none'; }, 4000);
-  } catch {
-    prompt('Copie a legenda:', caption);
-  }
-});
 
 // ── Modo exemplo (?exemplo=intp): preenche o protocolo de teste aprovado ──
 if (new URLSearchParams(location.search).get('exemplo') === 'intp') {

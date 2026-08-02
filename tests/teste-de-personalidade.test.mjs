@@ -155,17 +155,18 @@ test('nenhum texto voltado ao público contém travessões (regra da Ana)', asyn
   assert.ok(!DASHES.test(page), 'travessão na página do questionário');
 });
 
-test('o e-mail e o resultado convidam a marcar o Instagram da Ana', async () => {
+test('o compartilhamento no Instagram foi removido do e-mail e do resultado', async () => {
   const { scores, code } = correct(PROTOCOLO);
   const mail = buildResultEmail({ firstName: 'Izabela', code, scores, completedAt: 'hoje' });
   for (const out of [mail.html, mail.text]) {
-    assert.ok(out.includes('@anamediolaro.oficial'));
-    assert.ok(out.includes('desafio você a descobrir o seu'));
+    assert.ok(!out.includes('anamediolaro.oficial'), 'e-mail não deve citar o Instagram');
+    assert.ok(!out.includes('desafio você a descobrir o seu'), 'e-mail não deve ter o convite de desafio');
   }
   const { readFile } = await import('node:fs/promises');
   const page = await readFile(new URL('../teste-de-personalidade/index.html', import.meta.url), 'utf-8');
-  assert.ok(page.includes('instagram.com/anamediolaro.oficial'));
-  assert.ok(page.includes('Baixar imagem para os stories'));
+  assert.ok(!page.includes('anamediolaro.oficial'), 'página não deve citar o Instagram');
+  assert.ok(!page.includes('Baixar imagem para os stories'), 'página não deve ter o gerador de imagem');
+  assert.ok(!page.includes('class="rshare"'), 'página não deve ter o bloco de compartilhamento');
 });
 
 test('a validação do servidor aceita o protocolo de exemplo', () => {
