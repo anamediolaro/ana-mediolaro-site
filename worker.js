@@ -54,8 +54,13 @@ export default {
 export function validatePayload(body) {
   if (!body || typeof body !== 'object') return { error: 'Corpo inválido.' };
 
-  // honeypot: robôs preenchem o campo invisível, respondemos ok sem enviar nada
-  if (body.website) return { honeypot: true };
+  // Anti-robô por tempo de preenchimento: robôs enviam quase instantaneamente,
+  // enquanto responder o teste leva bem mais que isso. Não bloqueamos quando a
+  // marca de tempo está ausente (páginas antigas em cache), para nunca recusar
+  // uma pessoa de verdade. O antigo honeypot por campo oculto foi removido
+  // porque gerenciadores de senha o preenchiam e barravam envios legítimos.
+  const elapsedMs = Number(body.elapsedMs);
+  if (Number.isFinite(elapsedMs) && elapsedMs >= 0 && elapsedMs < 1200) return { honeypot: true };
 
   const firstName = String(body.firstName || '').trim().slice(0, 60);
   if (!firstName) return { error: 'Primeiro nome é obrigatório.' };

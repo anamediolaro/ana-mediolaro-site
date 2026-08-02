@@ -196,9 +196,11 @@ test('a validação do servidor rejeita e-mail inválido, pontuação adulterada
   assert.ok(validatePayload({ ...base, submissionId: 'abc' }).error);
 });
 
-test('o campo honeypot faz o servidor ignorar robôs sem revelar nada', () => {
-  const data = validatePayload({ website: 'http://spam', firstName: 'x', email: 'a@b.co' });
-  assert.equal(data.honeypot, true);
+test('o anti-robô por tempo ignora envios instantâneos sem revelar nada', () => {
+  // Envio quase imediato (típico de robô): tratado como honeypot, sem enviar nada.
+  assert.equal(validatePayload({ elapsedMs: 200, firstName: 'x', email: 'a@b.co' }).honeypot, true);
+  // Sem a marca de tempo (páginas antigas em cache) NÃO é bloqueado, para não recusar pessoas.
+  assert.notEqual(validatePayload({ firstName: 'x', email: 'a@b.co' }).honeypot, true);
 });
 
 test('o destinatário recebe somente um envio por tentativa (deduplicação)', async () => {
