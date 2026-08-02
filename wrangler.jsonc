@@ -14,9 +14,9 @@
     "nodejs_compat"
   ],
   "vars": {
-    // Remetente dos e-mails de resultado do questionário.
-    // Troque pelo endereço verificado no Resend (docs/QUESTIONARIO.md, passo 2).
-    "MAIL_FROM": "Ana Mediolaro <onboarding@resend.dev>"
+    // Remetente dos e-mails de resultado do teste.
+    // Domínio anamediolaro.com.br verificado no Resend (envia para qualquer destinatário).
+    "MAIL_FROM": "Ana Mediolaro <resultado@anamediolaro.com.br>"
   }
   // Para ativar as estatísticas do painel /admin, crie o KV e descomente:
   //   npx wrangler kv namespace create STATS
