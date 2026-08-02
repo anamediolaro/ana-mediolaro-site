@@ -252,8 +252,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
         <div class="ferr" id="err-femail">Informe um e-mail válido.</div>
       </div>
     </div>
-    <!-- honeypot anti-robô: fica invisível para pessoas -->
-    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+    <!-- honeypot anti-robô: invisível para pessoas e ignorado por gerenciadores de senha -->
+    <input type="text" id="hpf" name="hpf" tabindex="-1" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
     <label class="consent req" id="consentBox">
       <input type="checkbox" id="consent">
       <span><b>Consentimento obrigatório:</b> Autorizo o uso do meu e-mail exclusivamente para receber o resultado deste teste e declaro que compreendi que ele possui finalidade educativa e de autoconhecimento, não sendo um diagnóstico ou teste psicológico oficial.</span>
@@ -594,7 +594,7 @@ async function sendEmail(btn, idleLabel) {
           scores: submission.scores,
           completedAt: submission.completedAt,
           marketingConsent: $('marketing').checked,
-          website: $('website').value, // honeypot
+          website: $('hpf').value, // honeypot (campo neutro; worker continua checando "website")
         }),
       });
       let data = {};
