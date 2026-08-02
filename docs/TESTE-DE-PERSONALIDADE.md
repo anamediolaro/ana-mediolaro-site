@@ -26,30 +26,64 @@ não existe empate.
 ## Configuração do envio de e-mail (uma única vez)
 
 O envio usa o serviço [Resend](https://resend.com) (plano gratuito: 100
-e-mails/dia). A chave fica **somente no servidor** — nunca no navegador.
+e-mails por dia). A chave de acesso fica **somente no servidor**, nunca no
+navegador. Dá para configurar tudo pelos painéis do Resend e da Cloudflare,
+**sem usar terminal**.
 
-1. Crie uma conta em resend.com e gere uma API Key.
-2. Verifique o domínio `anamediolaro.com.br` no painel do Resend
-   (Domains → Add Domain → siga as instruções de DNS). Enquanto o domínio
-   não estiver verificado, o remetente de teste `onboarding@resend.dev`
-   funciona apenas para o e-mail da própria conta.
-3. Grave a chave como segredo do Worker:
+### Parte 1 · Criar a conta e a chave no Resend
 
-   ```bash
-   npx wrangler secret put RESEND_API_KEY
-   ```
+1. Acesse [resend.com](https://resend.com) e crie uma conta gratuita.
+2. No menu **API Keys**, clique em **Create API Key**, dê um nome
+   (ex.: `site ana`) e **copie a chave** que começa com `re_...`. Guarde em
+   lugar seguro, pois ela só aparece uma vez.
 
-4. Ajuste o remetente em `wrangler.jsonc` (variável `MAIL_FROM`), por exemplo:
+### Parte 2 · Verificar o domínio (para o e-mail sair no seu nome)
 
-   ```jsonc
-   "MAIL_FROM": "Ana Mediolaro <resultado@anamediolaro.com.br>"
-   ```
+3. No Resend, vá em **Domains → Add Domain** e digite `anamediolaro.com.br`.
+4. O Resend vai mostrar alguns registros de DNS. Como o domínio está na
+   Cloudflare, copie cada registro para **Cloudflare → seu domínio → DNS →
+   Add record** (cole exatamente como aparece).
+5. Volte ao Resend e clique em **Verify**. Pode levar de alguns minutos a
+   poucas horas.
 
-5. Publique: `npx wrangler deploy`
+   Enquanto o domínio não estiver verificado, o remetente de teste
+   `onboarding@resend.dev` funciona **apenas para o e-mail da própria conta**
+   do Resend (ótimo para testar antes de liberar para o público).
 
-**Para trocar o endereço remetente depois:** basta editar `MAIL_FROM` no
-`wrangler.jsonc` e publicar de novo (o endereço precisa pertencer a um
-domínio verificado no Resend).
+### Parte 3 · Guardar a chave no site (painel da Cloudflare)
+
+6. Cloudflare → **Workers & Pages** → abra o worker
+   **`ana-mediolaro-site`** → **Settings** → **Variables and Secrets**.
+7. Em **Secrets** (variável criptografada), clique em **Add**:
+   - **Name:** `RESEND_API_KEY`
+   - **Value:** cole a chave `re_...` da Parte 1
+   - Salve. Pronto: a chave fica protegida e continua valendo mesmo quando o
+     site é republicado.
+
+### Parte 4 · Definir o remetente (`MAIL_FROM`)
+
+O remetente fica no arquivo `wrangler.jsonc` (variável `MAIL_FROM`), porque
+ele é recriado a cada publicação pela `main`. **Só troque para o endereço do
+seu domínio depois que a Parte 2 estiver verificada**, senão o Resend recusa
+o envio. Exemplo já verificado:
+
+```jsonc
+"MAIL_FROM": "Ana Mediolaro <resultado@anamediolaro.com.br>"
+```
+
+Depois de editar o `wrangler.jsonc`, faça o merge na `main` (a Cloudflare
+republica sozinha). Se preferir, é só me pedir que eu faço essa troca.
+
+### Parte 5 · Testar
+
+8. Faça o teste no site usando **o seu próprio e-mail** e clique em
+   **Ver meu resultado**. Confira a caixa de entrada (e a de spam na
+   primeira vez). Antes do domínio verificado, teste com o e-mail da conta
+   do Resend.
+
+**Alternativa por terminal** (para quem prefere): a chave também pode ser
+gravada com `npx wrangler secret put RESEND_API_KEY` e a publicação feita com
+`npx wrangler deploy`.
 
 ## Painel administrativo (`/admin`)
 
@@ -122,11 +156,25 @@ para conferir que nada quebrou.
 
 O botão **"Salvar em PDF"** na tela de resultado gera o documento
 *"Resultado do Teste de Personalidade e Escolha Profissional"*
-pelo diálogo de impressão do navegador, com identidade visual da clínica,
-contendo: primeiro nome, data, código, título, temperamento, pontuações,
-descrição, tendências, pontos de atenção, ambientes favoráveis e o aviso de
-uso responsável. (Anexar PDF ao e-mail é possível numa evolução futura;
-exigiria geração de PDF no servidor.)
+pelo diálogo de impressão do navegador, com identidade visual da clínica.
+
+O relatório começa por um cabeçalho enxuto (marca, título e subtítulo) e um
+**quadro de identificação da pessoa** com nome, e-mail, data e resultado
+(monta-se a partir dos dados informados na etapa final do teste). Em seguida
+vêm o banner do resultado e o conteúdo: como o resultado é construído,
+distribuição das respostas, o que ele pode indicar, perfil em detalhe,
+tendências, pontos de atenção, ambientes favoráveis, caminhos profissionais,
+temperamento em detalhe e o aviso de uso responsável.
+
+As seções fluem de forma contínua (sem grandes espaços em branco entre as
+páginas) e a seção de compartilhamento no Instagram **não** entra no PDF, por
+ser um documento voltado à pessoa. Dica ao imprimir: em "Mais definições",
+desligue "Cabeçalhos e rodapés" para tirar a data e o endereço que o
+navegador adiciona automaticamente.
+
+Hoje o PDF é salvo pela própria pessoa no navegador. Anexar o PDF
+automaticamente ao e-mail é possível numa evolução futura, mas exigiria
+geração de PDF no servidor.
 
 ## Proteções implementadas
 

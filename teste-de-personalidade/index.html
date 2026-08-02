@@ -169,20 +169,44 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
   .rcode{font-size:54px;}
   .footer{padding:24px 20px;}
 }
-/* Impressão / PDF: somente o resultado */
+/* Impressão / PDF: relatório limpo, elegante e sem vãos em branco */
+@page{margin:14mm 15mm;}
 @media print{
-  body{background:#fff;}
-  .nav,.progress,.ph,.qwrap,.fwrap,.ractions,.remail,.rcta,.footer,.wa-float,.rsent{display:none !important;}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  html,body{background:#fff !important;}
+  .nav,.progress,.ph,.qwrap,.fwrap,.ractions,.remail,.rcta,.rshare,.footer,.wa-float,.rsent{display:none !important;}
   #resultado{display:block !important;}
-  .rhero{background:#fff;border-bottom:2px solid var(--gold);padding:20px;}
-  .rlbl{color:var(--t2);}
-  .rtitle{color:var(--t);}
-  .rtemp{color:var(--gold2);border-color:var(--gold);}
-  .rsec{border:none;border-bottom:1px solid var(--bg3);border-radius:0;page-break-inside:avoid;}
-  .print-head{display:block !important;text-align:center;padding:18px 0 6px;font-family:"DM Serif Display",serif;font-size:20px;color:var(--t);}
-  .print-meta{display:block !important;text-align:center;font-size:11px;color:var(--t2);padding-bottom:10px;}
+
+  /* Cabeçalho do documento */
+  .print-head{display:block !important;text-align:center;padding:0;}
+  .ph-brand{font-family:"DM Serif Display",serif;font-size:15px;color:var(--gold2);}
+  .ph-brand .ndot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);vertical-align:middle;margin-right:6px;}
+  .ph-title{font-family:"DM Serif Display",serif;font-size:19px;color:var(--t);margin-top:6px;line-height:1.25;}
+  .ph-sub{font-size:10.5px;letter-spacing:.03em;color:var(--t2);margin-top:5px;}
+
+  /* Identificação da pessoa */
+  .print-id{display:block !important;margin:14px auto 0;max-width:520px;border:1px solid var(--bg3);border-radius:4px;padding:10px 20px;background:var(--bg) !important;}
+  .pid-row{display:flex;align-items:baseline;font-size:12px;line-height:1.85;}
+  .pid-l{flex:0 0 96px;font-size:9.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--t2);}
+  .pid-v{color:var(--t);font-weight:500;word-break:break-word;}
+
+  /* Banner do resultado, compacto */
+  .rhero{background:#fff !important;border-bottom:2px solid var(--gold);padding:18px 20px 16px;margin-top:16px;}
+  .rlbl{color:var(--t2) !important;}
+  .rcode{color:var(--gold) !important;font-size:58px;margin:6px 0 2px;}
+  .rtitle{color:var(--t) !important;font-size:22px;}
+  .rtemp{color:var(--gold2) !important;border-color:var(--gold) !important;background:rgba(184,151,90,.1) !important;}
+
+  /* Corpo: fluxo natural, sem grandes espaços vazios */
+  .rbody{max-width:none;padding:20px 0 0 !important;}
+  .rsec{border:none !important;border-bottom:1px solid var(--bg3) !important;border-radius:0;padding:16px 0;margin-bottom:0;background:#fff !important;break-inside:auto;page-break-inside:auto;}
+  .rsec:last-of-type{border-bottom:none;}
+  .rsech{break-after:avoid;page-break-after:avoid;}
+  .rdesc,.rparas p{orphans:3;widows:3;}
+  .rlist li,.rdim,.spair,.rimp{break-inside:avoid;page-break-inside:avoid;}
+  .rdim{background:var(--bg) !important;}
 }
-.print-head,.print-meta{display:none;}
+.print-head,.print-id{display:none;}
 </style>
 </head>
 <body>
@@ -247,8 +271,12 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--t);font-s
 
 <!-- ETAPA 4 · Resultado -->
 <section id="resultado">
-  <div class="print-head">Resultado do Teste de Personalidade e Escolha Profissional</div>
-  <div class="print-meta" id="printMeta"></div>
+  <div class="print-head">
+    <div class="ph-brand"><span class="ndot"></span>Ana Mediolaro</div>
+    <div class="ph-title">Resultado do Teste de Personalidade e Escolha Profissional</div>
+    <div class="ph-sub">Recurso educativo de autoconhecimento · Mediolaro Clínica e Terapias</div>
+  </div>
+  <div class="print-id" id="printId"></div>
   <div class="rhero">
     <div class="rlbl">Seu resultado</div>
     <div class="rcode" id="rCode"></div>
@@ -460,7 +488,22 @@ function renderResult() {
   $('rTemp').textContent = 'Temperamento: ' + result.temperament;
   $('rDesc').textContent = result.description;
   $('rDisc').textContent = DISCLAIMER;
-  $('printMeta').textContent = `${submission.firstName} · ${fmtDateBR(new Date(submission.completedAt))} · resultado ${code} · ${result.title}`;
+  const idRows = [
+    ['Nome', submission.firstName],
+    ['E-mail', submission.email],
+    ['Data', fmtDateBR(new Date(submission.completedAt))],
+    ['Resultado', det ? `${code} · ${result.title} · ${det.keyword}` : `${code} · ${result.title}`],
+  ];
+  const printId = $('printId');
+  printId.innerHTML = '';
+  for (const [label, value] of idRows) {
+    if (!value) continue;
+    const row = document.createElement('div'); row.className = 'pid-row';
+    const l = document.createElement('span'); l.className = 'pid-l'; l.textContent = label;
+    const v = document.createElement('span'); v.className = 'pid-v'; v.textContent = value;
+    row.append(l, v);
+    printId.append(row);
+  }
   const paras = (id, items) => { $(id).innerHTML = items.map((p) => { const el = document.createElement('p'); el.textContent = p; return el.outerHTML; }).join(''); };
   paras('rAbout', ABOUT_TEST.paragraphs);
   $('rDims').innerHTML = ABOUT_TEST.dimensions.map((d) => {
