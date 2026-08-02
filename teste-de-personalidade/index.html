@@ -445,6 +445,7 @@ refresh();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let submission = null; // { id, attempt, firstName, email, code, scores, completedAt }
 let sending = false;
+let lastSendDetail = ''; // motivo técnico da última falha de envio (diagnóstico)
 
 function fmtDateBR(d) {
   const dt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeZone: 'America/Sao_Paulo' }).format(d);
@@ -554,6 +555,12 @@ function setSent(state, email) {
   } else if (state === 'fail') {
     el.classList.add('fail');
     el.textContent = 'Seu resultado foi calculado corretamente, mas não conseguimos enviar o e-mail neste momento. Confira o endereço informado e tente novamente.';
+    if (lastSendDetail) {
+      const d = document.createElement('div');
+      d.style.cssText = 'margin-top:8px;font-size:12px;opacity:.75;';
+      d.textContent = 'Detalhe técnico: ' + lastSendDetail;
+      el.appendChild(d);
+    }
   } else {
     el.textContent = 'Enviando seu resultado por e-mail…';
   }
@@ -590,8 +597,12 @@ async function sendEmail(btn, idleLabel) {
           website: $('website').value, // honeypot
         }),
       });
-      ok = res.ok;
-    } catch { ok = false; }
+      let data = {};
+      try { data = await res.json(); } catch {}
+      // Só é "enviado" quando o servidor confirma o envio de fato.
+      ok = res.ok && (data.status === 'sent' || data.status === 'duplicate');
+      lastSendDetail = ok ? '' : (data.message || (data.status ? `status: ${data.status}` : `resposta ${res.status}`));
+    } catch { ok = false; lastSendDetail = 'sem conexão com o servidor'; }
   }
   setSent(ok ? 'ok' : 'fail', submission.email);
   btn.textContent = ok ? 'Resultado enviado.' : (idleLabel || prev);
