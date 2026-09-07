@@ -12,12 +12,19 @@
 - Linguagem acessível e acolhedora, sem tom acadêmico.
 - Falar com a pessoa em "você".
 
-## Foto principal (hero)
+## Hero (topo)
 
-- Fundo da foto deve ser o creme do site (#F5F0EA), integrado à página,
-  sem contorno, sem sombra e sem esfumado.
-- A poltrona deve aparecer completa (versão reconstruída por IA aprovada).
-- No mobile, o hero empilha: foto em largura total acima, texto abaixo.
+- O hero é a sala/lounge da Ana Mediolaro Consultoria (Nine Office Park,
+  Jundiaí) ocupando o quadro inteiro, com um véu escuro à esquerda para o
+  texto por cima. Título grande em creme, "mudar" em dourado, botão dourado
+  (Agendar sessão) e botão fantasma (A ciência por trás), com "Role para
+  conhecer" no canto. A faixa de números (2006, 2011, 5.0) segue logo abaixo.
+  Classes: `.nhero`, `.nhero-bg`, `.nhero-veil`, `.nhero-in`, `.nhero-hint`,
+  `.nbtn-gold`, `.nbtn-ghost`.
+- No mobile, o hero mantém a sala de fundo com o texto por cima.
+- A antiga foto da Ana recortada no fundo creme foi substituída por esta
+  versão (aprovada pela Ana). A foto da Ana aparece agora na seção Sobre,
+  no estilo "foto impressa" (polaroid, classe `.polafig`).
 
 ## Publicação
 
