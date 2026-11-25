@@ -7,3 +7,5 @@ package-lock.json
 wrangler.jsonc
 README.md
 .assetsignore
+CLAUDE.md
+.gitignore
