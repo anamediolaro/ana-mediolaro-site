@@ -44,6 +44,11 @@ export default {
     if (url.pathname === '/questionario' || url.pathname.startsWith('/questionario/')) {
       return Response.redirect(new URL('/teste-de-personalidade/', url.origin).toString(), 301);
     }
+    // apelido sem hífen da página do Método Believe, em qualquer caixa
+    const pathLower = url.pathname.toLowerCase();
+    if (pathLower === '/metodobelieve' || pathLower.startsWith('/metodobelieve/')) {
+      return Response.redirect(new URL('/metodo-believe/', url.origin).toString(), 301);
+    }
     return env.ASSETS.fetch(request);
   },
 };
